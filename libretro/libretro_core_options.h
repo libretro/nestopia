@@ -29,7 +29,7 @@ extern "C" {
 struct retro_core_option_definition option_defs_us[] = {
    {
       "nestopia_blargg_ntsc_filter",
-      "Blargg NTSC filter",
+      "Blargg NTSC Filter",
       "Enable Blargg NTSC filters.",
       {
          { "disabled", "Disabled" },
@@ -64,8 +64,8 @@ struct retro_core_option_definition option_defs_us[] = {
    },
    {
       "nestopia_nospritelimit",
-      "Remove 8-sprites-per-scanline hardware limit",
-      "Self-explanatory.",
+      "Remove Sprite Limit",
+      "Remove 8-sprites-per-scanline hardware limit.",
       {
          { "disabled",  "Disabled" },
          { "enabled",   "Enabled" },
@@ -97,8 +97,8 @@ struct retro_core_option_definition option_defs_us[] = {
    },
    {
       "nestopia_fds_auto_insert",
-      "Automatically insert first FDS disk on reset; enabled|disabled",
-      "Self-explanatory",
+      "FDS Auto Instert",
+      "Automatically insert first FDS disk on reset.",
       {
          { "disabled",           "Disabled" },
          { "enabled",            "Enabled" },
@@ -130,7 +130,7 @@ struct retro_core_option_definition option_defs_us[] = {
    },
    {
       "nestopia_aspect",
-      "Preferred aspect ratio",
+      "Preferred Aspect Ratio",
       "Choose the preferred aspect ratio. RetroArch's aspect ratio must be set to Core provided in the Video seetings. 'auto' will use the NstDatabase.xml database file for aspect ratio autodetection. If there is no database present it will default to NTSC for 'auto'.",
       {
          { "auto", "Auto" },
@@ -154,8 +154,8 @@ struct retro_core_option_definition option_defs_us[] = {
    },
    {
       "nestopia_favored_system",
-      "Favored System",
-      "Choose which region the system is from. 'auto' will use the NstDatabase.xml database file for region autodetection. If there is no database present it will default to NTSC for 'auto'.",
+      "System Region",
+      "Choose which region the system is from. 'Auto' will use the NstDatabase.xml database file for region autodetection. If there is no database present it will default to NTSC for 'Auto'.",
       {
          { "auto",  "Auto" },
          { "ntsc", "NTSC" },
@@ -169,7 +169,7 @@ struct retro_core_option_definition option_defs_us[] = {
    {
       "nestopia_ram_power_state",
       "RAM Power-on State",
-      "Awaiting description.",
+      "", //Awaiting description.
       {
          { "0x00", NULL },
          { "0xFF", NULL },
@@ -180,8 +180,8 @@ struct retro_core_option_definition option_defs_us[] = {
    },
    {
       "nestopia_button_shift",
-      "Shift A/B/X/Y Clockwise",
-      "Awaiting description.",
+      "Shift Buttons Clockwise",
+      "Rotate A/B/X/Y button clockwise.", // is this right? @gadsby
       {
          { "disabled", NULL },
          { "enabled", NULL },
@@ -245,6 +245,190 @@ struct retro_core_option_definition option_defs_us[] = {
 
 /* RETRO_LANGUAGE_TURKISH */
 
+struct retro_core_option_definition option_defs_tr[] = {
+   {
+      "nestopia_blargg_ntsc_filter",
+      "Blargg NTSC Filtresi",
+      "Blargg NTSC filtrelerini etkinleştirin.",
+      {
+         { "disabled", "Devre Dışı" },
+         { "composite", "Kompozit Video"  },
+         { "svideo", "S-Video" },
+         { "rgb", "RGB SCART" },
+         { "monochrome", "Tek renkli" },
+         { NULL, NULL },
+      },
+      "disabled"
+   },
+   {
+      "nestopia_palette",
+      "Palet",
+      "Hangi renk paletinin kullanılacağını seçin.",
+      {
+         { "cxa2025as",   "CXA2025AS"   },
+         { "consumer",    "Consumer"    },
+         { "canonical",   "Standart"   },
+         { "alternative", "Alternatif" },
+         { "rgb",         "RGB"         },
+         { "pal",         "PAL"         },
+         { "composite-direct-fbx", "Doğrudan Kompozit FBx"},
+         { "pvm-style-d93-fbx",    "PVM-style D93 FBx"},
+         { "ntsc-hardware-fbx",    "NTSC donanım FBx"},
+         { "nes-classic-fbx-fs",   "NES Klasik FBx FS"},
+         { "raw",                  "Raw"},
+         { "custom",               "Özel"},
+         { NULL, NULL },
+      },
+      "cxa2025as" /* TODO/FIXME - is this correct ? */
+   },
+   {
+      "nestopia_nospritelimit",
+      "Sprite Limitini Kaldır",
+      "Tarama başına 8 sprite donanım sınırını kaldır.",
+      {
+         { "disabled",  "Devre Dışı" },
+         { "enabled",   "Etkin" },
+         { NULL, NULL },
+      },
+      "disabled"
+   },
+   {
+      "nestopia_overclock",
+      "CPU Hızı (Hız aşırtma)",
+      "Öykünülmüş CPU'ya hız aşırtma uygula.",
+      {
+         { "1x",  NULL },
+         { "2x", NULL },
+      },
+      "1x"
+   },
+   {
+      "nestopia_select_adapter",
+      "4 Oyuncu Adaptörü",
+      "Gerekirse manuel olarak bir 4 Oyuncu Adaptörü seçin. Bazı oyunlar bağdaştırıcıyı NstDatabase.xml veritabanıyla doğru bir şekilde tanıyamayabilir, bu seçenek bunu düzeltmeye yardımcı olur.",
+      {
+         { "auto", "Otomatik" },
+         { "ntsc", NULL },
+         { "famicom", NULL },
+         { NULL, NULL },
+      },
+      "auto"
+   },
+   {
+      "nestopia_fds_auto_insert",
+      "FDS Otomatik Ekleme",
+      "Yeniden başlatmada ilk FDS diskini otomatik olarak yerleştirir.",
+      {
+         { "disabled",           "Devre Dışı" },
+         { "enabled",            "Etkin" },
+         { NULL, NULL },
+      },
+      "enabled"
+   },
+   {
+      "nestopia_overscan_v",
+      "Aşırı Taşmayı Maskele (Dikey)",
+      "Standart tanımlı bir televizyon ekranının kenarı çevresinde çerçeve tarafından gizlenmiş olabilecek potansiyel olarak rastgele aksaklık video çıkışını maskeleyin (dikey olarak).",
+      {
+         { "disabled",           "Devre Dışı" },
+         { "enabled",            "Etkin" },
+         { NULL, NULL },
+      },
+      "enabled"
+   },
+   {
+      "nestopia_overscan_h",
+      "Aşırı Taşmayı Maskele (Yatay)",
+      "Standart tanımlı bir televizyon ekranının kenarı çevresinde çerçeve tarafından gizlenmiş olabilecek rastgele aksaklıklı video çıkışını maskeleyin (yatay olarak).",
+      {
+         { "disabled",           "Devre Dışı" },
+         { "enabled",            "Etkin" },
+         { NULL, NULL },
+      },
+      "disabled"
+   },
+   {
+      "nestopia_aspect",
+      "Tercih Edilen En Boy Oranı",
+      "Tercih edilen en boy oranını seçin. RetroArch'ın en boy oranı, Video ayarlarında 'Çekirdek Tarafından Sağlanan'  olarak ayarlanmalıdır. 'Otomatik', en-boy oranı otomatik belirlemesi için NstDatabase.xml veritabanını kullanır. Eğer mevcut bir veritabanı yoksa, 'Otomatik' için NTSC'ye varsayılan olacaktır.",
+      {
+         { "auto", "Otomatik" },
+         { "ntsc", "NTSC" },
+         { "pal",  "PAL" },
+         { "4:3",  "4:3" },
+         { NULL, NULL },
+      },
+      "auto"
+   },
+   {
+      "nestopia_genie_distortion",
+      "Game Genie Ses Bozulma",
+      "Game Genie hile cihazı yanlışlıkla oyunlarda ses bozulmalarına neden olabilir. Bunu etkinleştirerek, oyun sesine ekleyeceği bozulmayı taklit edebilirsiniz.",
+      {
+         { "disabled",           "Devre Dışı" },
+         { "enabled",            "Etkin" },
+         { NULL, NULL },
+      },
+      "disabled"
+   },
+   {
+      "nestopia_favored_system",
+      "Sistem Bölgesi",
+      "Sistemin hangi bölgeden olacağını seçin. 'Otomatik' bölgenin otomatik belirlenmesi için NstDatabase.xml veritabanı dosyasını kullanır. Eğer mevcut bir veritabanı yoksa, 'Otomatik' için NTSC'ye varsayılan olacaktır.",
+      {
+         { "auto",  "Otomatik" },
+         { "ntsc", "NTSC" },
+         { "pal",  "PAL" },
+         { "famicom",  "Famicom" },
+         { "dendy",  "Dendy" },
+         { NULL, NULL },
+      },
+      "auto"
+   },
+   {
+      "nestopia_ram_power_state",
+      "Açılıştaki RAM Durumu",
+      "", // Açıklama daha sonra eklenecek
+      {
+         { "0x00", NULL },
+         { "0xFF", NULL },
+         { "random",  "Rastgele" },
+         { NULL, NULL },
+      },
+      "0x00"
+   },
+   {
+      "nestopia_button_shift",
+      "A/B/X/Y Saat Yönünde Kaydırma",
+      "A/B/X/Y tuşlarını saat yönünde çevirir.", // Açıklama daha sonra eklenecek
+      {
+         { "disabled", NULL },
+         { "enabled", NULL },
+         { NULL, NULL },
+      },
+      "disabled"
+   },
+   {
+      "nestopia_turbo_pulse",
+      "Turbo Pulse Speed",
+      "Turbo B ve Turbo A düğmeleri için turbo hızını ayarlayın.",
+      {
+         { "2", NULL },
+         { "3", NULL },
+         { "4", NULL },
+         { "5", NULL },
+         { "6", NULL },
+         { "7", NULL },
+         { "8", NULL },
+         { "9", NULL },
+         { NULL, NULL },
+      },
+      "2"
+   },
+   { NULL, NULL, NULL, {{0}}, NULL },
+};
+
+
 /*
  ********************************
  * Language Mapping
@@ -270,7 +454,7 @@ struct retro_core_option_definition *option_defs_intl[RETRO_LANGUAGE_LAST] = {
    NULL,           /* RETRO_LANGUAGE_VIETNAMESE */
    NULL,           /* RETRO_LANGUAGE_ARABIC */
    NULL,           /* RETRO_LANGUAGE_GREEK */
-   NULL,           /* RETRO_LANGUAGE_TURKISH */
+   option_defs_tr, /* RETRO_LANGUAGE_TURKISH */
 };
 
 /*

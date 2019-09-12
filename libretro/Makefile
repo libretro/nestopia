@@ -99,6 +99,15 @@ else
 	PLATFORM_DEFINES += -miphoneos-version-min=5.0
 endif
 
+# tvOS
+else ifeq ($(platform), tvos-arm64)
+	TARGET := $(TARGET_NAME)_libretro_tvos.dylib
+	fpic = -fPIC
+	SHARED := -dynamiclib
+	ifeq ($(IOSSDK),)
+		IOSSDK := $(shell xcodebuild -version -sdk appletvos Path)
+	endif
+
 # Theos
 else ifeq ($(platform), theos_ios)
 	HAS_GCC := 0

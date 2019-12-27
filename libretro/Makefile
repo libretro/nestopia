@@ -11,13 +11,17 @@ filter_out2 = $(call filter_out1,$(call filter_out1,$1))
 
 ifeq ($(platform),)
 	platform = unix
-	ifeq ($(shell uname -a),)
+	ifeq ($(shell uname -s),)
 		platform = win
-	else ifneq ($(findstring MINGW,$(shell uname -a)),)
+	else ifneq ($(findstring MINGW,$(shell uname -s)),)
 		platform = win
-	else ifneq ($(findstring Darwin,$(shell uname -a)),)
+	else ifneq ($(findstring Darwin,$(shell uname -s)),)
 		platform = osx
-	else ifneq ($(findstring win,$(shell uname -a)),)
+		arch = intel
+		ifeq ($(shell uname -p),powerpc)
+			arch = ppc
+		endif
+	else ifneq ($(findstring win,$(shell uname -s)),)
 		platform = win
 	endif
 endif
@@ -29,6 +33,10 @@ ifeq ($(shell uname -a),)
 	system_platform = win
 else ifneq ($(findstring Darwin,$(shell uname -a)),)
 	system_platform = osx
+	arch = intel
+	ifeq ($(shell uname -p),powerpc)
+		arch = ppc
+	endif
 else ifneq ($(findstring MINGW,$(shell uname -a)),)
 	system_platform = win
 endif
@@ -72,6 +80,11 @@ else ifeq ($(platform), osx)
 		CXXFLAGS  += $(ARCHFLAGS)
 		LDFLAGS += $(ARCHFLAGS)
 	endif
+
+ifeq ($(arch),ppc)
+	CFLAGS += -DHAVE_NO_LANGEXTRA
+	CXXFLAGS += -DHAVE_NO_LANGEXTRA
+endif
 
 # iOS
 else ifneq (,$(findstring ios,$(platform)))

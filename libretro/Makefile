@@ -381,6 +381,19 @@ else ifeq ($(platform), ngc)
 	PLATFORM_DEFINES += -U__INT32_TYPE__ -U __UINT32_TYPE__ -D__INT32_TYPE__=int
 	STATIC_LINKING = 1
 
+# GCW0
+else ifeq ($(platform), gcw0)
+	TARGET := $(TARGET_NAME)_libretro.so
+	CC = /opt/gcw0-toolchain/usr/bin/mipsel-linux-gcc
+	CXX = /opt/gcw0-toolchain/usr/bin/mipsel-linux-g++
+	AR = /opt/gcw0-toolchain/usr/bin/mipsel-linux-ar
+	fpic := -fPIC
+	PLATFORM_DEFINES += -ffast-math -march=mips32 -mtune=mips32r2 -mhard-float
+	PLATFORM_DEFINES += -fomit-frame-pointer
+	SHARED := -shared -Wl,-version-script=link.T -Wl,-no-undefined
+	CXXFLAGS += -fno-rtti -std=gnu++11
+	CFLAGS += -std=gnu11
+
 # Nintendo Wii
 else ifeq ($(platform), wii)
 	TARGET := $(TARGET_NAME)_libretro_$(platform).a

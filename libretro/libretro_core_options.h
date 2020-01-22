@@ -120,7 +120,7 @@ struct retro_core_option_definition option_defs_us[] = {
    },
    {
       "nestopia_fds_auto_insert",
-      "FDS Auto Instert",
+      "FDS Auto Insert",
       "Automatically insert first FDS disk on reset.",
       {
          { "disabled", NULL },
@@ -154,7 +154,7 @@ struct retro_core_option_definition option_defs_us[] = {
    {
       "nestopia_aspect",
       "Preferred Aspect Ratio",
-      "Choose the preferred aspect ratio. RetroArch's aspect ratio must be set to Core provided in the Video seetings. 'auto' will use the NstDatabase.xml database file for aspect ratio autodetection. If there is no database present it will default to NTSC for 'auto'.",
+      "Choose the preferred aspect ratio. RetroArch's aspect ratio must be set to Core provided in the Video settings. 'auto' will use the NstDatabase.xml database file for aspect ratio autodetection. If there is no database present it will default to NTSC for 'auto'.",
       {
          { "auto", "Auto" },
          { "ntsc", "NTSC" },

@@ -1870,7 +1870,8 @@ namespace Nes
 					amp = (sum * outputVolume + rate/2) / rate * 3;
 				}
 			}
-			else if (amp < Channel::OUTPUT_DECAY)
+			// Disabling these blocks fixes scratchy audio in many games
+			/*else if (amp < Channel::OUTPUT_DECAY)
 			{
 				return 0;
 			}
@@ -1878,7 +1879,7 @@ namespace Nes
 			{
 				amp -= Channel::OUTPUT_DECAY;
 				step &= STEP_CHECK;
-			}
+			}*/
 
 			return amp;
 		}

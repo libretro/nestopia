@@ -953,6 +953,82 @@ static void check_variables(void)
    retro_get_system_av_info(&av_info);
    environ_cb(RETRO_ENVIRONMENT_SET_GEOMETRY, &av_info);
 
+   var.key = "nestopia_audio_vol_sq1";
+
+   if (environ_cb(RETRO_ENVIRONMENT_GET_VARIABLE, &var) && var.value)
+   {
+      sound.SetVolume(Api::Sound::CHANNEL_SQUARE1, atoi(var.value));
+   }
+
+   var.key = "nestopia_audio_vol_sq2";
+
+   if (environ_cb(RETRO_ENVIRONMENT_GET_VARIABLE, &var) && var.value)
+   {
+      sound.SetVolume(Api::Sound::CHANNEL_SQUARE2, atoi(var.value));
+   }
+   
+   var.key = "nestopia_audio_vol_tri";
+
+   if (environ_cb(RETRO_ENVIRONMENT_GET_VARIABLE, &var) && var.value)
+   {
+      sound.SetVolume(Api::Sound::CHANNEL_TRIANGLE, atoi(var.value));
+   }
+   
+   var.key = "nestopia_audio_vol_noise";
+
+   if (environ_cb(RETRO_ENVIRONMENT_GET_VARIABLE, &var) && var.value)
+   {
+      sound.SetVolume(Api::Sound::CHANNEL_NOISE, atoi(var.value));
+   }
+   
+   var.key = "nestopia_audio_vol_dpcm";
+
+   if (environ_cb(RETRO_ENVIRONMENT_GET_VARIABLE, &var) && var.value)
+   {
+      sound.SetVolume(Api::Sound::CHANNEL_DPCM, atoi(var.value));
+   }
+   
+   var.key = "nestopia_audio_vol_fds";
+
+   if (environ_cb(RETRO_ENVIRONMENT_GET_VARIABLE, &var) && var.value)
+   {
+      sound.SetVolume(Api::Sound::CHANNEL_FDS, atoi(var.value));
+   }
+   
+   var.key = "nestopia_audio_vol_mmc5";
+
+   if (environ_cb(RETRO_ENVIRONMENT_GET_VARIABLE, &var) && var.value)
+   {
+      sound.SetVolume(Api::Sound::CHANNEL_MMC5, atoi(var.value));
+   }
+   
+   var.key = "nestopia_audio_vol_vrc6";
+
+   if (environ_cb(RETRO_ENVIRONMENT_GET_VARIABLE, &var) && var.value)
+   {
+      sound.SetVolume(Api::Sound::CHANNEL_VRC6, atoi(var.value));
+   }
+   
+   var.key = "nestopia_audio_vol_vrc7";
+
+   if (environ_cb(RETRO_ENVIRONMENT_GET_VARIABLE, &var) && var.value)
+   {
+      sound.SetVolume(Api::Sound::CHANNEL_VRC7, atoi(var.value));
+   }
+
+   var.key = "nestopia_audio_vol_n163";
+
+   if (environ_cb(RETRO_ENVIRONMENT_GET_VARIABLE, &var) && var.value)
+   {
+      sound.SetVolume(Api::Sound::CHANNEL_N163, atoi(var.value));
+   }
+   
+   var.key = "nestopia_audio_vol_s5B";
+
+   if (environ_cb(RETRO_ENVIRONMENT_GET_VARIABLE, &var) && var.value)
+   {
+      sound.SetVolume(Api::Sound::CHANNEL_S5B, atoi(var.value));
+   }   
 }
 
 void retro_run(void)

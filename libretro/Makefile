@@ -75,6 +75,9 @@ else ifeq ($(platform), osx)
         LDFLAGS += -mmacosx-version-min=10.7
         CFLAGS += -mmacosx-version-min=10.7
         CXXFLAGS += -mmacosx-version-min=10.7
+ifneq ($(OSX_LT_MAVERICKS),"YES")
+        CXXFLAGS += -stdlib=libc++
+endif
 	ifndef ($(NOUNIVERSAL))
 		CFLAGS  += $(ARCHFLAGS)
 		CXXFLAGS  += $(ARCHFLAGS)

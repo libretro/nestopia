@@ -72,10 +72,14 @@ else ifeq ($(platform), osx)
 	SHARED := -dynamiclib
 	OSXVER = `sw_vers -productVersion | cut -d. -f 2`
 	OSX_LT_MAVERICKS = `(( $(OSXVER) <= 9)) && echo "YES"`
+ifeq ($(OSX_LT_MAVERICKS),"YES")
+        LDFLAGS += -mmacosx-version-min=10.4
+        CFLAGS += -mmacosx-version-min=10.4
+        CXXFLAGS += -mmacosx-version-min=10.4
+else
         LDFLAGS += -mmacosx-version-min=10.7
         CFLAGS += -mmacosx-version-min=10.7
         CXXFLAGS += -mmacosx-version-min=10.7
-ifneq ($(OSX_LT_MAVERICKS),"YES")
         CXXFLAGS += -stdlib=libc++
 endif
 	ifndef ($(NOUNIVERSAL))

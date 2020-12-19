@@ -150,27 +150,6 @@ else ifeq ($(platform), qnx)
 	AR = QCC -Vgcc_ntoarmv7le
 	PLATFORM_DEFINES := -D__BLACKBERRY_QNX__ -marm -mcpu=cortex-a9 -mfpu=neon -mfloat-abi=softfp
 
-# PS3
-else ifeq ($(platform), ps3)
-	HAVE_GCC_WARNINGS := 0
-	TARGET := $(TARGET_NAME)_libretro_ps3.a
-	CXX = $(CELL_SDK)/host-win32/ppu/bin/ppu-lv2-g++.exe
-	CC = $(CELL_SDK)/host-win32/ppu/bin/ppu-lv2-gcc.exe
-	AR = $(CELL_SDK)/host-win32/ppu/bin/ppu-lv2-ar.exe
-	PLATFORM_DEFINES := -D__CELLOS_LV2__
-	STATIC_LINKING = 1
-
-# sncps3
-else ifeq ($(platform), sncps3)
-	HAVE_GCC_WARNINGS := 0
-	TARGET := $(TARGET_NAME)_libretro_ps3.a
-	HAS_GCC := 0
-	CC = $(CELL_SDK)/host-win32/sn/bin/ps3ppusnc.exe
-	CXX = $(CELL_SDK)/host-win32/sn/bin/ps3ppusnc.exe
-	AR = $(CELL_SDK)/host-win32/sn/bin/ps3snarl.exe
-	PLATFORM_DEFINES := -D__CELLOS_LV2__
-	STATIC_LINKING = 1
-
 # PSP
 else ifeq ($(platform), psp1)
 	TARGET := $(TARGET_NAME)_libretro_$(platform).a
@@ -223,7 +202,7 @@ else ifeq ($(platform), psl1ght)
 	CC = $(PS3DEV)/ppu/bin/ppu-gcc$(EXE_EXT)
 	CXX = $(PS3DEV)/ppu/bin/ppu-g++$(EXE_EXT)
 	AR = $(PS3DEV)/ppu/bin/ppu-ar$(EXE_EXT)
-	PLATFORM_DEFINES := -D__CELLOS_LV2__
+	PLATFORM_DEFINES :=
 	STATIC_LINKING = 1
 
 # Windows MSVC 2003 Xbox 1

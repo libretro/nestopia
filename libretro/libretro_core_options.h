@@ -230,9 +230,20 @@ struct retro_core_option_definition option_defs_us[] = {
       "2"
    },
    {
+      "nestopia_show_advanced_av_settings",
+      "Show Advanced Audio Settings (Reopen menu)",
+      "Enable configuration of low-level audio channel parameters.",
+      {
+         { "enabled",  NULL },
+         { "disabled", NULL },
+         { NULL, NULL},
+      },
+      "disabled"
+   },
+   {
       "nestopia_audio_vol_sq1",
       "Square 1 Channel Volume %",
-      "Modify Square 1 Channel Volume  %.",
+      "Modify Square 1 Channel Volume %.",
       {
          { "0", NULL },
          { "10", NULL },
@@ -254,7 +265,7 @@ struct retro_core_option_definition option_defs_us[] = {
    {
       "nestopia_audio_vol_sq2",
       "Square 2 Channel Volume %",
-      "Modify Square 2 Channel Volume  %.",
+      "Modify Square 2 Channel Volume %.",
       {
          { "0", NULL },
          { "10", NULL },
@@ -276,7 +287,7 @@ struct retro_core_option_definition option_defs_us[] = {
    {
       "nestopia_audio_vol_tri",
       "Triangle Channel Volume %",
-      "Modify Triangle Channel Volume  %.",
+      "Modify Triangle Channel Volume %.",
       {
          { "0", NULL },
          { "10", NULL },
@@ -298,7 +309,7 @@ struct retro_core_option_definition option_defs_us[] = {
    {
       "nestopia_audio_vol_noise",
       "Noise Channel Volume %",
-      "Modify Noise Channel Volume  %.",
+      "Modify Noise Channel Volume %.",
       {
          { "0", NULL },
          { "10", NULL },
@@ -320,7 +331,7 @@ struct retro_core_option_definition option_defs_us[] = {
    {
       "nestopia_audio_vol_dpcm",
       "DPCM Channel Volume %",
-      "Modify DPCM Channel Volume  %.",
+      "Modify DPCM Channel Volume %.",
       {
          { "0", NULL },
          { "10", NULL },
@@ -342,7 +353,7 @@ struct retro_core_option_definition option_defs_us[] = {
    {
       "nestopia_audio_vol_fds",
       "FDS Channel Volume %",
-      "Modify FDS Channel Volume  %.",
+      "Modify FDS Channel Volume %.",
       {
          { "0", NULL },
          { "10", NULL },
@@ -364,7 +375,7 @@ struct retro_core_option_definition option_defs_us[] = {
    {
       "nestopia_audio_vol_mmc5",
       "MMC5 Channel Volume %",
-      "Modify MMC5 Channel Volume  %.",
+      "Modify MMC5 Channel Volume %.",
       {
          { "0", NULL },
          { "10", NULL },
@@ -386,7 +397,7 @@ struct retro_core_option_definition option_defs_us[] = {
    {
       "nestopia_audio_vol_vrc6",
       "VRC6 Channel Volume %",
-      "Modify VRC6 Channel Volume  %.",
+      "Modify VRC6 Channel Volume %.",
       {
          { "0", NULL },
          { "10", NULL },
@@ -408,7 +419,7 @@ struct retro_core_option_definition option_defs_us[] = {
    {
       "nestopia_audio_vol_vrc7",
       "VRC7 Channel Volume %",
-      "Modify VRC7 Channel Volume  %.",
+      "Modify VRC7 Channel Volume %.",
       {
          { "0", NULL },
          { "10", NULL },
@@ -430,7 +441,7 @@ struct retro_core_option_definition option_defs_us[] = {
    {
       "nestopia_audio_vol_n163",
       "N163 Channel Volume %",
-      "Modify N163 Channel Volume  %.",
+      "Modify N163 Channel Volume %.",
       {
          { "0", NULL },
          { "10", NULL },
@@ -450,9 +461,9 @@ struct retro_core_option_definition option_defs_us[] = {
       "100"
    },
    {
-      "nestopia_audio_vol_s5B",
+      "nestopia_audio_vol_s5b",
       "S5B Channel Volume %",
-      "Modify N163 Channel Volume  %.",
+      "Modify N163 Channel Volume %.",
       {
          { "0", NULL },
          { "10", NULL },

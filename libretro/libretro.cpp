@@ -63,6 +63,7 @@ static bool overscan_h;
 static unsigned aspect_ratio_mode;
 static unsigned tpulse;
 static bool libretro_supports_bitmasks = false;
+static bool show_advanced_av_settings = true;
 
 int16_t video_width = Api::Video::Output::WIDTH;
 size_t pitch;
@@ -1023,12 +1024,53 @@ static void check_variables(void)
       sound.SetVolume(Api::Sound::CHANNEL_N163, atoi(var.value));
    }
    
-   var.key = "nestopia_audio_vol_s5B";
+   var.key = "nestopia_audio_vol_s5b";
 
    if (environ_cb(RETRO_ENVIRONMENT_GET_VARIABLE, &var) && var.value)
    {
       sound.SetVolume(Api::Sound::CHANNEL_S5B, atoi(var.value));
    }   
+   
+
+  var.key = "nestopia_show_advanced_av_settings";
+  
+  var.value = NULL;
+  if (environ_cb(RETRO_ENVIRONMENT_GET_VARIABLE, &var) && var.value)
+  {
+    bool show_advanced_av_settings_prev = show_advanced_av_settings;
+
+    show_advanced_av_settings = true;
+    if (strcmp(var.value, "disabled") == 0)
+      show_advanced_av_settings = false;
+
+    if (show_advanced_av_settings != show_advanced_av_settings_prev)
+    {
+      size_t i;
+      struct retro_core_option_display option_display;
+      char av_keys[11][40] = {
+        "nestopia_audio_vol_sq1",
+        "nestopia_audio_vol_sq2",
+        "nestopia_audio_vol_tri",
+        "nestopia_audio_vol_noise",
+        "nestopia_audio_vol_dpcm",
+        "nestopia_audio_vol_fds",
+        "nestopia_audio_vol_mmc5",
+        "nestopia_audio_vol_vrc6",
+        "nestopia_audio_vol_vrc7",
+        "nestopia_audio_vol_n163",
+        "nestopia_audio_vol_s5b"
+      };
+
+      option_display.visible = show_advanced_av_settings;
+
+      for (i = 0; i < 11; i++)
+      {
+        option_display.key = av_keys[i];
+        environ_cb(RETRO_ENVIRONMENT_SET_CORE_OPTIONS_DISPLAY, &option_display);
+      }
+    }
+  }
+  
 }
 
 void retro_run(void)

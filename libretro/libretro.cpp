@@ -466,6 +466,12 @@ typedef struct
    unsigned nes;
 } keymap;
 
+static enum {
+    ZAPPER_DEVICE_LIGHTGUN,
+    ZAPPER_DEVICE_MOUSE,
+    ZAPPER_DEVICE_POINTER
+} zapper_device;
+
 static keymap bindmap_default[] = {
    { RETRO_DEVICE_ID_JOYPAD_A, Core::Input::Controllers::Pad::A },
    { RETRO_DEVICE_ID_JOYPAD_B, Core::Input::Controllers::Pad::B },
@@ -514,19 +520,72 @@ static void update_input(bool supports_bitmasks)
       int min_y = overscan_v ? 8 : 0;
       int max_y = overscan_v ? 231 : 239;
 
-      if (zapx > max_x)
-         zapx = max_x;
-      else if (zapx < min_x)
-         zapx = min_x;
-      else
-         zapx += input_state_cb(1, RETRO_DEVICE_LIGHTGUN, 0, RETRO_DEVICE_ID_LIGHTGUN_X);
+      switch (zapper_device)
+      {
+         case ZAPPER_DEVICE_LIGHTGUN:
+            if (!input_state_cb(1, RETRO_DEVICE_LIGHTGUN, 0, RETRO_DEVICE_ID_LIGHTGUN_IS_OFFSCREEN))
+            {
+               zapx = input_state_cb(1, RETRO_DEVICE_LIGHTGUN, 0, RETRO_DEVICE_ID_LIGHTGUN_SCREEN_X);
+               zapy = input_state_cb(1, RETRO_DEVICE_LIGHTGUN, 0, RETRO_DEVICE_ID_LIGHTGUN_SCREEN_Y);
 
-      if (zapy > max_y)
-         zapy = max_y;
-      else if (zapy < min_y)
-         zapy = min_y;
-      else
-         zapy += input_state_cb(1, RETRO_DEVICE_LIGHTGUN, 0, RETRO_DEVICE_ID_LIGHTGUN_Y);
+               zapx = (zapx + 0x7FFF) * max_x / (0x7FFF * 2);
+               zapy = (zapy + 0x7FFF) * max_y / (0x7FFF * 2);
+            }
+            else
+            {
+               zapx = min_x;
+               zapy = min_y;
+            }
+
+            if (input_state_cb(1, RETRO_DEVICE_LIGHTGUN, 0, RETRO_DEVICE_ID_LIGHTGUN_TRIGGER)) {
+               input->zapper.x = zapx;
+               input->zapper.y = zapy;
+               input->zapper.fire = 1;
+            }
+
+            if (input_state_cb(1, RETRO_DEVICE_LIGHTGUN, 0, RETRO_DEVICE_ID_LIGHTGUN_RELOAD)) {
+               input->zapper.x = ~1U;
+               input->zapper.fire = 1;
+            }
+            break;
+         case ZAPPER_DEVICE_MOUSE:
+            zapx += input_state_cb(1, RETRO_DEVICE_MOUSE, 0, RETRO_DEVICE_ID_MOUSE_X);
+            zapy += input_state_cb(1, RETRO_DEVICE_MOUSE, 0, RETRO_DEVICE_ID_MOUSE_Y);
+
+            if (zapx < min_x)
+               zapx = min_x;
+            else if (zapx > max_x)
+               zapx = max_x;
+
+            if (zapy < min_y)
+               zapy = min_y;
+            else if (zapy > max_y)
+               zapy = max_y;
+
+            if (input_state_cb(1, RETRO_DEVICE_MOUSE, 0, RETRO_DEVICE_ID_MOUSE_LEFT))
+            {
+               input->zapper.x = zapx;
+               input->zapper.y = zapy;
+               input->zapper.fire = 1;
+            }
+            break;
+         case ZAPPER_DEVICE_POINTER:
+            zapx = input_state_cb(1, RETRO_DEVICE_POINTER, 0, RETRO_DEVICE_ID_POINTER_X);
+            zapy = input_state_cb(1, RETRO_DEVICE_POINTER, 0, RETRO_DEVICE_ID_POINTER_Y);
+
+            zapx = (zapx + 0x7FFF) * max_x / (0x7FFF * 2);
+            zapy = (zapy + 0x7FFF) * max_y / (0x7FFF * 2);
+
+            if (input_state_cb(1, RETRO_DEVICE_POINTER, 0, RETRO_DEVICE_ID_POINTER_PRESSED))
+            {
+               input->zapper.x = zapx;
+               input->zapper.y = zapy;
+               input->zapper.fire = 1;
+            }
+            break;
+         default:
+            break;
+      }
 
       if (zapx > max_x) { crossx = max_x; }
       else if (zapx < min_x) { crossx = min_x; }
@@ -535,17 +594,6 @@ static void update_input(bool supports_bitmasks)
       if (zapy > max_y) { crossy = max_y; }
       else if (zapy < min_y) { crossy = min_y; }
       else {crossy = zapy; }
-
-      if (input_state_cb(1, RETRO_DEVICE_LIGHTGUN, 0, RETRO_DEVICE_ID_LIGHTGUN_TRIGGER)) {
-         input->zapper.x = zapx;
-         input->zapper.y = zapy;
-         input->zapper.fire = 1;
-      }
-
-      if (input_state_cb(1, RETRO_DEVICE_LIGHTGUN, 0, RETRO_DEVICE_ID_LIGHTGUN_RELOAD)) {
-         input->zapper.x = ~1U;
-         input->zapper.fire = 1;
-      }
    }
    
    static unsigned tstate = 2;
@@ -647,6 +695,17 @@ static void check_variables(void)
    Api::Video::RenderState renderState;
    Api::Machine machine(emulator);
    Api::Video::RenderState::Filter filter;
+
+   var.key = "nestopia_zapper_device";
+   if (environ_cb(RETRO_ENVIRONMENT_GET_VARIABLE, &var))
+   {
+      if (strcmp(var.value, "lightgun") == 0)
+         zapper_device = ZAPPER_DEVICE_LIGHTGUN;
+      if (strcmp(var.value, "mouse") == 0)
+         zapper_device = ZAPPER_DEVICE_MOUSE;
+      else if (strcmp(var.value, "pointer") == 0)
+         zapper_device = ZAPPER_DEVICE_POINTER;
+   }
 
    var.key = "nestopia_button_shift";
    

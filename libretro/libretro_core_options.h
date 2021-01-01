@@ -213,6 +213,18 @@ struct retro_core_option_definition option_defs_us[] = {
       "disabled"
    },
    {
+      "nestopia_zapper_device",
+      "Zapper device",
+      "Select the device you wish to use for the Zapper.",
+      {
+         { "lightgun", NULL },
+         { "mouse", NULL },
+         { "pointer", NULL },
+         { NULL, NULL },
+      },
+      "lightgun",
+   },
+   {
       "nestopia_turbo_pulse",
       "Turbo Pulse Speed",
       "Set the turbo pulse speed for the Turbo B and Turbo A buttons.",

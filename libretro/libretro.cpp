@@ -26,8 +26,8 @@
 
 #define MIN(a,b)      ((a)<(b)?(a):(b))
 #define MAX(a,b)      ((a)>(b)?(a):(b))
-#define NES_NTSC_PAR ((Api::Video::Output::WIDTH - (overscan_h ? 16 : 0)) * (8.0 / 7.0)) / ((Api::Video::Output::HEIGHT - (overscan_v ? 16 : 0)) * (256.0 / 240.0))
-#define NES_PAL_PAR ((Api::Video::Output::WIDTH - (overscan_h ? 16 : 0)) * (2950000.0 / 2128137.0)) / ((Api::Video::Output::HEIGHT - (overscan_v ? 16 : 0)) * (256.0 / 240.0))
+#define NES_NTSC_PAR (Api::Video::Output::WIDTH - (overscan_h ? 16 : 0)) / (Api::Video::Output::HEIGHT - (overscan_v ? 16 : 0))
+#define NES_PAL_PAR ((Api::Video::Output::WIDTH - (overscan_h ? 16 : 0)) * (2950000.0 / 2128137.0)) / ((Api::Video::Output::HEIGHT - (overscan_v ? 16 : 0)))
 #define NES_4_3_DAR (4.0 / 3.0);
 #define SAMPLERATE 48000
 

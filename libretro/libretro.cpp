@@ -26,9 +26,10 @@
 
 #define MIN(a,b)      ((a)<(b)?(a):(b))
 #define MAX(a,b)      ((a)>(b)?(a):(b))
-#define NES_NTSC_PAR (Api::Video::Output::WIDTH - (overscan_h ? 16 : 0)) / (Api::Video::Output::HEIGHT - (overscan_v ? 16 : 0))
+#define NES_NTSC_PAR ((Api::Video::Output::WIDTH - (overscan_h ? 16 : 0)) * (8.0 / 7.0)) / (Api::Video::Output::HEIGHT - (overscan_v ? 16 : 0))
 #define NES_PAL_PAR ((Api::Video::Output::WIDTH - (overscan_h ? 16 : 0)) * (2950000.0 / 2128137.0)) / (Api::Video::Output::HEIGHT - (overscan_v ? 16 : 0))
 #define NES_4_3_DAR (4.0 / 3.0);
+#define NES_PP_PAR (Api::Video::Output::WIDTH - (overscan_h ? 16 : 0)) / (Api::Video::Output::HEIGHT - (overscan_v ? 16 : 0))
 #define SAMPLERATE 48000
 
 using namespace Nes;
@@ -397,6 +398,8 @@ double get_aspect_ratio(void)
     aspect_ratio = NES_PAL_PAR;
   else if (aspect_ratio_mode == 3)
     aspect_ratio = NES_4_3_DAR;
+  else if (aspect_ratio_mode == 4)
+    aspect_ratio = NES_PP_PAR;
     
   return aspect_ratio;
 }

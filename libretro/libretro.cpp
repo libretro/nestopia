@@ -972,6 +972,8 @@ static void check_variables(void)
        aspect_ratio_mode = 2;
      else if (!strcmp(var.value, "4:3"))
        aspect_ratio_mode = 3;
+     else if (!strcmp(var.value, "pp"))
+       aspect_ratio_mode = 4;
      else
        aspect_ratio_mode = 0;
    }

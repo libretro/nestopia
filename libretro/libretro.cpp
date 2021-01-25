@@ -390,7 +390,7 @@ void retro_get_system_info(struct retro_system_info *info)
 
 double get_aspect_ratio(void)
 {
-  double aspect_ratio = is_pal ? NES_PAL_PAR : NES_NTSC_PAR;
+  double aspect_ratio = is_pal ? NES_PAL_PAR : NES_NTSC_PAR : NES_4_3_DAR;
 
   if (aspect_ratio_mode == 1)
     aspect_ratio = NES_NTSC_PAR;

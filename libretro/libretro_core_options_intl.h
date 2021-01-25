@@ -175,6 +175,7 @@ struct retro_core_option_definition option_defs_tr[] = {
          { "ntsc", "NTSC" },
          { "pal",  "PAL" },
          { "4:3",  "4:3" },
+         { "pp",  "Pixel Perfect" },
          { NULL, NULL },
       },
       NULL

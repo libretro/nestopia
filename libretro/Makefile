@@ -76,14 +76,10 @@ else ifeq ($(platform), osx)
 	OSXVER = `sw_vers -productVersion | cut -d. -f 2`
 	OSX_LT_MAVERICKS = `(( $(OSXVER) <= 9)) && echo "YES"`
 ifeq ($(OSX_LT_MAVERICKS),"YES")
-        LDFLAGS += -mmacosx-version-min=10.4
-        CFLAGS += -mmacosx-version-min=10.4
-        CXXFLAGS += -mmacosx-version-min=10.4
+	MINVERSION = -mmacosx-version-min=10.4
 else
-        LDFLAGS += -mmacosx-version-min=10.9
-        CFLAGS += -mmacosx-version-min=10.9
-        CXXFLAGS += -mmacosx-version-min=10.9
-        CXXFLAGS += -stdlib=libc++
+	MINVERSION = -mmacosx-version-min=10.9
+        CXXFLAGS  += -stdlib=libc++
 endif
    ifeq ($(CROSS_COMPILE),1)
 		TARGET_RULE   = -target $(LIBRETRO_APPLE_PLATFORM) -isysroot $(LIBRETRO_APPLE_ISYSROOT)
@@ -92,6 +88,10 @@ endif
 		CXXFLAGS += $(TARGET_RULE)
 		LDFLAGS  += $(TARGET_RULE)
 		ARCHFLAGS =
+   else
+        LDFLAGS  += $(MINVERSION)
+        CFLAGS   += $(MINVERSION)
+        CXXFLAGS += $(MINVERSION)
    endif
 	ifndef ($(NOUNIVERSAL))
 		CFLAGS  += $(ARCHFLAGS)

@@ -33,6 +33,7 @@
 
 #define RETRO_DEVICE_AUTO RETRO_DEVICE_JOYPAD
 #define RETRO_DEVICE_GAMEPAD RETRO_DEVICE_SUBCLASS(RETRO_DEVICE_JOYPAD, 0)
+#define RETRO_DEVICE_ARKANOID RETRO_DEVICE_SUBCLASS(RETRO_DEVICE_MOUSE, 0)
 #define RETRO_DEVICE_ZAPPER RETRO_DEVICE_SUBCLASS(RETRO_DEVICE_POINTER, 0)
 
 using namespace Nes;
@@ -436,6 +437,7 @@ void retro_set_environment(retro_environment_t cb)
    static const struct retro_controller_description port2[] = {
       { "Auto", RETRO_DEVICE_AUTO },
       { "Gamepad", RETRO_DEVICE_GAMEPAD },
+      { "Arkanoid", RETRO_DEVICE_ARKANOID },
       { "Zapper", RETRO_DEVICE_ZAPPER },
       { NULL, 0 },
    };
@@ -452,7 +454,7 @@ void retro_set_environment(retro_environment_t cb)
 
    static const struct retro_controller_info ports[] = {
       { port1, 2 },
-      { port2, 3 },
+      { port2, 4 },
       { port3, 2 },
       { port4, 2 },
       { NULL, 0 },
@@ -545,18 +547,34 @@ static void update_input()
    input->vsSystem.insertCoin = 0;
    show_crosshair = false;
 
+   int min_x = overscan_h ? 8 : 0;
+   int max_x = overscan_h ? 247 : 255; 
+   int min_y = overscan_v ? 8 : 0;
+   int max_y = overscan_v ? 231 : 239;
+
    for (unsigned p = 0; p < 4; p++)
    {
-      if (input_type[p] == RETRO_DEVICE_AUTO)
-         Api::Input(emulator).AutoSelectController(p);
-      else if (input_type[p] == RETRO_DEVICE_NONE)
-         Api::Input(emulator).ConnectController(p, Api::Input::UNCONNECTED);
-      else if (input_type[p] == RETRO_DEVICE_GAMEPAD)
-         Api::Input(emulator).ConnectController(p, (Api::Input::Type) (p + 1));
-      else if (input_type[p] == RETRO_DEVICE_ZAPPER)
-         Api::Input(emulator).ConnectController(p, Api::Input::ZAPPER);
+      switch (input_type[p])
+      {
+         case  RETRO_DEVICE_AUTO:
+            Api::Input(emulator).AutoSelectController(p);
+            break;
+         case RETRO_DEVICE_NONE:
+            Api::Input(emulator).ConnectController(p, Api::Input::UNCONNECTED);
+            break;
+         case RETRO_DEVICE_GAMEPAD:
+            Api::Input(emulator).ConnectController(p, (Api::Input::Type) (p + 1));
+            break;
+         case RETRO_DEVICE_ARKANOID:
+            Api::Input(emulator).ConnectController(p, Api::Input::PADDLE);
+            break;
+         case RETRO_DEVICE_ZAPPER:
+            Api::Input(emulator).ConnectController(p, Api::Input::ZAPPER);
+            break;
+      }
 
-      if (Api::Input(emulator).GetConnectedController(p) == p + 1)
+      Api::Input::Type connected_controller = Api::Input(emulator).GetConnectedController(p);
+      if (connected_controller == p + 1)
       {
          input->pad[p].buttons = 0;
          
@@ -633,14 +651,20 @@ static void update_input()
             prevR = curR;
          }
       }
-      else if (Api::Input(emulator).GetConnectedController(p) == Api::Input::ZAPPER)
+      else if (connected_controller == Api::Input::PADDLE)
+      {
+         input->paddle.x += input_state_cb(p, RETRO_DEVICE_MOUSE, 0, RETRO_DEVICE_ID_MOUSE_X); 
+         input->paddle.button = input_state_cb(p, RETRO_DEVICE_MOUSE, 0, RETRO_DEVICE_ID_MOUSE_LEFT);
+
+         if (input->paddle.x < min_x)
+            input->paddle.x = min_x;
+         else if (input->paddle.x > max_x)
+            input->paddle.x = max_x;
+      }
+      else if (connected_controller == Api::Input::ZAPPER)
       {
          static int zapx = overscan_h ? 8 : 0; 
          static int zapy = overscan_v ? 8 : 0;
-         int min_x = overscan_h ? 8 : 0;
-         int max_x = overscan_h ? 247 : 255; 
-         int min_y = overscan_v ? 8 : 0;
-         int max_y = overscan_v ? 231 : 239;
 
          input->zapper.fire = 0;
          show_crosshair = true;

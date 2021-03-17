@@ -415,8 +415,11 @@ namespace Nes
 			Nmt nmt;
 			int scanline;
 			int scanline_sleep;
+			bool overclocked;
+
 		public:
 			Output output;
+
 		private:
 			PpuModel model;
 			Hook hActiveHook;
@@ -542,6 +545,17 @@ namespace Nes
 			{
 				return oam.spriteLimit;
 			}
+
+			bool GetOverclockState() const
+			{
+				return overclocked;
+			}
+
+			void SetOverclockState(bool overclock2x)
+			{
+				overclocked = overclock2x;
+			}
+
 		};
 	}
 }

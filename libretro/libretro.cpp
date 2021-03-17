@@ -863,7 +863,7 @@ static void check_variables(void)
          video.EnableUnlimSprites(true);
    }
    
-   var.key = "nestopia_overclock";
+/*   var.key = "nestopia_overclock";
    
    if (environ_cb(RETRO_ENVIRONMENT_GET_VARIABLE, &var))
    {
@@ -872,7 +872,7 @@ static void check_variables(void)
       else if (strcmp(var.value, "2x") == 0)
          video.EnableOverclocking(true);
    }
-   
+*/   
    var.key = "nestopia_fds_auto_insert";
 
    if (environ_cb(RETRO_ENVIRONMENT_GET_VARIABLE, &var))

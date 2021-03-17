@@ -204,6 +204,7 @@ SOURCES_CXX += $(CORE_DIR)/source/core/board/NstBoardMmc5.cpp
 SOURCES_CXX += $(CORE_DIR)/source/core/board/NstBoardMmc6.cpp
 SOURCES_CXX += $(CORE_DIR)/source/core/board/NstBoardNamcot163.cpp
 SOURCES_CXX += $(CORE_DIR)/source/core/board/NstBoardNamcot175.cpp
+SOURCES_CXX += $(CORE_DIR)/source/core/board/NstBoardNamcot340.cpp
 SOURCES_CXX += $(CORE_DIR)/source/core/board/NstBoardNamcot34xx.cpp
 SOURCES_CXX += $(CORE_DIR)/source/core/board/NstBoardNanjing.cpp
 SOURCES_CXX += $(CORE_DIR)/source/core/board/NstBoardNihon.cpp

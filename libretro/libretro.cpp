@@ -22,6 +22,8 @@
 
 #define NST_VERSION "1.50-WIP"
 
+#include "nstdatabase.hpp"
+
 #define MIN(a,b)      ((a)<(b)?(a):(b))
 #define MAX(a,b)      ((a)>(b)?(a):(b))
 #define NES_NTSC_PAR ((Api::Video::Output::WIDTH - (overscan_h ? 16 : 0)) * (8.0 / 7.0)) / (Api::Video::Output::HEIGHT - (overscan_v ? 16 : 0))
@@ -81,7 +83,7 @@ static Api::Machine::FavoredSystem favsystem;
 static void *sram;
 static unsigned long sram_size;
 static bool is_pal;
-static bool dbpresent;
+static bool use_nst_db;
 static byte custpal[64*3];
 static char slash;
 
@@ -778,6 +780,10 @@ static void check_variables(void)
       else if (strcmp(var.value, "enabled") == 0)
          bindmap = bindmap_shifted;
    }
+
+   var.key = "nestopia_use_db";
+   if (environ_cb(RETRO_ENVIRONMENT_GET_VARIABLE, &var))
+      use_nst_db = (strcmp(var.value, "enabled") == 0);
    
    var.key = "nestopia_favored_system";
    is_pal = false;
@@ -786,7 +792,7 @@ static void check_variables(void)
    {
       if (strcmp(var.value, "auto") == 0)
       {
-         if (dbpresent)
+         if (use_nst_db)
          {
             machine.SetMode(machine.GetDesiredMode());
             if (machine.GetMode() == Api::Machine::PAL)
@@ -1041,7 +1047,7 @@ static void check_variables(void)
    if (environ_cb(RETRO_ENVIRONMENT_GET_VARIABLE, &var) && var.value)
    { 
 	   if (!strcmp(var.value, "auto")) {
-		   if (dbpresent)
+		   if (use_nst_db)
 			   Api::Input(emulator).AutoSelectAdapter();
 	   }
 	   else if (!strcmp(var.value, "ntsc")) {
@@ -1378,16 +1384,19 @@ bool retro_load_game(const struct retro_game_info *info)
    if (db_file->is_open())
    {
       database.Load(*db_file);
-      database.Enable(true);
-      dbpresent = true;
    }
    else
    {
       if (log_cb)
-         log_cb(RETRO_LOG_WARN, "NstDatabase.xml required to detect region and some mappers.\n");
+         log_cb(RETRO_LOG_WARN, "NstDatabase.xml not found.  The baked-in database will be used instead.\n");
       delete db_file;
-      dbpresent = false;
+      size_t db_size = sizeof(nst_db_xml)/sizeof(unsigned char);
+      std::string db_buf((const char*)nst_db_xml, db_size);
+      std::istringstream *db_file = new std::istringstream(db_buf);
+      database.Load(*db_file);
    }
+   check_variables();
+   database.Enable(use_nst_db);
    
    if (info->path != NULL)
    {

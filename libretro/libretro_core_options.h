@@ -242,6 +242,16 @@ struct retro_core_option_definition option_defs_us[] = {
       "2"
    },
    {
+      "nestopia_use_db",
+      "Use database (requires restart)",
+      "Select whether to use the ROM database (can cause crashes on some systems).",
+      {
+         { "enabled", NULL },
+         { "disabled", NULL },
+      },
+      "enabled"
+   },
+   {
       "nestopia_show_advanced_av_settings",
       "Show Advanced Audio Settings (Reopen menu)",
       "Enable configuration of low-level audio channel parameters.",

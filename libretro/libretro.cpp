@@ -32,6 +32,11 @@
 #define NES_PP_PAR ((Api::Video::Output::WIDTH - (overscan_h ? 16 : 0)) * (32.0 / 30.0)) / (Api::Video::Output::HEIGHT - (overscan_v ? 16 : 0))
 #define SAMPLERATE 48000
 
+#define RETRO_DEVICE_AUTO RETRO_DEVICE_JOYPAD
+#define RETRO_DEVICE_GAMEPAD RETRO_DEVICE_SUBCLASS(RETRO_DEVICE_JOYPAD, 0)
+#define RETRO_DEVICE_ARKANOID RETRO_DEVICE_SUBCLASS(RETRO_DEVICE_MOUSE, 0)
+#define RETRO_DEVICE_ZAPPER RETRO_DEVICE_SUBCLASS(RETRO_DEVICE_POINTER, 0)
+
 using namespace Nes;
 
 static retro_log_printf_t log_cb;
@@ -63,6 +68,7 @@ static bool overscan_v;
 static bool overscan_h;
 static unsigned aspect_ratio_mode;
 static unsigned tpulse;
+static bool show_crosshair = false;
 static bool libretro_supports_bitmasks = false;
 static bool show_advanced_av_settings = true;
 
@@ -425,6 +431,39 @@ void retro_set_environment(retro_environment_t cb)
 {
    environ_cb = cb;
    libretro_set_core_options(environ_cb);
+
+   static const struct retro_controller_description port1[] = {
+      { "Auto", RETRO_DEVICE_AUTO },
+      { "Gamepad", RETRO_DEVICE_GAMEPAD },
+      { NULL, 0 },
+   };
+   static const struct retro_controller_description port2[] = {
+      { "Auto", RETRO_DEVICE_AUTO },
+      { "Gamepad", RETRO_DEVICE_GAMEPAD },
+      { "Arkanoid", RETRO_DEVICE_ARKANOID },
+      { "Zapper", RETRO_DEVICE_ZAPPER },
+      { NULL, 0 },
+   };
+   static const struct retro_controller_description port3[] = {
+      { "Auto", RETRO_DEVICE_AUTO },
+      { "Gamepad", RETRO_DEVICE_GAMEPAD },
+      { NULL, 0 },
+   };
+   static const struct retro_controller_description port4[] = {
+      { "Auto", RETRO_DEVICE_AUTO },
+      { "Gamepad", RETRO_DEVICE_GAMEPAD },
+      { NULL, 0 },
+   };
+
+   static const struct retro_controller_info ports[] = {
+      { port1, 2 },
+      { port2, 4 },
+      { port3, 2 },
+      { port4, 2 },
+      { NULL, 0 },
+   };
+
+   environ_cb(RETRO_ENVIRONMENT_SET_CONTROLLER_INFO, (void *)ports);
 }
 
 void retro_set_audio_sample(retro_audio_sample_t cb)
@@ -504,187 +543,210 @@ static keymap bindmap_shifted[] = {
 
 static keymap *bindmap = bindmap_default;
 
-static void update_input(bool supports_bitmasks)
+static void update_input()
 {
    input_poll_cb();
-   input->pad[0].buttons = 0;
-   input->pad[1].buttons = 0;
-   input->pad[2].buttons = 0;
-   input->pad[3].buttons = 0;
    input->pad[1].mic = 0;
-   input->zapper.fire = 0;
    input->vsSystem.insertCoin = 0;
+   show_crosshair = false;
 
-   if (Api::Input(emulator).GetConnectedController(1) == 5)
+   int min_x = overscan_h ? 8 : 0;
+   int max_x = overscan_h ? 247 : 255; 
+   int min_y = overscan_v ? 8 : 0;
+   int max_y = overscan_v ? 231 : 239;
+
+   for (unsigned p = 0; p < 4; p++)
    {
-      static int zapx = overscan_h ? 8 : 0; 
-      static int zapy = overscan_v ? 8 : 0;
-      int min_x = overscan_h ? 8 : 0;
-      int max_x = overscan_h ? 247 : 255; 
-      int min_y = overscan_v ? 8 : 0;
-      int max_y = overscan_v ? 231 : 239;
-
-      switch (zapper_device)
+      switch (input_type[p])
       {
-         case ZAPPER_DEVICE_LIGHTGUN:
-            if (!input_state_cb(1, RETRO_DEVICE_LIGHTGUN, 0, RETRO_DEVICE_ID_LIGHTGUN_IS_OFFSCREEN))
+         case  RETRO_DEVICE_AUTO:
+            Api::Input(emulator).AutoSelectController(p);
+            break;
+         case RETRO_DEVICE_NONE:
+            Api::Input(emulator).ConnectController(p, Api::Input::UNCONNECTED);
+            break;
+         case RETRO_DEVICE_GAMEPAD:
+            Api::Input(emulator).ConnectController(p, (Api::Input::Type) (p + 1));
+            break;
+         case RETRO_DEVICE_ARKANOID:
+            Api::Input(emulator).ConnectController(p, Api::Input::PADDLE);
+            break;
+         case RETRO_DEVICE_ZAPPER:
+            Api::Input(emulator).ConnectController(p, Api::Input::ZAPPER);
+            break;
+      }
+
+      Api::Input::Type connected_controller = Api::Input(emulator).GetConnectedController(p);
+      if (connected_controller == p + 1)
+      {
+         input->pad[p].buttons = 0;
+         
+         static unsigned tstate = 2;
+         bool pressed_l3        = false;
+         bool pressed_l2        = false;
+         bool pressed_r2        = false;
+         bool pressed_l         = false;
+         bool pressed_r         = false;
+
+         int16_t ret;
+
+         if (libretro_supports_bitmasks)
+            ret = input_state_cb(p, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_MASK);
+         else
+         {
+            ret = 0;
+            for (unsigned i = 0; i < (RETRO_DEVICE_ID_JOYPAD_R3 + 1); i++)
+               ret |= input_state_cb(p, RETRO_DEVICE_JOYPAD, 0, i) ? (1 << i) : 0;
+         }
+
+         for (unsigned bind = 0; bind < sizeof(bindmap_default) / sizeof(bindmap[0]); bind++)
+            input->pad[p].buttons |= (ret & (1 << bindmap[bind].retro)) ? bindmap[bind].nes : 0;
+         if (ret & (1 << bindmap[2].retro))
+            tstate ? input->pad[p].buttons &= ~Core::Input::Controllers::Pad::A : input->pad[p].buttons |= Core::Input::Controllers::Pad::A;
+         if (ret & (1 << bindmap[3].retro))
+            tstate ? input->pad[p].buttons &= ~Core::Input::Controllers::Pad::B : input->pad[p].buttons |= Core::Input::Controllers::Pad::B;
+
+         /* Player 0 needs some extra checks */
+         if (p == 0)
+         {
+            pressed_l3       = ret & (1 << RETRO_DEVICE_ID_JOYPAD_L3);
+            pressed_l2       = ret & (1 << RETRO_DEVICE_ID_JOYPAD_L2);
+            pressed_r2       = ret & (1 << RETRO_DEVICE_ID_JOYPAD_R2);
+         }
+
+         pressed_l           = ret & (1 << RETRO_DEVICE_ID_JOYPAD_L);
+         pressed_r           = ret & (1 << RETRO_DEVICE_ID_JOYPAD_R);
+      
+         if (tstate) tstate--; else tstate = tpulse;
+         
+         if (pressed_l3)
+            input->pad[1].mic |= 0x04;
+         
+         if (pressed_l2)
+            input->vsSystem.insertCoin |= Core::Input::Controllers::VsSystem::COIN_1;
+            
+         if (pressed_r2)
+            input->vsSystem.insertCoin |= Core::Input::Controllers::VsSystem::COIN_2;
+            
+         if (machine->Is(Nes::Api::Machine::DISK))
+         {
+            bool curL         = pressed_l;
+            static bool prevL = false;
+
+            if (curL && !prevL)
             {
-               zapx = input_state_cb(1, RETRO_DEVICE_LIGHTGUN, 0, RETRO_DEVICE_ID_LIGHTGUN_SCREEN_X);
-               zapy = input_state_cb(1, RETRO_DEVICE_LIGHTGUN, 0, RETRO_DEVICE_ID_LIGHTGUN_SCREEN_Y);
+               if (!fds->IsAnyDiskInserted())
+                  fds->InsertDisk(0, 0);
+               else if (fds->CanChangeDiskSide())
+                  fds->ChangeSide();
+            }
+            prevL = curL;
+            
+            bool curR         = pressed_r;
+            static bool prevR = false;
+
+            if (curR && !prevR && (fds->GetNumDisks() > 1))
+            {
+               int currdisk = fds->GetCurrentDisk();
+               fds->EjectDisk();
+               fds->InsertDisk(!currdisk, 0);
+            }
+            prevR = curR;
+         }
+      }
+      else if (connected_controller == Api::Input::PADDLE)
+      {
+         input->paddle.x += input_state_cb(p, RETRO_DEVICE_MOUSE, 0, RETRO_DEVICE_ID_MOUSE_X); 
+         input->paddle.button = input_state_cb(p, RETRO_DEVICE_MOUSE, 0, RETRO_DEVICE_ID_MOUSE_LEFT);
+
+         if (input->paddle.x < min_x)
+            input->paddle.x = min_x;
+         else if (input->paddle.x > max_x)
+            input->paddle.x = max_x;
+      }
+      else if (connected_controller == Api::Input::ZAPPER)
+      {
+         static int zapx = overscan_h ? 8 : 0; 
+         static int zapy = overscan_v ? 8 : 0;
+
+         input->zapper.fire = 0;
+         show_crosshair = true;
+
+         switch (zapper_device)
+         {
+            case ZAPPER_DEVICE_LIGHTGUN:
+               if (!input_state_cb(p, RETRO_DEVICE_LIGHTGUN, 0, RETRO_DEVICE_ID_LIGHTGUN_IS_OFFSCREEN))
+               {
+                  zapx = input_state_cb(p, RETRO_DEVICE_LIGHTGUN, 0, RETRO_DEVICE_ID_LIGHTGUN_SCREEN_X);
+                  zapy = input_state_cb(p, RETRO_DEVICE_LIGHTGUN, 0, RETRO_DEVICE_ID_LIGHTGUN_SCREEN_Y);
+
+                  zapx = (zapx + 0x7FFF) * max_x / (0x7FFF * 2);
+                  zapy = (zapy + 0x7FFF) * max_y / (0x7FFF * 2);
+               }
+               else
+               {
+                  zapx = min_x;
+                  zapy = min_y;
+               }
+
+               if (input_state_cb(p, RETRO_DEVICE_LIGHTGUN, 0, RETRO_DEVICE_ID_LIGHTGUN_TRIGGER)) {
+                  input->zapper.x = zapx;
+                  input->zapper.y = zapy;
+                  input->zapper.fire = 1;
+               }
+
+               if (input_state_cb(p, RETRO_DEVICE_LIGHTGUN, 0, RETRO_DEVICE_ID_LIGHTGUN_RELOAD)) {
+                  input->zapper.x = ~1U;
+                  input->zapper.fire = 1;
+               }
+               break;
+            case ZAPPER_DEVICE_MOUSE:
+               zapx += input_state_cb(p, RETRO_DEVICE_MOUSE, 0, RETRO_DEVICE_ID_MOUSE_X);
+               zapy += input_state_cb(p, RETRO_DEVICE_MOUSE, 0, RETRO_DEVICE_ID_MOUSE_Y);
+
+               if (zapx < min_x)
+                  zapx = min_x;
+               else if (zapx > max_x)
+                  zapx = max_x;
+
+               if (zapy < min_y)
+                  zapy = min_y;
+               else if (zapy > max_y)
+                  zapy = max_y;
+
+               if (input_state_cb(p, RETRO_DEVICE_MOUSE, 0, RETRO_DEVICE_ID_MOUSE_LEFT))
+               {
+                  input->zapper.x = zapx;
+                  input->zapper.y = zapy;
+                  input->zapper.fire = 1;
+               }
+               break;
+            case ZAPPER_DEVICE_POINTER:
+               zapx = input_state_cb(p, RETRO_DEVICE_POINTER, 0, RETRO_DEVICE_ID_POINTER_X);
+               zapy = input_state_cb(p, RETRO_DEVICE_POINTER, 0, RETRO_DEVICE_ID_POINTER_Y);
 
                zapx = (zapx + 0x7FFF) * max_x / (0x7FFF * 2);
                zapy = (zapy + 0x7FFF) * max_y / (0x7FFF * 2);
-            }
-            else
-            {
-               zapx = min_x;
-               zapy = min_y;
-            }
 
-            if (input_state_cb(1, RETRO_DEVICE_LIGHTGUN, 0, RETRO_DEVICE_ID_LIGHTGUN_TRIGGER)) {
-               input->zapper.x = zapx;
-               input->zapper.y = zapy;
-               input->zapper.fire = 1;
-            }
+               if (input_state_cb(p, RETRO_DEVICE_POINTER, 0, RETRO_DEVICE_ID_POINTER_PRESSED))
+               {
+                  input->zapper.x = zapx;
+                  input->zapper.y = zapy;
+                  input->zapper.fire = 1;
+               }
+               break;
+            default:
+               break;
+         }
 
-            if (input_state_cb(1, RETRO_DEVICE_LIGHTGUN, 0, RETRO_DEVICE_ID_LIGHTGUN_RELOAD)) {
-               input->zapper.x = ~1U;
-               input->zapper.fire = 1;
-            }
-            break;
-         case ZAPPER_DEVICE_MOUSE:
-            zapx += input_state_cb(1, RETRO_DEVICE_MOUSE, 0, RETRO_DEVICE_ID_MOUSE_X);
-            zapy += input_state_cb(1, RETRO_DEVICE_MOUSE, 0, RETRO_DEVICE_ID_MOUSE_Y);
+         if (zapx > max_x) { crossx = max_x; }
+         else if (zapx < min_x) { crossx = min_x; }
+         else { crossx = zapx; }
 
-            if (zapx < min_x)
-               zapx = min_x;
-            else if (zapx > max_x)
-               zapx = max_x;
-
-            if (zapy < min_y)
-               zapy = min_y;
-            else if (zapy > max_y)
-               zapy = max_y;
-
-            if (input_state_cb(1, RETRO_DEVICE_MOUSE, 0, RETRO_DEVICE_ID_MOUSE_LEFT))
-            {
-               input->zapper.x = zapx;
-               input->zapper.y = zapy;
-               input->zapper.fire = 1;
-            }
-            break;
-         case ZAPPER_DEVICE_POINTER:
-            zapx = input_state_cb(1, RETRO_DEVICE_POINTER, 0, RETRO_DEVICE_ID_POINTER_X);
-            zapy = input_state_cb(1, RETRO_DEVICE_POINTER, 0, RETRO_DEVICE_ID_POINTER_Y);
-
-            zapx = (zapx + 0x7FFF) * max_x / (0x7FFF * 2);
-            zapy = (zapy + 0x7FFF) * max_y / (0x7FFF * 2);
-
-            if (input_state_cb(1, RETRO_DEVICE_POINTER, 0, RETRO_DEVICE_ID_POINTER_PRESSED))
-            {
-               input->zapper.x = zapx;
-               input->zapper.y = zapy;
-               input->zapper.fire = 1;
-            }
-            break;
-         default:
-            break;
+         if (zapy > max_y) { crossy = max_y; }
+         else if (zapy < min_y) { crossy = min_y; }
+         else { crossy = zapy; }
       }
-
-      if (zapx > max_x) { crossx = max_x; }
-      else if (zapx < min_x) { crossx = min_x; }
-      else {crossx = zapx; }
-
-      if (zapy > max_y) { crossy = max_y; }
-      else if (zapy < min_y) { crossy = min_y; }
-      else {crossy = zapy; }
-   }
-   
-   static unsigned tstate = 2;
-   bool pressed_l3        = false;
-   bool pressed_l2        = false;
-   bool pressed_r2        = false;
-   bool pressed_l         = false;
-   bool pressed_r         = false;
-
-   if (supports_bitmasks)
-   {
-      int16_t ret[4];
-      /* Player 0 needs some extra checks */
-      ret[0]              = input_state_cb(0, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_MASK);
-      ret[1]              = input_state_cb(1, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_MASK);
-      ret[2]              = input_state_cb(2, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_MASK);
-      ret[3]              = input_state_cb(3, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_MASK);
-      pressed_l3          = ret[0] & (1 << RETRO_DEVICE_ID_JOYPAD_L3);
-      pressed_l2          = ret[0] & (1 << RETRO_DEVICE_ID_JOYPAD_L2);
-      pressed_r2          = ret[0] & (1 << RETRO_DEVICE_ID_JOYPAD_R2);
-      pressed_l           = ret[0] & (1 << RETRO_DEVICE_ID_JOYPAD_L );
-      pressed_r           = ret[0] & (1 << RETRO_DEVICE_ID_JOYPAD_R );
-
-      for (unsigned p = 0; p < 4; p++)
-      {
-         for (unsigned bind = 0; bind < sizeof(bindmap_default) / sizeof(bindmap[0]); bind++)
-            input->pad[p].buttons |= (ret[p] & (1 << bindmap[bind].retro)) ? bindmap[bind].nes : 0;
-         if (ret[p] & (1 << bindmap[2].retro))
-            tstate ? input->pad[p].buttons &= ~Core::Input::Controllers::Pad::A : input->pad[p].buttons |= Core::Input::Controllers::Pad::A;
-         if (ret[p] & (1 << bindmap[3].retro))
-            tstate ? input->pad[p].buttons &= ~Core::Input::Controllers::Pad::B : input->pad[p].buttons |= Core::Input::Controllers::Pad::B;
-      }
-   }
-   else
-   {
-      pressed_l3          = input_state_cb(0, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_L3);
-      pressed_l2          = input_state_cb(0, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_L2);
-      pressed_r2          = input_state_cb(0, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_R2);
-      pressed_l           = input_state_cb(0, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_L);
-      pressed_r           = input_state_cb(0, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_R);
-
-      for (unsigned p = 0; p < 4; p++)
-      {
-         for (unsigned bind = 0; bind < sizeof(bindmap_default) / sizeof(bindmap[0]); bind++)
-            input->pad[p].buttons |= input_state_cb(p, RETRO_DEVICE_JOYPAD, 0, bindmap[bind].retro) ? bindmap[bind].nes : 0;
-         if (input_state_cb(p, RETRO_DEVICE_JOYPAD, 0, bindmap[2].retro))
-            tstate ? input->pad[p].buttons &= ~Core::Input::Controllers::Pad::A : input->pad[p].buttons |= Core::Input::Controllers::Pad::A;
-         if (input_state_cb(p, RETRO_DEVICE_JOYPAD, 0, bindmap[3].retro))
-            tstate ? input->pad[p].buttons &= ~Core::Input::Controllers::Pad::B : input->pad[p].buttons |= Core::Input::Controllers::Pad::B;
-      }
-   }
-      
-   if (tstate) tstate--; else tstate = tpulse;
-   
-   if (pressed_l3)
-      input->pad[1].mic |= 0x04;
-   
-   if (pressed_l2)
-      input->vsSystem.insertCoin |= Core::Input::Controllers::VsSystem::COIN_1;
-      
-   if (pressed_r2)
-      input->vsSystem.insertCoin |= Core::Input::Controllers::VsSystem::COIN_2;
-      
-   if (machine->Is(Nes::Api::Machine::DISK))
-   {
-      bool curL         = pressed_l;
-      static bool prevL = false;
-
-      if (curL && !prevL)
-      {
-         if (!fds->IsAnyDiskInserted())
-            fds->InsertDisk(0, 0);
-         else if (fds->CanChangeDiskSide())
-            fds->ChangeSide();
-      }
-      prevL = curL;
-      
-      bool curR         = pressed_r;
-      static bool prevR = false;
-
-      if (curR && !prevR && (fds->GetNumDisks() > 1))
-      {
-         int currdisk = fds->GetCurrentDisk();
-         fds->EjectDisk();
-         fds->InsertDisk(!currdisk, 0);
-      }
-      prevR = curR;
    }
 }
 
@@ -1139,10 +1201,10 @@ static void check_variables(void)
 
 void retro_run(void)
 {
-   update_input(libretro_supports_bitmasks);
+   update_input();
    emulator.Execute(video, audio, input);
 
-   if (Api::Input(emulator).GetConnectedController(1) == 5)
+   if (show_crosshair)
       draw_crosshair(crossx, crossy);
    
    unsigned frames = is_pal ? SAMPLERATE / 50 : SAMPLERATE / 60;
@@ -1400,9 +1462,6 @@ bool retro_load_game(const struct retro_game_info *info)
    isound.SetSampleBits(16);
    isound.SetSampleRate(SAMPLERATE);
    isound.SetSpeaker(Api::Sound::SPEAKER_MONO);
-
-   Api::Input(emulator).AutoSelectController(0);
-   Api::Input(emulator).AutoSelectController(1);
 
    machine->Power(true);
 

@@ -213,6 +213,16 @@ struct retro_core_option_definition option_defs_us[] = {
       "disabled"
    },
    {
+      "nestopia_arkanoid_device",
+      "Arkanoid device",
+      "Select the device you wish to use for the Arkanoid paddle.",
+      {
+         { "mouse", NULL },
+         { "pointer", NULL },
+      },
+      "mouse"
+   },
+   {
       "nestopia_zapper_device",
       "Zapper device",
       "Select the device you wish to use for the Zapper.",

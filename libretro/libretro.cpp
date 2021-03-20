@@ -513,6 +513,11 @@ typedef struct
 } keymap;
 
 static enum {
+   ARKANOID_DEVICE_MOUSE,
+   ARKANOID_DEVICE_POINTER
+} arkanoid_device;
+
+static enum {
     ZAPPER_DEVICE_LIGHTGUN,
     ZAPPER_DEVICE_MOUSE,
     ZAPPER_DEVICE_POINTER
@@ -558,6 +563,9 @@ static void update_input()
    int max_x = overscan_h ? 247 : 255; 
    int min_y = overscan_v ? 8 : 0;
    int max_y = overscan_v ? 231 : 239;
+
+   static int cur_x = min_x;
+   static int cur_y = min_y;
 
    for (unsigned p = 0; p < 4; p++)
    {
@@ -660,19 +668,27 @@ static void update_input()
       }
       else if (connected_controller == Api::Input::PADDLE)
       {
-         input->paddle.x += input_state_cb(p, RETRO_DEVICE_MOUSE, 0, RETRO_DEVICE_ID_MOUSE_X); 
-         input->paddle.button = input_state_cb(p, RETRO_DEVICE_MOUSE, 0, RETRO_DEVICE_ID_MOUSE_LEFT);
+         switch (arkanoid_device)
+         {
+            case ARKANOID_DEVICE_MOUSE:
+               cur_x += input_state_cb(p, RETRO_DEVICE_MOUSE, 0, RETRO_DEVICE_ID_MOUSE_X); 
+               input->paddle.button = input_state_cb(p, RETRO_DEVICE_MOUSE, 0, RETRO_DEVICE_ID_MOUSE_LEFT);
+               break;
+            case ARKANOID_DEVICE_POINTER:
+               cur_x = input_state_cb(p, RETRO_DEVICE_POINTER, 0, RETRO_DEVICE_ID_POINTER_X);
+               cur_x = (cur_x + 0x7FFF) * max_x / (0x7FFF * 2);
+               input->paddle.button = input_state_cb(p, RETRO_DEVICE_POINTER, 0, RETRO_DEVICE_ID_POINTER_PRESSED);
+               break;
+         }
 
-         if (input->paddle.x < min_x)
-            input->paddle.x = min_x;
-         else if (input->paddle.x > max_x)
-            input->paddle.x = max_x;
+         if (cur_x < min_x)
+            cur_x = min_x;
+         else if (cur_x > max_x)
+            cur_x = max_x;
+         input->paddle.x = cur_x;
       }
       else if (connected_controller == Api::Input::ZAPPER)
       {
-         static int zapx = overscan_h ? 8 : 0; 
-         static int zapy = overscan_v ? 8 : 0;
-
          input->zapper.fire = 0;
          if (show_crosshair)
             show_crosshair = SHOW_CROSSHAIR_ON;
@@ -682,21 +698,21 @@ static void update_input()
             case ZAPPER_DEVICE_LIGHTGUN:
                if (!input_state_cb(p, RETRO_DEVICE_LIGHTGUN, 0, RETRO_DEVICE_ID_LIGHTGUN_IS_OFFSCREEN))
                {
-                  zapx = input_state_cb(p, RETRO_DEVICE_LIGHTGUN, 0, RETRO_DEVICE_ID_LIGHTGUN_SCREEN_X);
-                  zapy = input_state_cb(p, RETRO_DEVICE_LIGHTGUN, 0, RETRO_DEVICE_ID_LIGHTGUN_SCREEN_Y);
+                  cur_x = input_state_cb(p, RETRO_DEVICE_LIGHTGUN, 0, RETRO_DEVICE_ID_LIGHTGUN_SCREEN_X);
+                  cur_y = input_state_cb(p, RETRO_DEVICE_LIGHTGUN, 0, RETRO_DEVICE_ID_LIGHTGUN_SCREEN_Y);
 
-                  zapx = (zapx + 0x7FFF) * max_x / (0x7FFF * 2);
-                  zapy = (zapy + 0x7FFF) * max_y / (0x7FFF * 2);
+                  cur_x = (cur_x + 0x7FFF) * max_x / (0x7FFF * 2);
+                  cur_y = (cur_y + 0x7FFF) * max_y / (0x7FFF * 2);
                }
                else
                {
-                  zapx = min_x;
-                  zapy = min_y;
+                  cur_x = min_x;
+                  cur_y = min_y;
                }
 
                if (input_state_cb(p, RETRO_DEVICE_LIGHTGUN, 0, RETRO_DEVICE_ID_LIGHTGUN_TRIGGER)) {
-                  input->zapper.x = zapx;
-                  input->zapper.y = zapy;
+                  input->zapper.x = cur_x;
+                  input->zapper.y = cur_y;
                   input->zapper.fire = 1;
                }
 
@@ -706,37 +722,37 @@ static void update_input()
                }
                break;
             case ZAPPER_DEVICE_MOUSE:
-               zapx += input_state_cb(p, RETRO_DEVICE_MOUSE, 0, RETRO_DEVICE_ID_MOUSE_X);
-               zapy += input_state_cb(p, RETRO_DEVICE_MOUSE, 0, RETRO_DEVICE_ID_MOUSE_Y);
+               cur_x += input_state_cb(p, RETRO_DEVICE_MOUSE, 0, RETRO_DEVICE_ID_MOUSE_X);
+               cur_y += input_state_cb(p, RETRO_DEVICE_MOUSE, 0, RETRO_DEVICE_ID_MOUSE_Y);
 
-               if (zapx < min_x)
-                  zapx = min_x;
-               else if (zapx > max_x)
-                  zapx = max_x;
+               if (cur_x < min_x)
+                  cur_x = min_x;
+               else if (cur_x > max_x)
+                  cur_x = max_x;
 
-               if (zapy < min_y)
-                  zapy = min_y;
-               else if (zapy > max_y)
-                  zapy = max_y;
+               if (cur_y < min_y)
+                  cur_y = min_y;
+               else if (cur_y > max_y)
+                  cur_y = max_y;
 
                if (input_state_cb(p, RETRO_DEVICE_MOUSE, 0, RETRO_DEVICE_ID_MOUSE_LEFT))
                {
-                  input->zapper.x = zapx;
-                  input->zapper.y = zapy;
+                  input->zapper.x = cur_x;
+                  input->zapper.y = cur_y;
                   input->zapper.fire = 1;
                }
                break;
             case ZAPPER_DEVICE_POINTER:
-               zapx = input_state_cb(p, RETRO_DEVICE_POINTER, 0, RETRO_DEVICE_ID_POINTER_X);
-               zapy = input_state_cb(p, RETRO_DEVICE_POINTER, 0, RETRO_DEVICE_ID_POINTER_Y);
+               cur_x = input_state_cb(p, RETRO_DEVICE_POINTER, 0, RETRO_DEVICE_ID_POINTER_X);
+               cur_y = input_state_cb(p, RETRO_DEVICE_POINTER, 0, RETRO_DEVICE_ID_POINTER_Y);
 
-               zapx = (zapx + 0x7FFF) * max_x / (0x7FFF * 2);
-               zapy = (zapy + 0x7FFF) * max_y / (0x7FFF * 2);
+               cur_x = (cur_x + 0x7FFF) * max_x / (0x7FFF * 2);
+               cur_y = (cur_y + 0x7FFF) * max_y / (0x7FFF * 2);
 
                if (input_state_cb(p, RETRO_DEVICE_POINTER, 0, RETRO_DEVICE_ID_POINTER_PRESSED))
                {
-                  input->zapper.x = zapx;
-                  input->zapper.y = zapy;
+                  input->zapper.x = cur_x;
+                  input->zapper.y = cur_y;
                   input->zapper.fire = 1;
                }
                break;
@@ -744,13 +760,13 @@ static void update_input()
                break;
          }
 
-         if (zapx > max_x) { crossx = max_x; }
-         else if (zapx < min_x) { crossx = min_x; }
-         else { crossx = zapx; }
+         if (cur_x > max_x) { crossx = max_x; }
+         else if (cur_x < min_x) { crossx = min_x; }
+         else { crossx = cur_x; }
 
-         if (zapy > max_y) { crossy = max_y; }
-         else if (zapy < min_y) { crossy = min_y; }
-         else { crossy = zapy; }
+         if (cur_y > max_y) { crossy = max_y; }
+         else if (cur_y < min_y) { crossy = min_y; }
+         else { crossy = cur_y; }
       }
    }
 }
@@ -767,12 +783,21 @@ static void check_variables(void)
    Api::Machine machine(emulator);
    Api::Video::RenderState::Filter filter;
 
+   var.key = "nestopia_arkanoid_device";
+   if (environ_cb(RETRO_ENVIRONMENT_GET_VARIABLE, &var))
+   {
+      if (strcmp(var.value, "mouse") == 0)
+         arkanoid_device = ARKANOID_DEVICE_MOUSE;
+      if (strcmp(var.value, "pointer") == 0)
+         arkanoid_device = ARKANOID_DEVICE_POINTER;
+   }
+
    var.key = "nestopia_zapper_device";
    if (environ_cb(RETRO_ENVIRONMENT_GET_VARIABLE, &var))
    {
       if (strcmp(var.value, "lightgun") == 0)
          zapper_device = ZAPPER_DEVICE_LIGHTGUN;
-      if (strcmp(var.value, "mouse") == 0)
+      else if (strcmp(var.value, "mouse") == 0)
          zapper_device = ZAPPER_DEVICE_MOUSE;
       else if (strcmp(var.value, "pointer") == 0)
          zapper_device = ZAPPER_DEVICE_POINTER;

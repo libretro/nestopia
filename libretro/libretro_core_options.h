@@ -225,6 +225,16 @@ struct retro_core_option_definition option_defs_us[] = {
       "lightgun",
    },
    {
+      "nestopia_show_crosshair",
+      "Show Crosshair",
+      "Set whether to show the crosshair when the Zapper is used.",
+      {
+         { "enabled", NULL },
+         { "disabled", NULL},
+      },
+      "enabled"
+   },
+   {
       "nestopia_turbo_pulse",
       "Turbo Pulse Speed",
       "Set the turbo pulse speed for the Turbo B and Turbo A buttons.",

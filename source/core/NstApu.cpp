@@ -361,6 +361,11 @@ namespace Nes
 			return 0;
 		}
 
+		uint Apu::GetCtrl()
+		{
+			return ctrl;
+		}
+
 		Result Apu::SetSpeed(const uint speed)
 		{
 			if (settings.speed == speed)
@@ -1670,7 +1675,7 @@ namespace Nes
 			step = 0x7;
 			status = STATUS_COUNTING;
 			waveLength = 0;
-			linearCtrl = 0;
+			//linearCtrl = 0;
 			linearCounter = 0;
 
 			lengthCounter.Reset();
@@ -1870,7 +1875,6 @@ namespace Nes
 					amp = (sum * outputVolume + rate/2) / rate * 3;
 				}
 			}
-			// Disabling these blocks fixes scratchy audio in many games
 			/*else if (amp < Channel::OUTPUT_DECAY)
 			{
 				return 0;

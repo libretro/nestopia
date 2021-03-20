@@ -260,8 +260,8 @@ namespace Nes
 			NST_SINGLE_CALL void Lxa (uint);
 			NST_SINGLE_CALL void Sbx (uint);
 			NST_SINGLE_CALL uint Shs (uint);
-			NST_SINGLE_CALL uint Shx (uint);
-			NST_SINGLE_CALL uint Shy (uint);
+			NST_SINGLE_CALL void Shx (uint);
+			NST_SINGLE_CALL void Shy (uint);
 
 			NST_NO_INLINE void Anc (uint);
 			NST_NO_INLINE uint Dcp (uint);

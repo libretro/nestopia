@@ -763,7 +763,7 @@ include $(THEOS_MAKE_PATH)/library.mk
 else
 all: $(TARGET)
 
-$(TARGET): $(OBJECTS)
+$(TARGET): $(OBJECTS) nstdatabase.hpp
 ifeq ($(STATIC_LINKING), 1)
 	$(AR) rcs $@ $(OBJECTS)
 else
@@ -775,6 +775,10 @@ endif
 
 %.o: %.c
 	$(CC) $(CPPFLAGS) -c $(OBJOUT)$@ $< $(CFLAGS) $(INCDIRS)
+
+PYTHON ?= python
+nstdatabase.hpp: ../NstDatabase.xml
+	-$(PYTHON) xml2hpp.py $< $@
 
 clean-objs:
 	rm -f $(OBJECTS)

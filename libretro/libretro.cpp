@@ -67,7 +67,13 @@ static bool overscan_v;
 static bool overscan_h;
 static unsigned aspect_ratio_mode;
 static unsigned tpulse;
-static bool show_crosshair = false;
+
+static enum {
+   SHOW_CROSSHAIR_DISABLED,
+   SHOW_CROSSHAIR_OFF,
+   SHOW_CROSSHAIR_ON,
+} show_crosshair;
+
 static bool libretro_supports_bitmasks = false;
 static bool show_advanced_av_settings = true;
 
@@ -545,7 +551,8 @@ static void update_input()
    input_poll_cb();
    input->pad[1].mic = 0;
    input->vsSystem.insertCoin = 0;
-   show_crosshair = false;
+   if (show_crosshair)
+      show_crosshair = SHOW_CROSSHAIR_OFF;
 
    int min_x = overscan_h ? 8 : 0;
    int max_x = overscan_h ? 247 : 255; 
@@ -667,7 +674,8 @@ static void update_input()
          static int zapy = overscan_v ? 8 : 0;
 
          input->zapper.fire = 0;
-         show_crosshair = true;
+         if (show_crosshair)
+            show_crosshair = SHOW_CROSSHAIR_ON;
 
          switch (zapper_device)
          {
@@ -768,6 +776,15 @@ static void check_variables(void)
          zapper_device = ZAPPER_DEVICE_MOUSE;
       else if (strcmp(var.value, "pointer") == 0)
          zapper_device = ZAPPER_DEVICE_POINTER;
+   }
+
+   var.key = "nestopia_show_crosshair";
+   if (environ_cb(RETRO_ENVIRONMENT_GET_VARIABLE, &var))
+   {
+      if (strcmp(var.value, "disabled") == 0)
+         show_crosshair = SHOW_CROSSHAIR_DISABLED;
+      else
+         show_crosshair = SHOW_CROSSHAIR_OFF;
    }
 
    var.key = "nestopia_button_shift";
@@ -1199,7 +1216,7 @@ void retro_run(void)
    update_input();
    emulator.Execute(video, audio, input);
 
-   if (show_crosshair)
+   if (show_crosshair == SHOW_CROSSHAIR_ON)
       draw_crosshair(crossx, crossy);
    
    unsigned frames = is_pal ? SAMPLERATE / 50 : SAMPLERATE / 60;

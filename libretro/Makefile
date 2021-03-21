@@ -763,7 +763,7 @@ include $(THEOS_MAKE_PATH)/library.mk
 else
 all: $(TARGET)
 
-$(TARGET): $(OBJECTS) nstdatabase.hpp
+$(TARGET): nstdatabase.hpp $(OBJECTS)
 ifeq ($(STATIC_LINKING), 1)
 	$(AR) rcs $@ $(OBJECTS)
 else
@@ -779,6 +779,7 @@ endif
 PYTHON ?= python
 nstdatabase.hpp: ../NstDatabase.xml
 	-$(PYTHON) xml2hpp.py $< $@
+	rm -f libretro.o
 
 clean-objs:
 	rm -f $(OBJECTS)

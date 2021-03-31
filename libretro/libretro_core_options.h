@@ -214,6 +214,16 @@ struct retro_core_option_definition option_defs_us[] = {
       "disabled"
    },
    {
+      "nestopia_arkanoid_device",
+      "Arkanoid device",
+      "Select the device you wish to use for the Arkanoid paddle.",
+      {
+         { "mouse", NULL },
+         { "pointer", NULL },
+      },
+      "mouse"
+   },
+   {
       "nestopia_zapper_device",
       "Zapper device",
       "Select the device you wish to use for the Zapper.",
@@ -224,6 +234,16 @@ struct retro_core_option_definition option_defs_us[] = {
          { NULL, NULL },
       },
       "lightgun",
+   },
+   {
+      "nestopia_show_crosshair",
+      "Show Crosshair",
+      "Set whether to show the crosshair when the Zapper is used.",
+      {
+         { "enabled", NULL },
+         { "disabled", NULL},
+      },
+      "enabled"
    },
    {
       "nestopia_turbo_pulse",

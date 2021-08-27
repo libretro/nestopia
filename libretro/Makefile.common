@@ -263,6 +263,7 @@ SOURCES_CXX += $(CORE_DIR)/source/core/board/NstBoardUxRom.cpp
 SOURCES_CXX += $(CORE_DIR)/source/core/board/NstBoardVsSystem.cpp
 SOURCES_CXX += $(CORE_DIR)/source/core/board/NstBoardWaixing.cpp
 SOURCES_CXX += $(CORE_DIR)/source/core/board/NstBoardWaixingFfv.cpp
+SOURCES_CXX += $(CORE_DIR)/source/core/board/NstBoardWaixingFs304.cpp
 SOURCES_CXX += $(CORE_DIR)/source/core/board/NstBoardWaixingPs2.cpp
 SOURCES_CXX += $(CORE_DIR)/source/core/board/NstBoardWaixingSecurity.cpp
 SOURCES_CXX += $(CORE_DIR)/source/core/board/NstBoardWaixingSgz.cpp

@@ -65,6 +65,7 @@ static unsigned blargg_ntsc;
 static bool fds_auto_insert;
 static bool overscan_v;
 static bool overscan_h;
+static bool libretro_supports_option_categories = false;
 static unsigned aspect_ratio_mode;
 static unsigned tpulse;
 
@@ -433,7 +434,8 @@ void retro_get_system_av_info(struct retro_system_av_info *info)
 void retro_set_environment(retro_environment_t cb)
 {
    environ_cb = cb;
-   libretro_set_core_options(environ_cb);
+   libretro_set_core_options(environ_cb,
+         &libretro_supports_option_categories);
 
    static const struct retro_controller_description port1[] = {
       { "Auto", RETRO_DEVICE_AUTO },
@@ -776,6 +778,7 @@ static void check_variables(void)
    static bool last_ntsc_val_same;
    struct retro_variable var = {0};
    struct retro_system_av_info av_info;
+   struct retro_core_option_display option_display;
 
    Api::Sound sound(emulator);
    Api::Video video(emulator);
@@ -1193,7 +1196,11 @@ static void check_variables(void)
    {
       sound.SetVolume(Api::Sound::CHANNEL_S5B, atoi(var.value));
    }   
-   
+
+  /* "Show settings" are not required if categories are supported */
+  option_display.visible = !libretro_supports_option_categories;
+  option_display.key = "nestopia_show_advanced_av_settings";
+  environ_cb(RETRO_ENVIRONMENT_SET_CORE_OPTIONS_DISPLAY, &option_display);
 
   var.key = "nestopia_show_advanced_av_settings";
   
@@ -1209,7 +1216,6 @@ static void check_variables(void)
     if (show_advanced_av_settings != show_advanced_av_settings_prev)
     {
       size_t i;
-      struct retro_core_option_display option_display;
       char av_keys[11][40] = {
         "nestopia_audio_vol_sq1",
         "nestopia_audio_vol_sq2",
@@ -1224,7 +1230,8 @@ static void check_variables(void)
         "nestopia_audio_vol_s5b"
       };
 
-      option_display.visible = show_advanced_av_settings;
+      option_display.visible = show_advanced_av_settings
+                               || libretro_supports_option_categories;
 
       for (i = 0; i < 11; i++)
       {

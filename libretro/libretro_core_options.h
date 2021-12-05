@@ -54,22 +54,22 @@ struct retro_core_option_v2_category option_cats_us[] = {
    {
       "video",
       "Video",
-      "Configure aspect ratio, display cropping, color palette and video filter options."
+      "Change aspect ratio, display cropping, color palette and video filter settings."
    },
    {
       "audio",
       "Audio",
-      "Configure audio effects and channel volumes."
+      "Change audio effects and channel volumes."
    },
    {
       "input",
       "Input",
-      "Configure input devices and other input related parameters."
+      "Change input devices and other input related settings."
    },
    {
       "hacks",
       "Emulation Hacks",
-      "Configure processor overclocking and emulation accuracy parameters affecting low-level performance and compatibility."
+      "Change processor overclocking and emulation accuracy settings affecting low-level performance and compatibility."
    },
    { NULL, NULL, NULL },
 };
@@ -109,7 +109,7 @@ struct retro_core_option_v2_definition option_defs_us[] = {
          { "composite-direct-fbx", "Composite Direct FBx" },
          { "pvm-style-d93-fbx",    "PVM-style D93 FBx" },
          { "ntsc-hardware-fbx",    "NTSC hardware FBx" },
-         { "nes-classic-fbx-fs",   "NES Classic FBx FS" },
+         { "nes-classic-fbx-fs",   "NES Classic FBx (fixed)" },
          { "raw",                  "Raw" },
          { "custom",               "Custom" },
          { NULL, NULL },
@@ -267,7 +267,7 @@ struct retro_core_option_v2_definition option_defs_us[] = {
       "nestopia_button_shift",
       "Shift Buttons Clockwise",
       NULL,
-      "Rotate A/B/X/Y button clockwise.", /* is this right? @gadsby */
+      "Rotate the A/B/X/Y buttons clockwise.", /* is this right? @gadsby */
       NULL,
       "input",
       {

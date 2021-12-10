@@ -719,11 +719,11 @@ struct retro_core_options_v2 options_ar = {
 
 /* RETRO_LANGUAGE_AST */
 
-#define CATEGORY_VIDEO_LABEL_AST NULL
+#define CATEGORY_VIDEO_LABEL_AST "Videu"
 #define CATEGORY_VIDEO_INFO_0_AST NULL
-#define CATEGORY_AUDIO_LABEL_AST NULL
+#define CATEGORY_AUDIO_LABEL_AST "Audiu"
 #define CATEGORY_AUDIO_INFO_0_AST NULL
-#define CATEGORY_INPUT_LABEL_AST NULL
+#define CATEGORY_INPUT_LABEL_AST "Entrada"
 #define CATEGORY_INPUT_INFO_0_AST NULL
 #define CATEGORY_HACKS_LABEL_AST NULL
 #define CATEGORY_HACKS_INFO_0_AST NULL
@@ -745,7 +745,7 @@ struct retro_core_options_v2 options_ar = {
 #define OPTION_VAL_PVM_STYLE_D93_FBX_AST NULL
 #define OPTION_VAL_NTSC_HARDWARE_FBX_AST NULL
 #define OPTION_VAL_NES_CLASSIC_FBX_FS_AST NULL
-#define OPTION_VAL_RAW_AST NULL
+#define OPTION_VAL_RAW_AST "En bruto"
 #define OPTION_VAL_CUSTOM_AST NULL
 #define NESTOPIA_NOSPRITELIMIT_LABEL_AST NULL
 #define NESTOPIA_NOSPRITELIMIT_INFO_0_AST NULL
@@ -781,8 +781,8 @@ struct retro_core_options_v2 options_ar = {
 #define NESTOPIA_BUTTON_SHIFT_INFO_0_AST NULL
 #define NESTOPIA_ARKANOID_DEVICE_LABEL_AST NULL
 #define NESTOPIA_ARKANOID_DEVICE_INFO_0_AST NULL
-#define OPTION_VAL_MOUSE_AST NULL
-#define OPTION_VAL_POINTER_AST NULL
+#define OPTION_VAL_MOUSE_AST "Mur"
+#define OPTION_VAL_POINTER_AST "Punteru"
 #define NESTOPIA_ZAPPER_DEVICE_LABEL_AST NULL
 #define NESTOPIA_ZAPPER_DEVICE_INFO_0_AST NULL
 #define OPTION_VAL_LIGHTGUN_AST NULL
@@ -7519,100 +7519,100 @@ struct retro_core_options_v2 options_eo = {
 
 /* RETRO_LANGUAGE_ES */
 
-#define CATEGORY_VIDEO_LABEL_ES NULL
-#define CATEGORY_VIDEO_INFO_0_ES NULL
+#define CATEGORY_VIDEO_LABEL_ES "Vídeo"
+#define CATEGORY_VIDEO_INFO_0_ES "Cambia los ajustes de relación de aspecto, recorte de pantalla, paleta de colores y los filtros de vídeo."
 #define CATEGORY_AUDIO_LABEL_ES NULL
-#define CATEGORY_AUDIO_INFO_0_ES NULL
-#define CATEGORY_INPUT_LABEL_ES NULL
-#define CATEGORY_INPUT_INFO_0_ES NULL
-#define CATEGORY_HACKS_LABEL_ES NULL
-#define CATEGORY_HACKS_INFO_0_ES NULL
-#define NESTOPIA_BLARGG_NTSC_FILTER_LABEL_ES NULL
-#define NESTOPIA_BLARGG_NTSC_FILTER_INFO_0_ES NULL
-#define OPTION_VAL_COMPOSITE_ES NULL
+#define CATEGORY_AUDIO_INFO_0_ES "Cambia los efectos de audio y el volumen de los canales."
+#define CATEGORY_INPUT_LABEL_ES "Entrada"
+#define CATEGORY_INPUT_INFO_0_ES "Cambia los ajustes de los dispositivos de entrada."
+#define CATEGORY_HACKS_LABEL_ES "Arreglos de emulación"
+#define CATEGORY_HACKS_INFO_0_ES "Cambia las opciones de overclockeo del procesador y de precisión de la emulación que afectan al rendimiento a bajo nivel y a la compatibilidad."
+#define NESTOPIA_BLARGG_NTSC_FILTER_LABEL_ES "Filtro NTSC de Blargg"
+#define NESTOPIA_BLARGG_NTSC_FILTER_INFO_0_ES "Activa los filtros NTSC de blargg."
+#define OPTION_VAL_COMPOSITE_ES "Vídeo compuesto"
 #define OPTION_VAL_SVIDEO_ES NULL
-#define OPTION_VAL_RGB_ES NULL
-#define OPTION_VAL_MONOCHROME_ES NULL
-#define NESTOPIA_PALETTE_LABEL_ES NULL
-#define NESTOPIA_PALETTE_INFO_0_ES NULL
+#define OPTION_VAL_RGB_ES "SCART RGB"
+#define OPTION_VAL_MONOCHROME_ES "Monocromo"
+#define NESTOPIA_PALETTE_LABEL_ES "Paleta"
+#define NESTOPIA_PALETTE_INFO_0_ES "Indica la paleta de colores a utilizar."
 #define OPTION_VAL_CXA2025AS_ES NULL
-#define OPTION_VAL_CONSUMER_ES NULL
-#define OPTION_VAL_CANONICAL_ES NULL
-#define OPTION_VAL_ALTERNATIVE_ES NULL
+#define OPTION_VAL_CONSUMER_ES "Para consumidores"
+#define OPTION_VAL_CANONICAL_ES "Canónica"
+#define OPTION_VAL_ALTERNATIVE_ES "Alternativa"
 #define OPTION_VAL_RGB_O1_ES NULL
 #define OPTION_VAL_PAL_ES NULL
-#define OPTION_VAL_COMPOSITE_DIRECT_FBX_ES NULL
-#define OPTION_VAL_PVM_STYLE_D93_FBX_ES NULL
-#define OPTION_VAL_NTSC_HARDWARE_FBX_ES NULL
-#define OPTION_VAL_NES_CLASSIC_FBX_FS_ES NULL
-#define OPTION_VAL_RAW_ES NULL
-#define OPTION_VAL_CUSTOM_ES NULL
-#define NESTOPIA_NOSPRITELIMIT_LABEL_ES NULL
-#define NESTOPIA_NOSPRITELIMIT_INFO_0_ES NULL
-#define NESTOPIA_OVERCLOCK_LABEL_ES NULL
-#define NESTOPIA_OVERCLOCK_INFO_0_ES NULL
+#define OPTION_VAL_COMPOSITE_DIRECT_FBX_ES "Directa de vídeo compuesto por FBx"
+#define OPTION_VAL_PVM_STYLE_D93_FBX_ES "D93 tipo PVM de FBx"
+#define OPTION_VAL_NTSC_HARDWARE_FBX_ES "Hardware NTSC de FBx"
+#define OPTION_VAL_NES_CLASSIC_FBX_FS_ES "NES Classic de FBx (corregida)"
+#define OPTION_VAL_RAW_ES "Datos en bruto"
+#define OPTION_VAL_CUSTOM_ES "Personalizar"
+#define NESTOPIA_NOSPRITELIMIT_LABEL_ES "Desactivar límite de sprites"
+#define NESTOPIA_NOSPRITELIMIT_INFO_0_ES "Elimina el límite de 8 sprites por líneas de exploración que tenía el hardware original."
+#define NESTOPIA_OVERCLOCK_LABEL_ES "Velocidad de la CPU (overclockear)"
+#define NESTOPIA_OVERCLOCK_INFO_0_ES "Acelera la CPU emulada."
 #define OPTION_VAL_1X_ES NULL
 #define OPTION_VAL_2X_ES NULL
-#define NESTOPIA_SELECT_ADAPTER_LABEL_ES NULL
-#define NESTOPIA_SELECT_ADAPTER_INFO_0_ES NULL
-#define OPTION_VAL_AUTO_ES NULL
+#define NESTOPIA_SELECT_ADAPTER_LABEL_ES "Adaptador para 4 jugadores"
+#define NESTOPIA_SELECT_ADAPTER_INFO_0_ES "Selecciona de forma manual un adaptador para cuatro jugadores si es necesario. Algunos juegos no reconocerán correctamente el adaptador utilizando la base de datos NstDatabase.xml, esta opción sirve para ponerle remedio."
+#define OPTION_VAL_AUTO_ES "Selección automática"
 #define OPTION_VAL_NTSC_ES NULL
 #define OPTION_VAL_FAMICOM_ES NULL
-#define NESTOPIA_FDS_AUTO_INSERT_LABEL_ES NULL
-#define NESTOPIA_FDS_AUTO_INSERT_INFO_0_ES NULL
-#define NESTOPIA_OVERSCAN_V_LABEL_ES NULL
-#define NESTOPIA_OVERSCAN_V_INFO_0_ES NULL
-#define NESTOPIA_OVERSCAN_H_LABEL_ES NULL
-#define NESTOPIA_OVERSCAN_H_INFO_0_ES NULL
-#define NESTOPIA_ASPECT_LABEL_ES NULL
-#define NESTOPIA_ASPECT_INFO_0_ES NULL
+#define NESTOPIA_FDS_AUTO_INSERT_LABEL_ES "Autoinsertar disquete de FDS"
+#define NESTOPIA_FDS_AUTO_INSERT_INFO_0_ES "Introduce automáticamente el primer disquete del FDS al reiniciar."
+#define NESTOPIA_OVERSCAN_V_LABEL_ES "Camuflar «overscan» (vertical)"
+#define NESTOPIA_OVERSCAN_V_INFO_0_ES "Camufla (la parte vertical de) los posibles defectos visuales aleatorios de vídeo que normalmente ocultaría el marco de un televisor de definición estándar."
+#define NESTOPIA_OVERSCAN_H_LABEL_ES "Camuflar «overscan» (horizontal)"
+#define NESTOPIA_OVERSCAN_H_INFO_0_ES "Camufla (la parte horizontal de) los posibles defectos visuales aleatorios de vídeo que normalmente ocultaría el marco de un televisor de definición estándar."
+#define NESTOPIA_ASPECT_LABEL_ES "Relación de aspecto preferida"
+#define NESTOPIA_ASPECT_INFO_0_ES "Es necesario configurar la relación de aspecto de RetroArch como «Indicada por el núcleo» en los ajustes de vídeo. «Selección automática» utilizará la base de datos NstDatabase.xml para elegir automáticamente la relación de aspecto. En caso de no existir esta base de datos, se utilizará la relación NTSC por defecto."
 #define OPTION_VAL_4_3_ES NULL
-#define NESTOPIA_GENIE_DISTORTION_LABEL_ES NULL
-#define NESTOPIA_GENIE_DISTORTION_INFO_0_ES NULL
-#define NESTOPIA_FAVORED_SYSTEM_LABEL_ES NULL
-#define NESTOPIA_FAVORED_SYSTEM_INFO_0_ES NULL
+#define NESTOPIA_GENIE_DISTORTION_LABEL_ES "Distorsión sonora del Game Genie"
+#define NESTOPIA_GENIE_DISTORTION_INFO_0_ES "El sistema de trucos Game Genie podía introducir involuntariamente una distorsión en el sonido de los juegos. Al activar esta opción podrás simular esa distorsión."
+#define NESTOPIA_FAVORED_SYSTEM_LABEL_ES "Región del sistema"
+#define NESTOPIA_FAVORED_SYSTEM_INFO_0_ES "«Selección automática» utilizará el archivo de base de datos NstDatabase.xml para detectar automáticamente la región. En caso de no existir la base de datos, se utilizará la relación NTSC por defecto."
 #define OPTION_VAL_DENDY_ES NULL
-#define NESTOPIA_RAM_POWER_STATE_LABEL_ES NULL
-#define NESTOPIA_RAM_POWER_STATE_INFO_0_ES NULL
+#define NESTOPIA_RAM_POWER_STATE_LABEL_ES "Estado de la RAM al encender"
+#define NESTOPIA_RAM_POWER_STATE_INFO_0_ES "Indica los valores que tendrá la RAM al arrancar. Algunos juegos necesitan un valor concreto en la RAM, por ejemplo, para generar números aleatorios."
 #define OPTION_VAL_0X00_ES NULL
 #define OPTION_VAL_0XFF_ES NULL
-#define OPTION_VAL_RANDOM_ES NULL
-#define NESTOPIA_BUTTON_SHIFT_LABEL_ES NULL
-#define NESTOPIA_BUTTON_SHIFT_INFO_0_ES NULL
-#define NESTOPIA_ARKANOID_DEVICE_LABEL_ES NULL
-#define NESTOPIA_ARKANOID_DEVICE_INFO_0_ES NULL
-#define OPTION_VAL_MOUSE_ES NULL
-#define OPTION_VAL_POINTER_ES NULL
-#define NESTOPIA_ZAPPER_DEVICE_LABEL_ES NULL
-#define NESTOPIA_ZAPPER_DEVICE_INFO_0_ES NULL
-#define OPTION_VAL_LIGHTGUN_ES NULL
-#define NESTOPIA_SHOW_CROSSHAIR_LABEL_ES NULL
-#define NESTOPIA_SHOW_CROSSHAIR_INFO_0_ES NULL
-#define NESTOPIA_TURBO_PULSE_LABEL_ES NULL
-#define NESTOPIA_TURBO_PULSE_INFO_0_ES NULL
-#define NESTOPIA_SHOW_ADVANCED_AV_SETTINGS_LABEL_ES NULL
-#define NESTOPIA_SHOW_ADVANCED_AV_SETTINGS_INFO_0_ES NULL
-#define NESTOPIA_AUDIO_VOL_SQ1_LABEL_ES NULL
-#define NESTOPIA_AUDIO_VOL_SQ1_INFO_0_ES NULL
-#define NESTOPIA_AUDIO_VOL_SQ2_LABEL_ES NULL
-#define NESTOPIA_AUDIO_VOL_SQ2_INFO_0_ES NULL
-#define NESTOPIA_AUDIO_VOL_TRI_LABEL_ES NULL
-#define NESTOPIA_AUDIO_VOL_TRI_INFO_0_ES NULL
-#define NESTOPIA_AUDIO_VOL_NOISE_LABEL_ES NULL
-#define NESTOPIA_AUDIO_VOL_NOISE_INFO_0_ES NULL
-#define NESTOPIA_AUDIO_VOL_DPCM_LABEL_ES NULL
-#define NESTOPIA_AUDIO_VOL_DPCM_INFO_0_ES NULL
-#define NESTOPIA_AUDIO_VOL_FDS_LABEL_ES NULL
-#define NESTOPIA_AUDIO_VOL_FDS_INFO_0_ES NULL
-#define NESTOPIA_AUDIO_VOL_MMC5_LABEL_ES NULL
-#define NESTOPIA_AUDIO_VOL_MMC5_INFO_0_ES NULL
-#define NESTOPIA_AUDIO_VOL_VRC6_LABEL_ES NULL
-#define NESTOPIA_AUDIO_VOL_VRC6_INFO_0_ES NULL
-#define NESTOPIA_AUDIO_VOL_VRC7_LABEL_ES NULL
-#define NESTOPIA_AUDIO_VOL_VRC7_INFO_0_ES NULL
-#define NESTOPIA_AUDIO_VOL_N163_LABEL_ES NULL
-#define NESTOPIA_AUDIO_VOL_N163_INFO_0_ES NULL
-#define NESTOPIA_AUDIO_VOL_S5B_LABEL_ES NULL
+#define OPTION_VAL_RANDOM_ES "Al azar"
+#define NESTOPIA_BUTTON_SHIFT_LABEL_ES "Rotar los botones en sentido horario"
+#define NESTOPIA_BUTTON_SHIFT_INFO_0_ES "Cambia el uso de los botones A/B/X/Y girando su utilización en el sentido de las agujas del reloj."
+#define NESTOPIA_ARKANOID_DEVICE_LABEL_ES "Dispositivo para Arkanoid"
+#define NESTOPIA_ARKANOID_DEVICE_INFO_0_ES "Selecciona el dispositivo que quieres usar para la paleta de Arkanoid."
+#define OPTION_VAL_MOUSE_ES "Ratón"
+#define OPTION_VAL_POINTER_ES "Puntero/Pantalla táctil"
+#define NESTOPIA_ZAPPER_DEVICE_LABEL_ES "Dispositivo para Zapper"
+#define NESTOPIA_ZAPPER_DEVICE_INFO_0_ES "Selecciona el dispositivo que quieres usar para la Zapper."
+#define OPTION_VAL_LIGHTGUN_ES "Pistola de luz"
+#define NESTOPIA_SHOW_CROSSHAIR_LABEL_ES "Mostrar punto de mira"
+#define NESTOPIA_SHOW_CROSSHAIR_INFO_0_ES "Muestra o no un punto de mira al utilizar la Zapper."
+#define NESTOPIA_TURBO_PULSE_LABEL_ES "Velocidad de pulsación del turbo"
+#define NESTOPIA_TURBO_PULSE_INFO_0_ES "Establece la velocidad de pulsación de los botones Turbo B y Turbo A."
+#define NESTOPIA_SHOW_ADVANCED_AV_SETTINGS_LABEL_ES "Mostrar ajustes avanzados de audio (es necesario abrir y cerrar el menú)"
+#define NESTOPIA_SHOW_ADVANCED_AV_SETTINGS_INFO_0_ES "Permite configurar los ajustes de bajo nivel de los canales de audio."
+#define NESTOPIA_AUDIO_VOL_SQ1_LABEL_ES "Volumen del canal de ondas cuadradas 1 (%)"
+#define NESTOPIA_AUDIO_VOL_SQ1_INFO_0_ES "Modifica el volumen del canal de ondas cuadradas 1 (en porcentaje)."
+#define NESTOPIA_AUDIO_VOL_SQ2_LABEL_ES "Volumen del canal de ondas cuadradas 2 (%)"
+#define NESTOPIA_AUDIO_VOL_SQ2_INFO_0_ES "Modifica el volumen del canal de ondas cuadradas 2 (en porcentaje)."
+#define NESTOPIA_AUDIO_VOL_TRI_LABEL_ES "Volumen del canal de ondas triangulares (%)"
+#define NESTOPIA_AUDIO_VOL_TRI_INFO_0_ES "Modifica el volumen del canal de ondas triangulares (en porcentaje)."
+#define NESTOPIA_AUDIO_VOL_NOISE_LABEL_ES "Volumen del canal de ruido (%)"
+#define NESTOPIA_AUDIO_VOL_NOISE_INFO_0_ES "Modifica el volumen del canal de ruido (en porcentaje)."
+#define NESTOPIA_AUDIO_VOL_DPCM_LABEL_ES "Volumen del canal de DPCM (%)"
+#define NESTOPIA_AUDIO_VOL_DPCM_INFO_0_ES "Modifica el volumen del canal de DPCM (en porcentaje)."
+#define NESTOPIA_AUDIO_VOL_FDS_LABEL_ES "Volumen del canal de FDS (%)"
+#define NESTOPIA_AUDIO_VOL_FDS_INFO_0_ES "Modifica el volumen del canal de la FDS (en porcentaje)."
+#define NESTOPIA_AUDIO_VOL_MMC5_LABEL_ES "Volumen del canal de MMC5 (%)"
+#define NESTOPIA_AUDIO_VOL_MMC5_INFO_0_ES "Modifica el volumen del canal de MMC5 (en porcentaje)."
+#define NESTOPIA_AUDIO_VOL_VRC6_LABEL_ES "Volumen del canal de VRC6 (%)"
+#define NESTOPIA_AUDIO_VOL_VRC6_INFO_0_ES "Modifica el volumen del canal de VRC6 (en porcentaje)."
+#define NESTOPIA_AUDIO_VOL_VRC7_LABEL_ES "Volumen del canal de VRC7 (%)"
+#define NESTOPIA_AUDIO_VOL_VRC7_INFO_0_ES "Modifica el volumen del canal de VRC7 (en porcentaje)."
+#define NESTOPIA_AUDIO_VOL_N163_LABEL_ES "Volumen del canal de N163 (%)"
+#define NESTOPIA_AUDIO_VOL_N163_INFO_0_ES "Modifica el volumen del canal de N163 (en porcentaje)."
+#define NESTOPIA_AUDIO_VOL_S5B_LABEL_ES "Volumen del canal de S5B (%)"
 
 struct retro_core_option_v2_category option_cats_es[] = {
    {
@@ -8880,99 +8880,99 @@ struct retro_core_options_v2 options_fa = {
 /* RETRO_LANGUAGE_FI */
 
 #define CATEGORY_VIDEO_LABEL_FI NULL
-#define CATEGORY_VIDEO_INFO_0_FI NULL
-#define CATEGORY_AUDIO_LABEL_FI NULL
-#define CATEGORY_AUDIO_INFO_0_FI NULL
-#define CATEGORY_INPUT_LABEL_FI NULL
-#define CATEGORY_INPUT_INFO_0_FI NULL
-#define CATEGORY_HACKS_LABEL_FI NULL
-#define CATEGORY_HACKS_INFO_0_FI NULL
-#define NESTOPIA_BLARGG_NTSC_FILTER_LABEL_FI NULL
-#define NESTOPIA_BLARGG_NTSC_FILTER_INFO_0_FI NULL
-#define OPTION_VAL_COMPOSITE_FI NULL
+#define CATEGORY_VIDEO_INFO_0_FI "Muuta kuvasuhteen, näytön rajauksen, väripaletin ja videosuodattimen asetuksia."
+#define CATEGORY_AUDIO_LABEL_FI "Ääni"
+#define CATEGORY_AUDIO_INFO_0_FI "Muuta äänitehosteita ja äänikanavien äänenvoimakkuuksia."
+#define CATEGORY_INPUT_LABEL_FI "Syöte"
+#define CATEGORY_INPUT_INFO_0_FI "Muuta syöttölaitteita ja muita syöttöön liittyviä asetuksia."
+#define CATEGORY_HACKS_LABEL_FI "Emulointikikat"
+#define CATEGORY_HACKS_INFO_0_FI "Muuta prosessorin ylikellotus- ja emulointitarkkuusasetuksia, jotka vaikuttavat matalan tason suorituskykyyn ja yhteensopivuuteen."
+#define NESTOPIA_BLARGG_NTSC_FILTER_LABEL_FI "Blargg NTSC suodatin"
+#define NESTOPIA_BLARGG_NTSC_FILTER_INFO_0_FI "Ota käyttöön Blargg NTSC suodattimet."
+#define OPTION_VAL_COMPOSITE_FI "Komposiitti video"
 #define OPTION_VAL_SVIDEO_FI NULL
 #define OPTION_VAL_RGB_FI NULL
-#define OPTION_VAL_MONOCHROME_FI NULL
-#define NESTOPIA_PALETTE_LABEL_FI NULL
-#define NESTOPIA_PALETTE_INFO_0_FI NULL
+#define OPTION_VAL_MONOCHROME_FI "Yksivärinen"
+#define NESTOPIA_PALETTE_LABEL_FI "Paletti"
+#define NESTOPIA_PALETTE_INFO_0_FI "Käytettävä väripaletti."
 #define OPTION_VAL_CXA2025AS_FI NULL
 #define OPTION_VAL_CONSUMER_FI NULL
 #define OPTION_VAL_CANONICAL_FI NULL
 #define OPTION_VAL_ALTERNATIVE_FI NULL
 #define OPTION_VAL_RGB_O1_FI NULL
 #define OPTION_VAL_PAL_FI NULL
-#define OPTION_VAL_COMPOSITE_DIRECT_FBX_FI NULL
-#define OPTION_VAL_PVM_STYLE_D93_FBX_FI NULL
-#define OPTION_VAL_NTSC_HARDWARE_FBX_FI NULL
+#define OPTION_VAL_COMPOSITE_DIRECT_FBX_FI "Komposiitti Direct FBx"
+#define OPTION_VAL_PVM_STYLE_D93_FBX_FI "PVM-tyylinen D93 FBx"
+#define OPTION_VAL_NTSC_HARDWARE_FBX_FI "NTSC laitteisto FBx"
 #define OPTION_VAL_NES_CLASSIC_FBX_FS_FI NULL
 #define OPTION_VAL_RAW_FI NULL
-#define OPTION_VAL_CUSTOM_FI NULL
-#define NESTOPIA_NOSPRITELIMIT_LABEL_FI NULL
-#define NESTOPIA_NOSPRITELIMIT_INFO_0_FI NULL
-#define NESTOPIA_OVERCLOCK_LABEL_FI NULL
-#define NESTOPIA_OVERCLOCK_INFO_0_FI NULL
+#define OPTION_VAL_CUSTOM_FI "Mukautettu"
+#define NESTOPIA_NOSPRITELIMIT_LABEL_FI "Remove sprite-rajoitus"
+#define NESTOPIA_NOSPRITELIMIT_INFO_0_FI "Poista 8 spriten vaakasuuntainen laitteisto rajoitus."
+#define NESTOPIA_OVERCLOCK_LABEL_FI "Prosessorin nopeus (Ylikellotus)"
+#define NESTOPIA_OVERCLOCK_INFO_0_FI "Ylikellota emuloitu prosessori."
 #define OPTION_VAL_1X_FI NULL
 #define OPTION_VAL_2X_FI NULL
-#define NESTOPIA_SELECT_ADAPTER_LABEL_FI NULL
-#define NESTOPIA_SELECT_ADAPTER_INFO_0_FI NULL
-#define OPTION_VAL_AUTO_FI NULL
+#define NESTOPIA_SELECT_ADAPTER_LABEL_FI "4 pelaajan sovitin"
+#define NESTOPIA_SELECT_ADAPTER_INFO_0_FI "Valitse tarvittaessa manuaalisesti 4 pelaajan sovitin. Jotkin pelit eivät tunnista adapteria oikein NstDatabasen.xml tietokannan kautta, tämän valinnan pitäisi auttaa korjaamaan se."
+#define OPTION_VAL_AUTO_FI "Automaattinen"
 #define OPTION_VAL_NTSC_FI NULL
 #define OPTION_VAL_FAMICOM_FI NULL
-#define NESTOPIA_FDS_AUTO_INSERT_LABEL_FI NULL
-#define NESTOPIA_FDS_AUTO_INSERT_INFO_0_FI NULL
-#define NESTOPIA_OVERSCAN_V_LABEL_FI NULL
-#define NESTOPIA_OVERSCAN_V_INFO_0_FI NULL
-#define NESTOPIA_OVERSCAN_H_LABEL_FI NULL
-#define NESTOPIA_OVERSCAN_H_INFO_0_FI NULL
-#define NESTOPIA_ASPECT_LABEL_FI NULL
-#define NESTOPIA_ASPECT_INFO_0_FI NULL
+#define NESTOPIA_FDS_AUTO_INSERT_LABEL_FI "FDS automaattinen syöttö"
+#define NESTOPIA_FDS_AUTO_INSERT_INFO_0_FI "Syötä automaattisesti ensimmäinen FDS-levyke uudelleenkäynnistyksessä."
+#define NESTOPIA_OVERSCAN_V_LABEL_FI "Naamioi yliskannaus (Pystysuora)"
+#define NESTOPIA_OVERSCAN_V_INFO_0_FI "Naamioi mahdollisesti satunnainen (pystysuora) vääristynyt videon ulostulo, joka olisi jäänyt piiloon kehysten reunan taakse perinteisen tarkkuuden näytöllä."
+#define NESTOPIA_OVERSCAN_H_LABEL_FI "Naamioi yliskannaus (Vaakasuora)"
+#define NESTOPIA_OVERSCAN_H_INFO_0_FI "Naamioi mahdollisesti satunnainen (vaakasuora) vääristynyt videon ulostulo, joka olisi jäänyt piiloon kehysten reunan taakse perinteisen tarkkuuden näytöllä."
+#define NESTOPIA_ASPECT_LABEL_FI "Ensisijainen kuvasuhde"
+#define NESTOPIA_ASPECT_INFO_0_FI "RetroArchin kuvasuhteeksi on asetettava \"Ydin\", joka löytyy \"Video\" asetuksista. '\"Automaattinen\" käyttää NstDatabasea.xml tietokannan tiedoston kuvasuhteen automaattista tunnistetta. Jos tietokantaa ei ole läsnä, oletuksena on NTSC."
 #define OPTION_VAL_4_3_FI NULL
-#define NESTOPIA_GENIE_DISTORTION_LABEL_FI NULL
-#define NESTOPIA_GENIE_DISTORTION_INFO_0_FI NULL
-#define NESTOPIA_FAVORED_SYSTEM_LABEL_FI NULL
-#define NESTOPIA_FAVORED_SYSTEM_INFO_0_FI NULL
+#define NESTOPIA_GENIE_DISTORTION_LABEL_FI "Game Genien äänen vääristymä"
+#define NESTOPIA_GENIE_DISTORTION_INFO_0_FI "Game Genie huijauslaite voi vahingossa aiheuttaa äänen vääristymisen peleissä. Ottamalla tämän käyttöön voit simuloida vääristymää, jonka se lisäisi pelin ääniin."
+#define NESTOPIA_FAVORED_SYSTEM_LABEL_FI "Järjestelmän alue"
+#define NESTOPIA_FAVORED_SYSTEM_INFO_0_FI "\"Automaattinen\" käyttää NstDatabase.xml tietokannan tiedostoa alueen tunnistamiseen. Jos tietokantaa ei ole saatavilla, oletuksena käytetään NTSC."
 #define OPTION_VAL_DENDY_FI NULL
-#define NESTOPIA_RAM_POWER_STATE_LABEL_FI NULL
-#define NESTOPIA_RAM_POWER_STATE_INFO_0_FI NULL
+#define NESTOPIA_RAM_POWER_STATE_LABEL_FI "RAM-käynnistystila"
+#define NESTOPIA_RAM_POWER_STATE_INFO_0_FI "RAM-arvot käynnistyksessä. Jotkin pelit tarvitsevat alustavat RAM-arvot joidenkin satunnaisten numeroiden luomiseen."
 #define OPTION_VAL_0X00_FI NULL
 #define OPTION_VAL_0XFF_FI NULL
-#define OPTION_VAL_RANDOM_FI NULL
-#define NESTOPIA_BUTTON_SHIFT_LABEL_FI NULL
-#define NESTOPIA_BUTTON_SHIFT_INFO_0_FI NULL
-#define NESTOPIA_ARKANOID_DEVICE_LABEL_FI NULL
-#define NESTOPIA_ARKANOID_DEVICE_INFO_0_FI NULL
-#define OPTION_VAL_MOUSE_FI NULL
-#define OPTION_VAL_POINTER_FI NULL
-#define NESTOPIA_ZAPPER_DEVICE_LABEL_FI NULL
-#define NESTOPIA_ZAPPER_DEVICE_INFO_0_FI NULL
-#define OPTION_VAL_LIGHTGUN_FI NULL
-#define NESTOPIA_SHOW_CROSSHAIR_LABEL_FI NULL
-#define NESTOPIA_SHOW_CROSSHAIR_INFO_0_FI NULL
-#define NESTOPIA_TURBO_PULSE_LABEL_FI NULL
-#define NESTOPIA_TURBO_PULSE_INFO_0_FI NULL
-#define NESTOPIA_SHOW_ADVANCED_AV_SETTINGS_LABEL_FI NULL
-#define NESTOPIA_SHOW_ADVANCED_AV_SETTINGS_INFO_0_FI NULL
-#define NESTOPIA_AUDIO_VOL_SQ1_LABEL_FI NULL
-#define NESTOPIA_AUDIO_VOL_SQ1_INFO_0_FI NULL
-#define NESTOPIA_AUDIO_VOL_SQ2_LABEL_FI NULL
-#define NESTOPIA_AUDIO_VOL_SQ2_INFO_0_FI NULL
-#define NESTOPIA_AUDIO_VOL_TRI_LABEL_FI NULL
-#define NESTOPIA_AUDIO_VOL_TRI_INFO_0_FI NULL
-#define NESTOPIA_AUDIO_VOL_NOISE_LABEL_FI NULL
-#define NESTOPIA_AUDIO_VOL_NOISE_INFO_0_FI NULL
-#define NESTOPIA_AUDIO_VOL_DPCM_LABEL_FI NULL
-#define NESTOPIA_AUDIO_VOL_DPCM_INFO_0_FI NULL
-#define NESTOPIA_AUDIO_VOL_FDS_LABEL_FI NULL
-#define NESTOPIA_AUDIO_VOL_FDS_INFO_0_FI NULL
-#define NESTOPIA_AUDIO_VOL_MMC5_LABEL_FI NULL
-#define NESTOPIA_AUDIO_VOL_MMC5_INFO_0_FI NULL
-#define NESTOPIA_AUDIO_VOL_VRC6_LABEL_FI NULL
-#define NESTOPIA_AUDIO_VOL_VRC6_INFO_0_FI NULL
-#define NESTOPIA_AUDIO_VOL_VRC7_LABEL_FI NULL
-#define NESTOPIA_AUDIO_VOL_VRC7_INFO_0_FI NULL
-#define NESTOPIA_AUDIO_VOL_N163_LABEL_FI NULL
-#define NESTOPIA_AUDIO_VOL_N163_INFO_0_FI NULL
-#define NESTOPIA_AUDIO_VOL_S5B_LABEL_FI NULL
+#define OPTION_VAL_RANDOM_FI "Satunnainen"
+#define NESTOPIA_BUTTON_SHIFT_LABEL_FI "Siirrä painikkeita myötäpäivään"
+#define NESTOPIA_BUTTON_SHIFT_INFO_0_FI "Kierrä A/B/X/Y painikkeita myötäpäivään."
+#define NESTOPIA_ARKANOID_DEVICE_LABEL_FI "Arkanoid-laite"
+#define NESTOPIA_ARKANOID_DEVICE_INFO_0_FI "Valitse laite, jota haluat käyttää Arkanoidissa."
+#define OPTION_VAL_MOUSE_FI "Hiiri"
+#define OPTION_VAL_POINTER_FI "Osoitin"
+#define NESTOPIA_ZAPPER_DEVICE_LABEL_FI "Zapper laite"
+#define NESTOPIA_ZAPPER_DEVICE_INFO_0_FI "Valitse laite, jota haluat käyttää Zapperille."
+#define OPTION_VAL_LIGHTGUN_FI "Valoase"
+#define NESTOPIA_SHOW_CROSSHAIR_LABEL_FI "Näytä tähtäin"
+#define NESTOPIA_SHOW_CROSSHAIR_INFO_0_FI "Valitse näytetäänkö tähtäin kun Zapperia käytetään."
+#define NESTOPIA_TURBO_PULSE_LABEL_FI "Turbon pulssin nopeus"
+#define NESTOPIA_TURBO_PULSE_INFO_0_FI "Aseta Turbo B ja Turbo A -painikkeiden pulssin nopeus."
+#define NESTOPIA_SHOW_ADVANCED_AV_SETTINGS_LABEL_FI "Näytä tarkemmat ääniasetukset (Avaa valikko uudestaan)"
+#define NESTOPIA_SHOW_ADVANCED_AV_SETTINGS_INFO_0_FI "Ota käyttöön alhaisen tason äänikanavan parametrien muokkaus."
+#define NESTOPIA_AUDIO_VOL_SQ1_LABEL_FI "Neliöaalto kanavan 1 äänenvoimakkuus %"
+#define NESTOPIA_AUDIO_VOL_SQ1_INFO_0_FI "Muokkaa neliöaalto kanavan 1 äänenvoimakkuutta %."
+#define NESTOPIA_AUDIO_VOL_SQ2_LABEL_FI "Neliöaalto kanavan 2 äänenvoimakkuus %"
+#define NESTOPIA_AUDIO_VOL_SQ2_INFO_0_FI "Muokkaa neliöaalto kanavan 2 äänenvoimakkuutta %."
+#define NESTOPIA_AUDIO_VOL_TRI_LABEL_FI "Kolmioaalto kanavan äänenvoimakkuus %"
+#define NESTOPIA_AUDIO_VOL_TRI_INFO_0_FI "Muokkaa kolmioaalto kanavan äänenvoimakkuutta %."
+#define NESTOPIA_AUDIO_VOL_NOISE_LABEL_FI "Äänikanavan äänenvoimakkuus %"
+#define NESTOPIA_AUDIO_VOL_NOISE_INFO_0_FI "Muokkaa äänikanavan äänenvoimakkuutta %."
+#define NESTOPIA_AUDIO_VOL_DPCM_LABEL_FI "DPCM kanavan äänenvoimakkuus %"
+#define NESTOPIA_AUDIO_VOL_DPCM_INFO_0_FI "Muokkaa DPCM-kanavan äänenvoimakkuutta %."
+#define NESTOPIA_AUDIO_VOL_FDS_LABEL_FI "FDS-kanavan äänenvoimakkuutta %"
+#define NESTOPIA_AUDIO_VOL_FDS_INFO_0_FI "Muokkaa FDS-kanavan äänenvoimakkuutta %."
+#define NESTOPIA_AUDIO_VOL_MMC5_LABEL_FI "MMC5-kanavan äänenvoimakkuus %"
+#define NESTOPIA_AUDIO_VOL_MMC5_INFO_0_FI "Muokkaa MMC5-kanavan äänenvoimakkuus %."
+#define NESTOPIA_AUDIO_VOL_VRC6_LABEL_FI "VRC6-kanavan äänenvoimakkuus %"
+#define NESTOPIA_AUDIO_VOL_VRC6_INFO_0_FI "Muokkaa VRC6-kanavan äänenvoimakkuutta %."
+#define NESTOPIA_AUDIO_VOL_VRC7_LABEL_FI "VRC7-kanavan äänenvoimakkuus %"
+#define NESTOPIA_AUDIO_VOL_VRC7_INFO_0_FI "Muokkaa VRC7-kanavan äänenvoimakkuutta %."
+#define NESTOPIA_AUDIO_VOL_N163_LABEL_FI "N163-kanavan äänenvoimakkuus %"
+#define NESTOPIA_AUDIO_VOL_N163_INFO_0_FI "Muokkaa N163-kanavan äänenvoimakkuutta %."
+#define NESTOPIA_AUDIO_VOL_S5B_LABEL_FI "S5B-kanavan äänenvoimakkuus %"
 
 struct retro_core_option_v2_category option_cats_fi[] = {
    {
@@ -9559,100 +9559,100 @@ struct retro_core_options_v2 options_fi = {
 
 /* RETRO_LANGUAGE_FR */
 
-#define CATEGORY_VIDEO_LABEL_FR NULL
-#define CATEGORY_VIDEO_INFO_0_FR NULL
+#define CATEGORY_VIDEO_LABEL_FR "Vidéo"
+#define CATEGORY_VIDEO_INFO_0_FR "Modifier les réglages du rapport d'aspect, du recadrage de l'affichage, de la palette de couleurs et du filtre vidéo."
 #define CATEGORY_AUDIO_LABEL_FR NULL
-#define CATEGORY_AUDIO_INFO_0_FR NULL
-#define CATEGORY_INPUT_LABEL_FR NULL
-#define CATEGORY_INPUT_INFO_0_FR NULL
-#define CATEGORY_HACKS_LABEL_FR NULL
-#define CATEGORY_HACKS_INFO_0_FR NULL
-#define NESTOPIA_BLARGG_NTSC_FILTER_LABEL_FR NULL
-#define NESTOPIA_BLARGG_NTSC_FILTER_INFO_0_FR NULL
-#define OPTION_VAL_COMPOSITE_FR NULL
+#define CATEGORY_AUDIO_INFO_0_FR "Modifier les effets audio et le volume des canaux."
+#define CATEGORY_INPUT_LABEL_FR "Entrées"
+#define CATEGORY_INPUT_INFO_0_FR "Modifier les périphériques d'entrée et les autres réglages liés aux entrées."
+#define CATEGORY_HACKS_LABEL_FR "Hacks d'émulation"
+#define CATEGORY_HACKS_INFO_0_FR "Modifier les réglages d'overclocking du processeur et de la précision d'émulation qui affectent les performances de bas niveau et la compatibilité."
+#define NESTOPIA_BLARGG_NTSC_FILTER_LABEL_FR "Filtre NTSC de Blargg"
+#define NESTOPIA_BLARGG_NTSC_FILTER_INFO_0_FR "Activer les filtres NTSC de Blargg."
+#define OPTION_VAL_COMPOSITE_FR "Vidéo composite"
 #define OPTION_VAL_SVIDEO_FR NULL
-#define OPTION_VAL_RGB_FR NULL
+#define OPTION_VAL_RGB_FR "Péritel RVB (SCART)"
 #define OPTION_VAL_MONOCHROME_FR NULL
 #define NESTOPIA_PALETTE_LABEL_FR NULL
-#define NESTOPIA_PALETTE_INFO_0_FR NULL
+#define NESTOPIA_PALETTE_INFO_0_FR "Palette de couleurs à utiliser."
 #define OPTION_VAL_CXA2025AS_FR NULL
-#define OPTION_VAL_CONSUMER_FR NULL
-#define OPTION_VAL_CANONICAL_FR NULL
+#define OPTION_VAL_CONSUMER_FR "Consommateur"
+#define OPTION_VAL_CANONICAL_FR "Canonique"
 #define OPTION_VAL_ALTERNATIVE_FR NULL
-#define OPTION_VAL_RGB_O1_FR NULL
+#define OPTION_VAL_RGB_O1_FR "RVB"
 #define OPTION_VAL_PAL_FR NULL
-#define OPTION_VAL_COMPOSITE_DIRECT_FBX_FR NULL
-#define OPTION_VAL_PVM_STYLE_D93_FBX_FR NULL
-#define OPTION_VAL_NTSC_HARDWARE_FBX_FR NULL
-#define OPTION_VAL_NES_CLASSIC_FBX_FS_FR NULL
-#define OPTION_VAL_RAW_FR NULL
-#define OPTION_VAL_CUSTOM_FR NULL
-#define NESTOPIA_NOSPRITELIMIT_LABEL_FR NULL
-#define NESTOPIA_NOSPRITELIMIT_INFO_0_FR NULL
-#define NESTOPIA_OVERCLOCK_LABEL_FR NULL
-#define NESTOPIA_OVERCLOCK_INFO_0_FR NULL
-#define OPTION_VAL_1X_FR NULL
-#define OPTION_VAL_2X_FR NULL
-#define NESTOPIA_SELECT_ADAPTER_LABEL_FR NULL
-#define NESTOPIA_SELECT_ADAPTER_INFO_0_FR NULL
+#define OPTION_VAL_COMPOSITE_DIRECT_FBX_FR "FBx composite direct"
+#define OPTION_VAL_PVM_STYLE_D93_FBX_FR "FBx style PVM D93"
+#define OPTION_VAL_NTSC_HARDWARE_FBX_FR "FBx matériel NTSC"
+#define OPTION_VAL_NES_CLASSIC_FBX_FS_FR "FBx NES Classic (corrigée)"
+#define OPTION_VAL_RAW_FR "Données brutes"
+#define OPTION_VAL_CUSTOM_FR "Personnalisée"
+#define NESTOPIA_NOSPRITELIMIT_LABEL_FR "Supprimer la limite de sprites"
+#define NESTOPIA_NOSPRITELIMIT_INFO_0_FR "Supprimer la limite matérielle de 8 sprites par ligne de balayage."
+#define NESTOPIA_OVERCLOCK_LABEL_FR "Vitesse du processeur (overclock)"
+#define NESTOPIA_OVERCLOCK_INFO_0_FR "Overclocker le processeur émulé."
+#define OPTION_VAL_1X_FR "x1"
+#define OPTION_VAL_2X_FR "x2"
+#define NESTOPIA_SELECT_ADAPTER_LABEL_FR "Adaptateur 4 joueurs"
+#define NESTOPIA_SELECT_ADAPTER_INFO_0_FR "Sélectionner manuellement un adaptateur 4 joueurs si nécessaire. Certains jeux ne reconnaîtront pas correctement l'adaptateur à partir de la base de données NstDatabase.xml, cette option devrait aider à corriger cela."
 #define OPTION_VAL_AUTO_FR NULL
 #define OPTION_VAL_NTSC_FR NULL
 #define OPTION_VAL_FAMICOM_FR NULL
-#define NESTOPIA_FDS_AUTO_INSERT_LABEL_FR NULL
-#define NESTOPIA_FDS_AUTO_INSERT_INFO_0_FR NULL
-#define NESTOPIA_OVERSCAN_V_LABEL_FR NULL
-#define NESTOPIA_OVERSCAN_V_INFO_0_FR NULL
-#define NESTOPIA_OVERSCAN_H_LABEL_FR NULL
-#define NESTOPIA_OVERSCAN_H_INFO_0_FR NULL
-#define NESTOPIA_ASPECT_LABEL_FR NULL
-#define NESTOPIA_ASPECT_INFO_0_FR NULL
+#define NESTOPIA_FDS_AUTO_INSERT_LABEL_FR "Insertion automatique du FDS"
+#define NESTOPIA_FDS_AUTO_INSERT_INFO_0_FR "Insérer automatiquement le premier disque FDS à la réinitialisation."
+#define NESTOPIA_OVERSCAN_V_LABEL_FR "Masquer le surbalayage (vertical)"
+#define NESTOPIA_OVERSCAN_V_INFO_0_FR "Masquer (verticalement) la sortie vidéo potentiellement buggée et aléatoire qui aurait été cachée par le biseau autour du bord d'un écran de télévision définition standard."
+#define NESTOPIA_OVERSCAN_H_LABEL_FR "Masquer le surbalayage (horizontal)"
+#define NESTOPIA_OVERSCAN_H_INFO_0_FR "Masquer (horizontalement) la sortie vidéo potentiellement buggée et aléatoire qui aurait été cachée par le biseau autour du bord d'un écran de télévision définition standard."
+#define NESTOPIA_ASPECT_LABEL_FR "Rapport d'aspect préféré"
+#define NESTOPIA_ASPECT_INFO_0_FR "Le rapport d'aspect de RetroArch doit être défini sur Fourni par le cœur (Core provided), à régler dans les paramètres Vidéo. 'Auto' utilisera le fichier de base de données NstDatabase.xml pour l'autodétection du rapport d'aspect. S'il n'y a pas de base de données présente, il sera par défaut sur NTSC."
 #define OPTION_VAL_4_3_FR NULL
-#define NESTOPIA_GENIE_DISTORTION_LABEL_FR NULL
-#define NESTOPIA_GENIE_DISTORTION_INFO_0_FR NULL
-#define NESTOPIA_FAVORED_SYSTEM_LABEL_FR NULL
-#define NESTOPIA_FAVORED_SYSTEM_INFO_0_FR NULL
+#define NESTOPIA_GENIE_DISTORTION_LABEL_FR "Distorsion sonore du Game Genie"
+#define NESTOPIA_GENIE_DISTORTION_INFO_0_FR "Le module de cheat Game Genie pouvait introduire par inadvertance une distorsion du son dans les jeux. En activant ceci, vous pouvez simuler la distorsion qu'il ajouterait au son d'un jeu."
+#define NESTOPIA_FAVORED_SYSTEM_LABEL_FR "Région du système"
+#define NESTOPIA_FAVORED_SYSTEM_INFO_0_FR "'Auto' utilisera le fichier de base de données NstDatabase.xml pour la détection automatique de la région. S'il n'y a pas de base de données présente, elle sera sur NTSC par défaut."
 #define OPTION_VAL_DENDY_FR NULL
-#define NESTOPIA_RAM_POWER_STATE_LABEL_FR NULL
-#define NESTOPIA_RAM_POWER_STATE_INFO_0_FR NULL
+#define NESTOPIA_RAM_POWER_STATE_LABEL_FR "État de la RAM à la mise sous tension"
+#define NESTOPIA_RAM_POWER_STATE_INFO_0_FR "Les valeurs dans la RAM lors de la mise sous tension. Certains jeux dépendent des valeurs initiales dans la RAM pour la génération de nombres aléatoires par exemple."
 #define OPTION_VAL_0X00_FR NULL
 #define OPTION_VAL_0XFF_FR NULL
-#define OPTION_VAL_RANDOM_FR NULL
-#define NESTOPIA_BUTTON_SHIFT_LABEL_FR NULL
-#define NESTOPIA_BUTTON_SHIFT_INFO_0_FR NULL
-#define NESTOPIA_ARKANOID_DEVICE_LABEL_FR NULL
-#define NESTOPIA_ARKANOID_DEVICE_INFO_0_FR NULL
-#define OPTION_VAL_MOUSE_FR NULL
-#define OPTION_VAL_POINTER_FR NULL
-#define NESTOPIA_ZAPPER_DEVICE_LABEL_FR NULL
-#define NESTOPIA_ZAPPER_DEVICE_INFO_0_FR NULL
-#define OPTION_VAL_LIGHTGUN_FR NULL
-#define NESTOPIA_SHOW_CROSSHAIR_LABEL_FR NULL
-#define NESTOPIA_SHOW_CROSSHAIR_INFO_0_FR NULL
-#define NESTOPIA_TURBO_PULSE_LABEL_FR NULL
-#define NESTOPIA_TURBO_PULSE_INFO_0_FR NULL
-#define NESTOPIA_SHOW_ADVANCED_AV_SETTINGS_LABEL_FR NULL
-#define NESTOPIA_SHOW_ADVANCED_AV_SETTINGS_INFO_0_FR NULL
-#define NESTOPIA_AUDIO_VOL_SQ1_LABEL_FR NULL
-#define NESTOPIA_AUDIO_VOL_SQ1_INFO_0_FR NULL
-#define NESTOPIA_AUDIO_VOL_SQ2_LABEL_FR NULL
-#define NESTOPIA_AUDIO_VOL_SQ2_INFO_0_FR NULL
-#define NESTOPIA_AUDIO_VOL_TRI_LABEL_FR NULL
-#define NESTOPIA_AUDIO_VOL_TRI_INFO_0_FR NULL
-#define NESTOPIA_AUDIO_VOL_NOISE_LABEL_FR NULL
-#define NESTOPIA_AUDIO_VOL_NOISE_INFO_0_FR NULL
-#define NESTOPIA_AUDIO_VOL_DPCM_LABEL_FR NULL
-#define NESTOPIA_AUDIO_VOL_DPCM_INFO_0_FR NULL
-#define NESTOPIA_AUDIO_VOL_FDS_LABEL_FR NULL
-#define NESTOPIA_AUDIO_VOL_FDS_INFO_0_FR NULL
-#define NESTOPIA_AUDIO_VOL_MMC5_LABEL_FR NULL
-#define NESTOPIA_AUDIO_VOL_MMC5_INFO_0_FR NULL
-#define NESTOPIA_AUDIO_VOL_VRC6_LABEL_FR NULL
-#define NESTOPIA_AUDIO_VOL_VRC6_INFO_0_FR NULL
-#define NESTOPIA_AUDIO_VOL_VRC7_LABEL_FR NULL
-#define NESTOPIA_AUDIO_VOL_VRC7_INFO_0_FR NULL
-#define NESTOPIA_AUDIO_VOL_N163_LABEL_FR NULL
-#define NESTOPIA_AUDIO_VOL_N163_INFO_0_FR NULL
-#define NESTOPIA_AUDIO_VOL_S5B_LABEL_FR NULL
+#define OPTION_VAL_RANDOM_FR "Aléatoire"
+#define NESTOPIA_BUTTON_SHIFT_LABEL_FR "Touches décalées dans le sens horaire"
+#define NESTOPIA_BUTTON_SHIFT_INFO_0_FR "Décaler les touches A/B/X/Y dans le sens horaire."
+#define NESTOPIA_ARKANOID_DEVICE_LABEL_FR "Appareil Arkanoid"
+#define NESTOPIA_ARKANOID_DEVICE_INFO_0_FR "Sélectionnez le périphérique que vous souhaitez utiliser pour la raquette Arkanoid."
+#define OPTION_VAL_MOUSE_FR "Souris"
+#define OPTION_VAL_POINTER_FR "Pointeur"
+#define NESTOPIA_ZAPPER_DEVICE_LABEL_FR "Périphérique Zapper"
+#define NESTOPIA_ZAPPER_DEVICE_INFO_0_FR "Sélectionnez le périphérique que vous souhaitez utiliser pour le Zapper."
+#define OPTION_VAL_LIGHTGUN_FR "Pistolet"
+#define NESTOPIA_SHOW_CROSSHAIR_LABEL_FR "Afficher le viseur"
+#define NESTOPIA_SHOW_CROSSHAIR_INFO_0_FR "Définir s'il faut afficher ou non le viseur lors de l'utilisation du Zapper."
+#define NESTOPIA_TURBO_PULSE_LABEL_FR "Vitesse d'impulsion du turbo"
+#define NESTOPIA_TURBO_PULSE_INFO_0_FR "Régler la vitesse d'impulsion du turbo pour les touches Turbo B et Turbo A."
+#define NESTOPIA_SHOW_ADVANCED_AV_SETTINGS_LABEL_FR "Afficher les paramètres audio avancés (Réouvrir le menu)"
+#define NESTOPIA_SHOW_ADVANCED_AV_SETTINGS_INFO_0_FR "Activer la configuration des paramètres des canaux audio de bas niveau."
+#define NESTOPIA_AUDIO_VOL_SQ1_LABEL_FR "Volume du canal carré 1 (%)"
+#define NESTOPIA_AUDIO_VOL_SQ1_INFO_0_FR "Modifier le volume du canal carré 1 (%)."
+#define NESTOPIA_AUDIO_VOL_SQ2_LABEL_FR "Volume du canal carré 2 (%)"
+#define NESTOPIA_AUDIO_VOL_SQ2_INFO_0_FR "Modifier le volume du canal carré 2 (%)."
+#define NESTOPIA_AUDIO_VOL_TRI_LABEL_FR "Volume du canal triangle (%)"
+#define NESTOPIA_AUDIO_VOL_TRI_INFO_0_FR "Modifier le volume du canal triangle (%)."
+#define NESTOPIA_AUDIO_VOL_NOISE_LABEL_FR "Volume du canal de bruit (%)"
+#define NESTOPIA_AUDIO_VOL_NOISE_INFO_0_FR "Modifier le volume du canal de bruit (%)."
+#define NESTOPIA_AUDIO_VOL_DPCM_LABEL_FR "Volume du canal DPCM (%)"
+#define NESTOPIA_AUDIO_VOL_DPCM_INFO_0_FR "Modifier le volume du canal DPCM (%)."
+#define NESTOPIA_AUDIO_VOL_FDS_LABEL_FR "Volume du canal FDS (%)"
+#define NESTOPIA_AUDIO_VOL_FDS_INFO_0_FR "Modifier le volume du canal FDS (%)."
+#define NESTOPIA_AUDIO_VOL_MMC5_LABEL_FR "Volume du canal MMC5 (%)"
+#define NESTOPIA_AUDIO_VOL_MMC5_INFO_0_FR "Modifier le volume du canal MMC5 (%)."
+#define NESTOPIA_AUDIO_VOL_VRC6_LABEL_FR "Volume du canal VRC6 (%)"
+#define NESTOPIA_AUDIO_VOL_VRC6_INFO_0_FR "Modifier le volume du canal VRC6 (%)."
+#define NESTOPIA_AUDIO_VOL_VRC7_LABEL_FR "Volume du canal VRC7 (%)"
+#define NESTOPIA_AUDIO_VOL_VRC7_INFO_0_FR "Modifier le volume du canal VRC7 (%)."
+#define NESTOPIA_AUDIO_VOL_N163_LABEL_FR "Volume du canal N163 (%)"
+#define NESTOPIA_AUDIO_VOL_N163_INFO_0_FR "Modifier le volume du canal N163 (%)."
+#define NESTOPIA_AUDIO_VOL_S5B_LABEL_FR "Volume du canal S5B (%)"
 
 struct retro_core_option_v2_category option_cats_fr[] = {
    {
@@ -12960,99 +12960,99 @@ struct retro_core_options_v2 options_id = {
 /* RETRO_LANGUAGE_IT */
 
 #define CATEGORY_VIDEO_LABEL_IT NULL
-#define CATEGORY_VIDEO_INFO_0_IT NULL
+#define CATEGORY_VIDEO_INFO_0_IT "Cambia le proporzioni, il ritaglio, la tavolozza dei colori e le impostazioni del filtro video."
 #define CATEGORY_AUDIO_LABEL_IT NULL
-#define CATEGORY_AUDIO_INFO_0_IT NULL
+#define CATEGORY_AUDIO_INFO_0_IT "Cambia gli effetti audio e i volumi del canale."
 #define CATEGORY_INPUT_LABEL_IT NULL
-#define CATEGORY_INPUT_INFO_0_IT NULL
-#define CATEGORY_HACKS_LABEL_IT NULL
-#define CATEGORY_HACKS_INFO_0_IT NULL
-#define NESTOPIA_BLARGG_NTSC_FILTER_LABEL_IT NULL
-#define NESTOPIA_BLARGG_NTSC_FILTER_INFO_0_IT NULL
-#define OPTION_VAL_COMPOSITE_IT NULL
+#define CATEGORY_INPUT_INFO_0_IT "Cambia i dispositivi di input e altre impostazioni relative agli input."
+#define CATEGORY_HACKS_LABEL_IT "Hack di Emulazione"
+#define CATEGORY_HACKS_INFO_0_IT "Cambia le impostazioni di overclocking e di precisione di emulazione del processore che influenzano prestazioni e compatibilità di basso livello."
+#define NESTOPIA_BLARGG_NTSC_FILTER_LABEL_IT "Filtro Blargg NTSC"
+#define NESTOPIA_BLARGG_NTSC_FILTER_INFO_0_IT "Abilita i filtri Blargg NTSC."
+#define OPTION_VAL_COMPOSITE_IT "Video Composito"
 #define OPTION_VAL_SVIDEO_IT NULL
 #define OPTION_VAL_RGB_IT NULL
-#define OPTION_VAL_MONOCHROME_IT NULL
-#define NESTOPIA_PALETTE_LABEL_IT NULL
-#define NESTOPIA_PALETTE_INFO_0_IT NULL
+#define OPTION_VAL_MONOCHROME_IT "Monocromatico"
+#define NESTOPIA_PALETTE_LABEL_IT "Tavolozza"
+#define NESTOPIA_PALETTE_INFO_0_IT "Tavolozza colori da usare."
 #define OPTION_VAL_CXA2025AS_IT NULL
-#define OPTION_VAL_CONSUMER_IT NULL
-#define OPTION_VAL_CANONICAL_IT NULL
-#define OPTION_VAL_ALTERNATIVE_IT NULL
+#define OPTION_VAL_CONSUMER_IT "Consumatore"
+#define OPTION_VAL_CANONICAL_IT "Canonico"
+#define OPTION_VAL_ALTERNATIVE_IT "Alternativo"
 #define OPTION_VAL_RGB_O1_IT NULL
 #define OPTION_VAL_PAL_IT NULL
-#define OPTION_VAL_COMPOSITE_DIRECT_FBX_IT NULL
-#define OPTION_VAL_PVM_STYLE_D93_FBX_IT NULL
-#define OPTION_VAL_NTSC_HARDWARE_FBX_IT NULL
-#define OPTION_VAL_NES_CLASSIC_FBX_FS_IT NULL
-#define OPTION_VAL_RAW_IT NULL
-#define OPTION_VAL_CUSTOM_IT NULL
-#define NESTOPIA_NOSPRITELIMIT_LABEL_IT NULL
-#define NESTOPIA_NOSPRITELIMIT_INFO_0_IT NULL
-#define NESTOPIA_OVERCLOCK_LABEL_IT NULL
-#define NESTOPIA_OVERCLOCK_INFO_0_IT NULL
+#define OPTION_VAL_COMPOSITE_DIRECT_FBX_IT "Composito FBx Diretto"
+#define OPTION_VAL_PVM_STYLE_D93_FBX_IT "PVM-stile D93 FBx"
+#define OPTION_VAL_NTSC_HARDWARE_FBX_IT "FBx hardware NTSC"
+#define OPTION_VAL_NES_CLASSIC_FBX_FS_IT "NES Classic FBx (fisso)"
+#define OPTION_VAL_RAW_IT "Grezzo"
+#define OPTION_VAL_CUSTOM_IT "Personalizzato"
+#define NESTOPIA_NOSPRITELIMIT_LABEL_IT "Rimuovi Limite Sprite"
+#define NESTOPIA_NOSPRITELIMIT_INFO_0_IT "Rimuovere il limite hardware 8-sprites-per-scanline."
+#define NESTOPIA_OVERCLOCK_LABEL_IT "Velocità CPU (Overclock)"
+#define NESTOPIA_OVERCLOCK_INFO_0_IT "Sovrascrivi la CPU emulata."
 #define OPTION_VAL_1X_IT NULL
 #define OPTION_VAL_2X_IT NULL
-#define NESTOPIA_SELECT_ADAPTER_LABEL_IT NULL
-#define NESTOPIA_SELECT_ADAPTER_INFO_0_IT NULL
+#define NESTOPIA_SELECT_ADAPTER_LABEL_IT "Adattatore Da 4 Giocatori"
+#define NESTOPIA_SELECT_ADAPTER_INFO_0_IT "Seleziona manualmente un adattatore da 4 giocatori, se necessario. Alcuni giochi non riconosceranno correttamente l'adattatore attraverso NstDatabase. ml di database, questa opzione dovrebbe aiutare a risolvere il problema."
 #define OPTION_VAL_AUTO_IT NULL
 #define OPTION_VAL_NTSC_IT NULL
 #define OPTION_VAL_FAMICOM_IT NULL
-#define NESTOPIA_FDS_AUTO_INSERT_LABEL_IT NULL
-#define NESTOPIA_FDS_AUTO_INSERT_INFO_0_IT NULL
-#define NESTOPIA_OVERSCAN_V_LABEL_IT NULL
-#define NESTOPIA_OVERSCAN_V_INFO_0_IT NULL
-#define NESTOPIA_OVERSCAN_H_LABEL_IT NULL
-#define NESTOPIA_OVERSCAN_H_INFO_0_IT NULL
-#define NESTOPIA_ASPECT_LABEL_IT NULL
-#define NESTOPIA_ASPECT_INFO_0_IT NULL
+#define NESTOPIA_FDS_AUTO_INSERT_LABEL_IT "FDS Aggiunta automatica"
+#define NESTOPIA_FDS_AUTO_INSERT_INFO_0_IT "Inserisci automaticamente il primo disco FDS al reset."
+#define NESTOPIA_OVERSCAN_V_LABEL_IT "Maschera Overscan (Verticale)"
+#define NESTOPIA_OVERSCAN_V_INFO_0_IT "Maschera fuori (verticalmente) l'uscita video potenzialmente casuale glitchy che sarebbe stato nascosto dalla lunetta intorno al bordo di uno schermo televisivo standard-definizione."
+#define NESTOPIA_OVERSCAN_H_LABEL_IT "Maschera Overscan (Orizzontale)"
+#define NESTOPIA_OVERSCAN_H_INFO_0_IT "Maschera fuori (in orizzontale) l'uscita video potenzialmente casuale glitchy che sarebbe stato nascosto dalla lunetta intorno al bordo di uno schermo televisivo standard-definizione."
+#define NESTOPIA_ASPECT_LABEL_IT "Rapporto Dimensioni Preferite"
+#define NESTOPIA_ASPECT_INFO_0_IT "Rapporto dimensioni di RetroArch deve essere impostato nel Core, fornito nelle impostazioni video. 'Auto' utilizzerà il NstDatabase. file di database ml per rilevamento automatico delle proporzioni. Se non è presente alcun database, sarà predefinito NTSC."
 #define OPTION_VAL_4_3_IT NULL
-#define NESTOPIA_GENIE_DISTORTION_LABEL_IT NULL
-#define NESTOPIA_GENIE_DISTORTION_INFO_0_IT NULL
-#define NESTOPIA_FAVORED_SYSTEM_LABEL_IT NULL
-#define NESTOPIA_FAVORED_SYSTEM_INFO_0_IT NULL
+#define NESTOPIA_GENIE_DISTORTION_LABEL_IT "Game Genie distorzione del suono"
+#define NESTOPIA_GENIE_DISTORTION_INFO_0_IT "Il dispositivo di trucchi Game Genie potrebbe inavvertitamente introdurre distorsione del suono nei giochi. Abilitando questo, è possibile simulare la distorsione che aggiungerebbe al suono di un gioco."
+#define NESTOPIA_FAVORED_SYSTEM_LABEL_IT "Regione Di Sistema"
+#define NESTOPIA_FAVORED_SYSTEM_INFO_0_IT "'Auto' userà il file del database NstDatabase.xml per il rilevamento automatico della regione. Se non c'è nessun database, sarà predefinito NTSC."
 #define OPTION_VAL_DENDY_IT NULL
-#define NESTOPIA_RAM_POWER_STATE_LABEL_IT NULL
-#define NESTOPIA_RAM_POWER_STATE_INFO_0_IT NULL
+#define NESTOPIA_RAM_POWER_STATE_LABEL_IT "Stato Potenziamento RAM"
+#define NESTOPIA_RAM_POWER_STATE_INFO_0_IT "Valori RAM sull'alimentazione. Alcuni giochi si basano su valori RAM iniziali per la generazione di numeri casuali come esempio."
 #define OPTION_VAL_0X00_IT NULL
 #define OPTION_VAL_0XFF_IT NULL
-#define OPTION_VAL_RANDOM_IT NULL
-#define NESTOPIA_BUTTON_SHIFT_LABEL_IT NULL
-#define NESTOPIA_BUTTON_SHIFT_INFO_0_IT NULL
-#define NESTOPIA_ARKANOID_DEVICE_LABEL_IT NULL
-#define NESTOPIA_ARKANOID_DEVICE_INFO_0_IT NULL
+#define OPTION_VAL_RANDOM_IT "Casuale"
+#define NESTOPIA_BUTTON_SHIFT_LABEL_IT "Sposta tasti in senso orario"
+#define NESTOPIA_BUTTON_SHIFT_INFO_0_IT "Ruota i pulsanti A/B/X/Y in senso orario."
+#define NESTOPIA_ARKANOID_DEVICE_LABEL_IT "Dispositivo di Arkanoid"
+#define NESTOPIA_ARKANOID_DEVICE_INFO_0_IT "Selezionare il dispositivo che si desidera utilizzare per la pagaia Arkanoid."
 #define OPTION_VAL_MOUSE_IT NULL
-#define OPTION_VAL_POINTER_IT NULL
-#define NESTOPIA_ZAPPER_DEVICE_LABEL_IT NULL
-#define NESTOPIA_ZAPPER_DEVICE_INFO_0_IT NULL
-#define OPTION_VAL_LIGHTGUN_IT NULL
-#define NESTOPIA_SHOW_CROSSHAIR_LABEL_IT NULL
-#define NESTOPIA_SHOW_CROSSHAIR_INFO_0_IT NULL
-#define NESTOPIA_TURBO_PULSE_LABEL_IT NULL
-#define NESTOPIA_TURBO_PULSE_INFO_0_IT NULL
-#define NESTOPIA_SHOW_ADVANCED_AV_SETTINGS_LABEL_IT NULL
-#define NESTOPIA_SHOW_ADVANCED_AV_SETTINGS_INFO_0_IT NULL
-#define NESTOPIA_AUDIO_VOL_SQ1_LABEL_IT NULL
-#define NESTOPIA_AUDIO_VOL_SQ1_INFO_0_IT NULL
-#define NESTOPIA_AUDIO_VOL_SQ2_LABEL_IT NULL
-#define NESTOPIA_AUDIO_VOL_SQ2_INFO_0_IT NULL
-#define NESTOPIA_AUDIO_VOL_TRI_LABEL_IT NULL
-#define NESTOPIA_AUDIO_VOL_TRI_INFO_0_IT NULL
-#define NESTOPIA_AUDIO_VOL_NOISE_LABEL_IT NULL
-#define NESTOPIA_AUDIO_VOL_NOISE_INFO_0_IT NULL
-#define NESTOPIA_AUDIO_VOL_DPCM_LABEL_IT NULL
-#define NESTOPIA_AUDIO_VOL_DPCM_INFO_0_IT NULL
-#define NESTOPIA_AUDIO_VOL_FDS_LABEL_IT NULL
-#define NESTOPIA_AUDIO_VOL_FDS_INFO_0_IT NULL
-#define NESTOPIA_AUDIO_VOL_MMC5_LABEL_IT NULL
-#define NESTOPIA_AUDIO_VOL_MMC5_INFO_0_IT NULL
-#define NESTOPIA_AUDIO_VOL_VRC6_LABEL_IT NULL
-#define NESTOPIA_AUDIO_VOL_VRC6_INFO_0_IT NULL
-#define NESTOPIA_AUDIO_VOL_VRC7_LABEL_IT NULL
-#define NESTOPIA_AUDIO_VOL_VRC7_INFO_0_IT NULL
-#define NESTOPIA_AUDIO_VOL_N163_LABEL_IT NULL
-#define NESTOPIA_AUDIO_VOL_N163_INFO_0_IT NULL
-#define NESTOPIA_AUDIO_VOL_S5B_LABEL_IT NULL
+#define OPTION_VAL_POINTER_IT "Puntatore"
+#define NESTOPIA_ZAPPER_DEVICE_LABEL_IT "Dispositivo Zapper"
+#define NESTOPIA_ZAPPER_DEVICE_INFO_0_IT "Selezionare il dispositivo che si desidera utilizzare per lo Zapper."
+#define OPTION_VAL_LIGHTGUN_IT "Pistola Ottica"
+#define NESTOPIA_SHOW_CROSSHAIR_LABEL_IT "Mostra Mirino"
+#define NESTOPIA_SHOW_CROSSHAIR_INFO_0_IT "Imposta se mostrare il mirino quando viene utilizzato lo Zapper."
+#define NESTOPIA_TURBO_PULSE_LABEL_IT "Velocità Turbo Pulse"
+#define NESTOPIA_TURBO_PULSE_INFO_0_IT "Impostare la velocità di impulso turbo per i pulsanti Turbo B e Turbo A."
+#define NESTOPIA_SHOW_ADVANCED_AV_SETTINGS_LABEL_IT "Mostra le impostazioni audio avanzate (riapri il menu)"
+#define NESTOPIA_SHOW_ADVANCED_AV_SETTINGS_INFO_0_IT "Abilita la configurazione dei parametri del canale audio a basso livello."
+#define NESTOPIA_AUDIO_VOL_SQ1_LABEL_IT "Canale Quadrato 1 Volume %"
+#define NESTOPIA_AUDIO_VOL_SQ1_INFO_0_IT "Modifica Canale Quadrato 1 Volume %."
+#define NESTOPIA_AUDIO_VOL_SQ2_LABEL_IT "Canale Quadrato 2 Volume %"
+#define NESTOPIA_AUDIO_VOL_SQ2_INFO_0_IT "Modifica Canale Quadrato 2 Volume %."
+#define NESTOPIA_AUDIO_VOL_TRI_LABEL_IT "Canale Triangolo Volume %"
+#define NESTOPIA_AUDIO_VOL_TRI_INFO_0_IT "Modifica Canale Triangolo Volume %."
+#define NESTOPIA_AUDIO_VOL_NOISE_LABEL_IT "Canale Rumore Volume %"
+#define NESTOPIA_AUDIO_VOL_NOISE_INFO_0_IT "Modifica Canale Rumore Volume %."
+#define NESTOPIA_AUDIO_VOL_DPCM_LABEL_IT "Canale DPCM Volume %"
+#define NESTOPIA_AUDIO_VOL_DPCM_INFO_0_IT "Modifica Canale DPCM Volume %."
+#define NESTOPIA_AUDIO_VOL_FDS_LABEL_IT "Canale FDS Volume %"
+#define NESTOPIA_AUDIO_VOL_FDS_INFO_0_IT "Modifica Canale FDS Volume %."
+#define NESTOPIA_AUDIO_VOL_MMC5_LABEL_IT "Canale MMC5 Volume %"
+#define NESTOPIA_AUDIO_VOL_MMC5_INFO_0_IT "Modifica Canale MMC5 Volume %."
+#define NESTOPIA_AUDIO_VOL_VRC6_LABEL_IT "Canale VRC6 Volume %"
+#define NESTOPIA_AUDIO_VOL_VRC6_INFO_0_IT "Modifica Canale VRC6 Volume %."
+#define NESTOPIA_AUDIO_VOL_VRC7_LABEL_IT "Canale VRC7 Volume %"
+#define NESTOPIA_AUDIO_VOL_VRC7_INFO_0_IT "Modifica Canale VRC7 Volume %."
+#define NESTOPIA_AUDIO_VOL_N163_LABEL_IT "Canale N163 Volume %"
+#define NESTOPIA_AUDIO_VOL_N163_INFO_0_IT "Modifica Canale N163 Volume %."
+#define NESTOPIA_AUDIO_VOL_S5B_LABEL_IT "Canale S5B Volume %"
 
 struct retro_core_option_v2_category option_cats_it[] = {
    {
@@ -14319,100 +14319,100 @@ struct retro_core_options_v2 options_ja = {
 
 /* RETRO_LANGUAGE_KO */
 
-#define CATEGORY_VIDEO_LABEL_KO NULL
-#define CATEGORY_VIDEO_INFO_0_KO NULL
-#define CATEGORY_AUDIO_LABEL_KO NULL
-#define CATEGORY_AUDIO_INFO_0_KO NULL
-#define CATEGORY_INPUT_LABEL_KO NULL
-#define CATEGORY_INPUT_INFO_0_KO NULL
-#define CATEGORY_HACKS_LABEL_KO NULL
-#define CATEGORY_HACKS_INFO_0_KO NULL
-#define NESTOPIA_BLARGG_NTSC_FILTER_LABEL_KO NULL
-#define NESTOPIA_BLARGG_NTSC_FILTER_INFO_0_KO NULL
-#define OPTION_VAL_COMPOSITE_KO NULL
-#define OPTION_VAL_SVIDEO_KO NULL
+#define CATEGORY_VIDEO_LABEL_KO "비디오"
+#define CATEGORY_VIDEO_INFO_0_KO "화면비, 화면 잘라내기, 색상 팔레트, 비디오 필터 등을 설정합니다."
+#define CATEGORY_AUDIO_LABEL_KO "오디오"
+#define CATEGORY_AUDIO_INFO_0_KO "오디오 효과와 채널 볼륨을 설정합니다."
+#define CATEGORY_INPUT_LABEL_KO "입력"
+#define CATEGORY_INPUT_INFO_0_KO "입력 장치 및 입력 관련 설정을 변경합니다."
+#define CATEGORY_HACKS_LABEL_KO "에뮬레이션 핵"
+#define CATEGORY_HACKS_INFO_0_KO "성능과 호환성에 영향을 끼치는 프로세서 오버클러킹 및 에뮬레이션 정확도 설정 등을 변경합니다."
+#define NESTOPIA_BLARGG_NTSC_FILTER_LABEL_KO "Blargg NTSC 필터"
+#define NESTOPIA_BLARGG_NTSC_FILTER_INFO_0_KO "Blargg NTSC 필터를 사용합니다."
+#define OPTION_VAL_COMPOSITE_KO "컴포지트 비디오"
+#define OPTION_VAL_SVIDEO_KO "S-비디오"
 #define OPTION_VAL_RGB_KO NULL
-#define OPTION_VAL_MONOCHROME_KO NULL
-#define NESTOPIA_PALETTE_LABEL_KO NULL
-#define NESTOPIA_PALETTE_INFO_0_KO NULL
+#define OPTION_VAL_MONOCHROME_KO "흑백"
+#define NESTOPIA_PALETTE_LABEL_KO "팔레트"
+#define NESTOPIA_PALETTE_INFO_0_KO "사용할 색상 팔레트입니다."
 #define OPTION_VAL_CXA2025AS_KO NULL
-#define OPTION_VAL_CONSUMER_KO NULL
-#define OPTION_VAL_CANONICAL_KO NULL
-#define OPTION_VAL_ALTERNATIVE_KO NULL
+#define OPTION_VAL_CONSUMER_KO "일반 TV"
+#define OPTION_VAL_CANONICAL_KO "표준"
+#define OPTION_VAL_ALTERNATIVE_KO "대체 표준"
 #define OPTION_VAL_RGB_O1_KO NULL
 #define OPTION_VAL_PAL_KO NULL
 #define OPTION_VAL_COMPOSITE_DIRECT_FBX_KO NULL
 #define OPTION_VAL_PVM_STYLE_D93_FBX_KO NULL
 #define OPTION_VAL_NTSC_HARDWARE_FBX_KO NULL
-#define OPTION_VAL_NES_CLASSIC_FBX_FS_KO NULL
-#define OPTION_VAL_RAW_KO NULL
-#define OPTION_VAL_CUSTOM_KO NULL
-#define NESTOPIA_NOSPRITELIMIT_LABEL_KO NULL
-#define NESTOPIA_NOSPRITELIMIT_INFO_0_KO NULL
-#define NESTOPIA_OVERCLOCK_LABEL_KO NULL
-#define NESTOPIA_OVERCLOCK_INFO_0_KO NULL
+#define OPTION_VAL_NES_CLASSIC_FBX_FS_KO "NES Classic FBx (개선판)"
+#define OPTION_VAL_RAW_KO "원본"
+#define OPTION_VAL_CUSTOM_KO "사용자 정의"
+#define NESTOPIA_NOSPRITELIMIT_LABEL_KO "스프라이트 제한 해제"
+#define NESTOPIA_NOSPRITELIMIT_INFO_0_KO "원본 하드웨어의 스캔라인 당 스프라이트 8개 제한을 제거합니다."
+#define NESTOPIA_OVERCLOCK_LABEL_KO "CPU 속도 (오버클럭)"
+#define NESTOPIA_OVERCLOCK_INFO_0_KO "에뮬레이트하는 CPU를 오버클럭합니다."
 #define OPTION_VAL_1X_KO NULL
 #define OPTION_VAL_2X_KO NULL
-#define NESTOPIA_SELECT_ADAPTER_LABEL_KO NULL
-#define NESTOPIA_SELECT_ADAPTER_INFO_0_KO NULL
-#define OPTION_VAL_AUTO_KO NULL
+#define NESTOPIA_SELECT_ADAPTER_LABEL_KO "4 플레이어 어댑터"
+#define NESTOPIA_SELECT_ADAPTER_INFO_0_KO "필요할 경우 4 플레이어 어댑터를 수동으로 선택합니다. NstDatabase.xml에 기록되어 있지 않지만 어댑터를 필요로 하는 게임을 플레이할 때 이 옵션으로 문제를 해결할 수 있습니다."
+#define OPTION_VAL_AUTO_KO "자동"
 #define OPTION_VAL_NTSC_KO NULL
-#define OPTION_VAL_FAMICOM_KO NULL
-#define NESTOPIA_FDS_AUTO_INSERT_LABEL_KO NULL
-#define NESTOPIA_FDS_AUTO_INSERT_INFO_0_KO NULL
-#define NESTOPIA_OVERSCAN_V_LABEL_KO NULL
-#define NESTOPIA_OVERSCAN_V_INFO_0_KO NULL
-#define NESTOPIA_OVERSCAN_H_LABEL_KO NULL
-#define NESTOPIA_OVERSCAN_H_INFO_0_KO NULL
-#define NESTOPIA_ASPECT_LABEL_KO NULL
-#define NESTOPIA_ASPECT_INFO_0_KO NULL
+#define OPTION_VAL_FAMICOM_KO "패미컴"
+#define NESTOPIA_FDS_AUTO_INSERT_LABEL_KO "FDS 자동 삽입"
+#define NESTOPIA_FDS_AUTO_INSERT_INFO_0_KO "초기화할 때 자동으로 첫 번째 FDS 디스크를 삽입합니다."
+#define NESTOPIA_OVERSCAN_V_LABEL_KO "오버스캔 숨기기 (세로)"
+#define NESTOPIA_OVERSCAN_V_INFO_0_KO "일반적으로 TV 화면의 테두리 베젤에 의해 가려지는 비디오 출력의 이상한 부분(세로)을 가립니다."
+#define NESTOPIA_OVERSCAN_H_LABEL_KO "오버스캔 숨기기 (가로)"
+#define NESTOPIA_OVERSCAN_H_INFO_0_KO "일반적으로 TV 화면의 테두리 베젤에 의해 가려지는 비디오 출력의 이상한 부분(가로)을 가립니다."
+#define NESTOPIA_ASPECT_LABEL_KO "선호하는 화면비"
+#define NESTOPIA_ASPECT_INFO_0_KO "RetroArch의 비디오 화면비가 Core provided로 설정되어 있어야 합니다. '자동'은 NstDatabase.xml 데이터베이스에 기록된 내용에 따라 화면비를 자동 감지합니다. 데이터베이스에 자료가 없을 경우, NTSC가 사용됩니다."
 #define OPTION_VAL_4_3_KO NULL
-#define NESTOPIA_GENIE_DISTORTION_LABEL_KO NULL
-#define NESTOPIA_GENIE_DISTORTION_INFO_0_KO NULL
-#define NESTOPIA_FAVORED_SYSTEM_LABEL_KO NULL
-#define NESTOPIA_FAVORED_SYSTEM_INFO_0_KO NULL
+#define NESTOPIA_GENIE_DISTORTION_LABEL_KO "Game Genie 소리 왜곡"
+#define NESTOPIA_GENIE_DISTORTION_INFO_0_KO "Game Genie 치트 장치는 의도치 않게 게임 소리를 왜곡시킵니다. 이 옵션을 사용하면 Game Genie가 게임에 추가하는 소리 왜곡을 재현할 수 있습니다."
+#define NESTOPIA_FAVORED_SYSTEM_LABEL_KO "시스템 지역"
+#define NESTOPIA_FAVORED_SYSTEM_INFO_0_KO "'자동'은 NstDatabase.xml 데이터베이스에 기록된 내용에 따라 화면비를 자동 감지합니다. 데이터베이스에 자료가 없을 경우, NTSC가 사용됩니다."
 #define OPTION_VAL_DENDY_KO NULL
-#define NESTOPIA_RAM_POWER_STATE_LABEL_KO NULL
-#define NESTOPIA_RAM_POWER_STATE_INFO_0_KO NULL
+#define NESTOPIA_RAM_POWER_STATE_LABEL_KO "기동 시 RAM 상태"
+#define NESTOPIA_RAM_POWER_STATE_INFO_0_KO "전원이 들어올 때 RAM의 값입니다. 일부 게임은 초기 RAM 값을 난수 생성에 활용하기도 합니다."
 #define OPTION_VAL_0X00_KO NULL
 #define OPTION_VAL_0XFF_KO NULL
-#define OPTION_VAL_RANDOM_KO NULL
-#define NESTOPIA_BUTTON_SHIFT_LABEL_KO NULL
-#define NESTOPIA_BUTTON_SHIFT_INFO_0_KO NULL
-#define NESTOPIA_ARKANOID_DEVICE_LABEL_KO NULL
-#define NESTOPIA_ARKANOID_DEVICE_INFO_0_KO NULL
-#define OPTION_VAL_MOUSE_KO NULL
-#define OPTION_VAL_POINTER_KO NULL
-#define NESTOPIA_ZAPPER_DEVICE_LABEL_KO NULL
-#define NESTOPIA_ZAPPER_DEVICE_INFO_0_KO NULL
-#define OPTION_VAL_LIGHTGUN_KO NULL
-#define NESTOPIA_SHOW_CROSSHAIR_LABEL_KO NULL
-#define NESTOPIA_SHOW_CROSSHAIR_INFO_0_KO NULL
-#define NESTOPIA_TURBO_PULSE_LABEL_KO NULL
-#define NESTOPIA_TURBO_PULSE_INFO_0_KO NULL
-#define NESTOPIA_SHOW_ADVANCED_AV_SETTINGS_LABEL_KO NULL
-#define NESTOPIA_SHOW_ADVANCED_AV_SETTINGS_INFO_0_KO NULL
-#define NESTOPIA_AUDIO_VOL_SQ1_LABEL_KO NULL
-#define NESTOPIA_AUDIO_VOL_SQ1_INFO_0_KO NULL
-#define NESTOPIA_AUDIO_VOL_SQ2_LABEL_KO NULL
-#define NESTOPIA_AUDIO_VOL_SQ2_INFO_0_KO NULL
-#define NESTOPIA_AUDIO_VOL_TRI_LABEL_KO NULL
-#define NESTOPIA_AUDIO_VOL_TRI_INFO_0_KO NULL
-#define NESTOPIA_AUDIO_VOL_NOISE_LABEL_KO NULL
-#define NESTOPIA_AUDIO_VOL_NOISE_INFO_0_KO NULL
-#define NESTOPIA_AUDIO_VOL_DPCM_LABEL_KO NULL
-#define NESTOPIA_AUDIO_VOL_DPCM_INFO_0_KO NULL
-#define NESTOPIA_AUDIO_VOL_FDS_LABEL_KO NULL
-#define NESTOPIA_AUDIO_VOL_FDS_INFO_0_KO NULL
-#define NESTOPIA_AUDIO_VOL_MMC5_LABEL_KO NULL
-#define NESTOPIA_AUDIO_VOL_MMC5_INFO_0_KO NULL
-#define NESTOPIA_AUDIO_VOL_VRC6_LABEL_KO NULL
-#define NESTOPIA_AUDIO_VOL_VRC6_INFO_0_KO NULL
-#define NESTOPIA_AUDIO_VOL_VRC7_LABEL_KO NULL
-#define NESTOPIA_AUDIO_VOL_VRC7_INFO_0_KO NULL
-#define NESTOPIA_AUDIO_VOL_N163_LABEL_KO NULL
-#define NESTOPIA_AUDIO_VOL_N163_INFO_0_KO NULL
-#define NESTOPIA_AUDIO_VOL_S5B_LABEL_KO NULL
+#define OPTION_VAL_RANDOM_KO "무작위"
+#define NESTOPIA_BUTTON_SHIFT_LABEL_KO "버튼 시계방향 회전"
+#define NESTOPIA_BUTTON_SHIFT_INFO_0_KO "A/B/X/Y 버튼을 시계방향으로 회전합니다."
+#define NESTOPIA_ARKANOID_DEVICE_LABEL_KO "Arkanoid 장치"
+#define NESTOPIA_ARKANOID_DEVICE_INFO_0_KO "Arkanoid의 패들로 사용할 장치를 선택합니다."
+#define OPTION_VAL_MOUSE_KO "마우스"
+#define OPTION_VAL_POINTER_KO "포인터"
+#define NESTOPIA_ZAPPER_DEVICE_LABEL_KO "Zapper 장치"
+#define NESTOPIA_ZAPPER_DEVICE_INFO_0_KO "Zapper로 사용할 장치를 선택합니다."
+#define OPTION_VAL_LIGHTGUN_KO "라이트 건"
+#define NESTOPIA_SHOW_CROSSHAIR_LABEL_KO "십자선 표시"
+#define NESTOPIA_SHOW_CROSSHAIR_INFO_0_KO "Zapper를 사용할 때 십자선을 표시할 지 설정합니다."
+#define NESTOPIA_TURBO_PULSE_LABEL_KO "터보 반복 속도"
+#define NESTOPIA_TURBO_PULSE_INFO_0_KO "터보 B 및 터보 A 버튼을 누를 때 입력을 반복할 속도를 설정합니다."
+#define NESTOPIA_SHOW_ADVANCED_AV_SETTINGS_LABEL_KO "고급 오디오 설정 표시 (메뉴 다시 열기 필요)"
+#define NESTOPIA_SHOW_ADVANCED_AV_SETTINGS_INFO_0_KO "저수준 오디오 채널 변수 설정을 활성화합니다."
+#define NESTOPIA_AUDIO_VOL_SQ1_LABEL_KO "구형파 1 채널 볼륨 %"
+#define NESTOPIA_AUDIO_VOL_SQ1_INFO_0_KO "구형파 1 채널의 볼륨 %를 변경합니다."
+#define NESTOPIA_AUDIO_VOL_SQ2_LABEL_KO "구형파 2 채널 볼륨 %"
+#define NESTOPIA_AUDIO_VOL_SQ2_INFO_0_KO "구형파 2 채널의 볼륨 %를 변경합니다."
+#define NESTOPIA_AUDIO_VOL_TRI_LABEL_KO "삼각파 채널 볼륨 %"
+#define NESTOPIA_AUDIO_VOL_TRI_INFO_0_KO "삼각파 채널의 볼륨 %를 변경합니다."
+#define NESTOPIA_AUDIO_VOL_NOISE_LABEL_KO "노이즈 채널 볼륨 %"
+#define NESTOPIA_AUDIO_VOL_NOISE_INFO_0_KO "노이즈 채널의 볼륨 %를 변경합니다."
+#define NESTOPIA_AUDIO_VOL_DPCM_LABEL_KO "DPCM 채널 볼륨 %"
+#define NESTOPIA_AUDIO_VOL_DPCM_INFO_0_KO "DPCM 채널의 볼륨 %를 변경합니다."
+#define NESTOPIA_AUDIO_VOL_FDS_LABEL_KO "FDS 채널 볼륨 %"
+#define NESTOPIA_AUDIO_VOL_FDS_INFO_0_KO "FDS 채널의 볼륨 %를 변경합니다."
+#define NESTOPIA_AUDIO_VOL_MMC5_LABEL_KO "MMC5 채널 볼륨 %"
+#define NESTOPIA_AUDIO_VOL_MMC5_INFO_0_KO "MMC5 채널의 볼륨 %를 변경합니다."
+#define NESTOPIA_AUDIO_VOL_VRC6_LABEL_KO "VRC6 채널 볼륨 %"
+#define NESTOPIA_AUDIO_VOL_VRC6_INFO_0_KO "VRC6 채널의 볼륨 %를 변경합니다."
+#define NESTOPIA_AUDIO_VOL_VRC7_LABEL_KO "VRC7 채널 볼륨 %"
+#define NESTOPIA_AUDIO_VOL_VRC7_INFO_0_KO "VRC7 채널의 볼륨 %를 변경합니다."
+#define NESTOPIA_AUDIO_VOL_N163_LABEL_KO "N163 채널 볼륨 %"
+#define NESTOPIA_AUDIO_VOL_N163_INFO_0_KO "N163 채널의 볼륨 %를 변경합니다."
+#define NESTOPIA_AUDIO_VOL_S5B_LABEL_KO "S5B 채널 볼륨 %"
 
 struct retro_core_option_v2_category option_cats_ko[] = {
    {
@@ -17040,11 +17040,11 @@ struct retro_core_options_v2 options_oc = {
 /* RETRO_LANGUAGE_PL */
 
 #define CATEGORY_VIDEO_LABEL_PL NULL
-#define CATEGORY_VIDEO_INFO_0_PL NULL
+#define CATEGORY_VIDEO_INFO_0_PL "Zmień proporcje aspektów, wyświetlanie przycinania, palety kolorów i ustawienia filtrów wideo."
 #define CATEGORY_AUDIO_LABEL_PL NULL
-#define CATEGORY_AUDIO_INFO_0_PL NULL
+#define CATEGORY_AUDIO_INFO_0_PL "Zmień efekty dźwiękowe i głośność kanałów."
 #define CATEGORY_INPUT_LABEL_PL NULL
-#define CATEGORY_INPUT_INFO_0_PL NULL
+#define CATEGORY_INPUT_INFO_0_PL "Zmień urządzenia wejściowe i inne ustawienia związane z wprowadzaniem."
 #define CATEGORY_HACKS_LABEL_PL NULL
 #define CATEGORY_HACKS_INFO_0_PL NULL
 #define NESTOPIA_BLARGG_NTSC_FILTER_LABEL_PL NULL
@@ -17064,7 +17064,7 @@ struct retro_core_options_v2 options_oc = {
 #define OPTION_VAL_COMPOSITE_DIRECT_FBX_PL NULL
 #define OPTION_VAL_PVM_STYLE_D93_FBX_PL NULL
 #define OPTION_VAL_NTSC_HARDWARE_FBX_PL NULL
-#define OPTION_VAL_NES_CLASSIC_FBX_FS_PL NULL
+#define OPTION_VAL_NES_CLASSIC_FBX_FS_PL "NES Classic FBx (naprawiony)"
 #define OPTION_VAL_RAW_PL NULL
 #define OPTION_VAL_CUSTOM_PL NULL
 #define NESTOPIA_NOSPRITELIMIT_LABEL_PL NULL
@@ -17098,7 +17098,7 @@ struct retro_core_options_v2 options_oc = {
 #define OPTION_VAL_0XFF_PL NULL
 #define OPTION_VAL_RANDOM_PL NULL
 #define NESTOPIA_BUTTON_SHIFT_LABEL_PL NULL
-#define NESTOPIA_BUTTON_SHIFT_INFO_0_PL NULL
+#define NESTOPIA_BUTTON_SHIFT_INFO_0_PL "Obróć przyciski A/B/X/Y zgodnie z ruchem wskazówek zegara."
 #define NESTOPIA_ARKANOID_DEVICE_LABEL_PL NULL
 #define NESTOPIA_ARKANOID_DEVICE_INFO_0_PL NULL
 #define OPTION_VAL_MOUSE_PL NULL
@@ -17719,66 +17719,66 @@ struct retro_core_options_v2 options_pl = {
 
 /* RETRO_LANGUAGE_PT_BR */
 
-#define CATEGORY_VIDEO_LABEL_PT_BR NULL
-#define CATEGORY_VIDEO_INFO_0_PT_BR NULL
-#define CATEGORY_AUDIO_LABEL_PT_BR NULL
-#define CATEGORY_AUDIO_INFO_0_PT_BR NULL
-#define CATEGORY_INPUT_LABEL_PT_BR NULL
-#define CATEGORY_INPUT_INFO_0_PT_BR NULL
-#define CATEGORY_HACKS_LABEL_PT_BR NULL
-#define CATEGORY_HACKS_INFO_0_PT_BR NULL
-#define NESTOPIA_BLARGG_NTSC_FILTER_LABEL_PT_BR NULL
-#define NESTOPIA_BLARGG_NTSC_FILTER_INFO_0_PT_BR NULL
-#define OPTION_VAL_COMPOSITE_PT_BR NULL
+#define CATEGORY_VIDEO_LABEL_PT_BR "Vídeo"
+#define CATEGORY_VIDEO_INFO_0_PT_BR "Altera as configurações de proporção da tela, corte da tela, paleta de cores e filtro de vídeo."
+#define CATEGORY_AUDIO_LABEL_PT_BR "Áudio"
+#define CATEGORY_AUDIO_INFO_0_PT_BR "Alterar efeitos de áudio e volumes do canal."
+#define CATEGORY_INPUT_LABEL_PT_BR "Entrada"
+#define CATEGORY_INPUT_INFO_0_PT_BR "Alterar os dispositivos de entrada e outras configurações relacionadas a entrada."
+#define CATEGORY_HACKS_LABEL_PT_BR "Hacks de emulação"
+#define CATEGORY_HACKS_INFO_0_PT_BR "Seleciona as configurações de precisão de overclock e emulação do processador que afetam o baixo desempenho e a compatibilidade."
+#define NESTOPIA_BLARGG_NTSC_FILTER_LABEL_PT_BR "Filtro Blargg NTSC"
+#define NESTOPIA_BLARGG_NTSC_FILTER_INFO_0_PT_BR "Ativa os filtros blargg NTSC."
+#define OPTION_VAL_COMPOSITE_PT_BR "Vídeo composto"
 #define OPTION_VAL_SVIDEO_PT_BR NULL
 #define OPTION_VAL_RGB_PT_BR NULL
-#define OPTION_VAL_MONOCHROME_PT_BR NULL
-#define NESTOPIA_PALETTE_LABEL_PT_BR NULL
-#define NESTOPIA_PALETTE_INFO_0_PT_BR NULL
+#define OPTION_VAL_MONOCHROME_PT_BR "Monocromático"
+#define NESTOPIA_PALETTE_LABEL_PT_BR "Paleta de cores"
+#define NESTOPIA_PALETTE_INFO_0_PT_BR "Paleta de cores que será usada."
 #define OPTION_VAL_CXA2025AS_PT_BR NULL
-#define OPTION_VAL_CONSUMER_PT_BR NULL
-#define OPTION_VAL_CANONICAL_PT_BR NULL
-#define OPTION_VAL_ALTERNATIVE_PT_BR NULL
+#define OPTION_VAL_CONSUMER_PT_BR "Consumidor"
+#define OPTION_VAL_CANONICAL_PT_BR "Canônico"
+#define OPTION_VAL_ALTERNATIVE_PT_BR "Alternativo"
 #define OPTION_VAL_RGB_O1_PT_BR NULL
 #define OPTION_VAL_PAL_PT_BR NULL
-#define OPTION_VAL_COMPOSITE_DIRECT_FBX_PT_BR NULL
-#define OPTION_VAL_PVM_STYLE_D93_FBX_PT_BR NULL
+#define OPTION_VAL_COMPOSITE_DIRECT_FBX_PT_BR "FBx direto composto"
+#define OPTION_VAL_PVM_STYLE_D93_FBX_PT_BR "FBx no estilo PVM D93"
 #define OPTION_VAL_NTSC_HARDWARE_FBX_PT_BR NULL
-#define OPTION_VAL_NES_CLASSIC_FBX_FS_PT_BR NULL
-#define OPTION_VAL_RAW_PT_BR NULL
-#define OPTION_VAL_CUSTOM_PT_BR NULL
-#define NESTOPIA_NOSPRITELIMIT_LABEL_PT_BR NULL
-#define NESTOPIA_NOSPRITELIMIT_INFO_0_PT_BR NULL
-#define NESTOPIA_OVERCLOCK_LABEL_PT_BR NULL
-#define NESTOPIA_OVERCLOCK_INFO_0_PT_BR NULL
+#define OPTION_VAL_NES_CLASSIC_FBX_FS_PT_BR "NES-Classic FBX (corrigido)"
+#define OPTION_VAL_RAW_PT_BR "Bruto"
+#define OPTION_VAL_CUSTOM_PT_BR "Personalizado"
+#define NESTOPIA_NOSPRITELIMIT_LABEL_PT_BR "Remove o limite do sprite"
+#define NESTOPIA_NOSPRITELIMIT_INFO_0_PT_BR "Remove o limite do hardware com 8 sprites por linhas de escaneamento."
+#define NESTOPIA_OVERCLOCK_LABEL_PT_BR "Velocidade da CPU (Overclock)"
+#define NESTOPIA_OVERCLOCK_INFO_0_PT_BR "Faz um overclock na CPU emulada."
 #define OPTION_VAL_1X_PT_BR NULL
 #define OPTION_VAL_2X_PT_BR NULL
-#define NESTOPIA_SELECT_ADAPTER_LABEL_PT_BR NULL
-#define NESTOPIA_SELECT_ADAPTER_INFO_0_PT_BR NULL
-#define OPTION_VAL_AUTO_PT_BR NULL
+#define NESTOPIA_SELECT_ADAPTER_LABEL_PT_BR "Adaptador para 4 jogadores"
+#define NESTOPIA_SELECT_ADAPTER_INFO_0_PT_BR "Se necessário, selecione manualmente um adaptador para 4 jogadores. Alguns jogos não reconhecerão o adaptador corretamente através do banco de dados NstDatabase.xml, esta opção deve ajudar a corrigir isso."
+#define OPTION_VAL_AUTO_PT_BR "Automático"
 #define OPTION_VAL_NTSC_PT_BR NULL
 #define OPTION_VAL_FAMICOM_PT_BR NULL
-#define NESTOPIA_FDS_AUTO_INSERT_LABEL_PT_BR NULL
-#define NESTOPIA_FDS_AUTO_INSERT_INFO_0_PT_BR NULL
-#define NESTOPIA_OVERSCAN_V_LABEL_PT_BR NULL
-#define NESTOPIA_OVERSCAN_V_INFO_0_PT_BR NULL
-#define NESTOPIA_OVERSCAN_H_LABEL_PT_BR NULL
-#define NESTOPIA_OVERSCAN_H_INFO_0_PT_BR NULL
-#define NESTOPIA_ASPECT_LABEL_PT_BR NULL
-#define NESTOPIA_ASPECT_INFO_0_PT_BR NULL
+#define NESTOPIA_FDS_AUTO_INSERT_LABEL_PT_BR "Inserção automática do FDS"
+#define NESTOPIA_FDS_AUTO_INSERT_INFO_0_PT_BR "Insere o primeiro disco FDS automaticamente durante a redefinição."
+#define NESTOPIA_OVERSCAN_V_LABEL_PT_BR "Máscara do transbordamento da varredura (Vertical)"
+#define NESTOPIA_OVERSCAN_V_INFO_0_PT_BR "Mascara (verticalmente) a saída potencialmente aleatória do vídeo que seria escondida pelo bezel em torno da borda de uma tela de televisão com definição padrão."
+#define NESTOPIA_OVERSCAN_H_LABEL_PT_BR "Máscara do transbordamento da varredura (Horizontal)"
+#define NESTOPIA_OVERSCAN_H_INFO_0_PT_BR "Mascara (horizontalmente) a saída potencialmente aleatória do vídeo que seria escondida pelo bezel em torno da borda de uma tela de televisão com definição padrão."
+#define NESTOPIA_ASPECT_LABEL_PT_BR "Proporção de tela preferida"
+#define NESTOPIA_ASPECT_INFO_0_PT_BR "A proporção de tela do RetroArch deve ser definida como Núcleo nas configurações de vídeo. 'Auto' usará a base de dados do arquivo NstDatabase.xml para fazer a detecção da proporção automática da tela. Quando não houver um banco de dados presente, o padrão será o NTSC."
 #define OPTION_VAL_4_3_PT_BR NULL
-#define NESTOPIA_GENIE_DISTORTION_LABEL_PT_BR NULL
-#define NESTOPIA_GENIE_DISTORTION_INFO_0_PT_BR NULL
-#define NESTOPIA_FAVORED_SYSTEM_LABEL_PT_BR NULL
-#define NESTOPIA_FAVORED_SYSTEM_INFO_0_PT_BR NULL
-#define OPTION_VAL_DENDY_PT_BR NULL
-#define NESTOPIA_RAM_POWER_STATE_LABEL_PT_BR NULL
-#define NESTOPIA_RAM_POWER_STATE_INFO_0_PT_BR NULL
+#define NESTOPIA_GENIE_DISTORTION_LABEL_PT_BR "Distorção de áudio do Game Genie"
+#define NESTOPIA_GENIE_DISTORTION_INFO_0_PT_BR "O dispositivo de trapaça Game Genie poderia inadvertidamente introduzir uma distorção no áudio dos jogos. Ativando esta opção, você pode simular a distorção que ele adicionaria ao áudio do jogo."
+#define NESTOPIA_FAVORED_SYSTEM_LABEL_PT_BR "Região do sistema"
+#define NESTOPIA_FAVORED_SYSTEM_INFO_0_PT_BR "Auto' usará a base de dados do arquivo NstDatabase.xml para fazer a detecção da região. Quando não houver um banco de dados presente, o padrão será o NTSC."
+#define OPTION_VAL_DENDY_PT_BR "Pendência"
+#define NESTOPIA_RAM_POWER_STATE_LABEL_PT_BR "Condição da RAM ao ligar"
+#define NESTOPIA_RAM_POWER_STATE_INFO_0_PT_BR "Os valores da RAM ao ligar. Alguns jogos dependem de valores iniciais da RAM para a geração de números aleatórios."
 #define OPTION_VAL_0X00_PT_BR NULL
 #define OPTION_VAL_0XFF_PT_BR NULL
 #define OPTION_VAL_RANDOM_PT_BR NULL
 #define NESTOPIA_BUTTON_SHIFT_LABEL_PT_BR NULL
-#define NESTOPIA_BUTTON_SHIFT_INFO_0_PT_BR NULL
+#define NESTOPIA_BUTTON_SHIFT_INFO_0_PT_BR "Girar os botões A/B/X/Y no sentido horário."
 #define NESTOPIA_ARKANOID_DEVICE_LABEL_PT_BR NULL
 #define NESTOPIA_ARKANOID_DEVICE_INFO_0_PT_BR NULL
 #define OPTION_VAL_MOUSE_PT_BR NULL
@@ -23160,74 +23160,74 @@ struct retro_core_options_v2 options_sv = {
 /* RETRO_LANGUAGE_TR */
 
 #define CATEGORY_VIDEO_LABEL_TR NULL
-#define CATEGORY_VIDEO_INFO_0_TR NULL
-#define CATEGORY_AUDIO_LABEL_TR NULL
-#define CATEGORY_AUDIO_INFO_0_TR NULL
-#define CATEGORY_INPUT_LABEL_TR NULL
-#define CATEGORY_INPUT_INFO_0_TR NULL
-#define CATEGORY_HACKS_LABEL_TR NULL
-#define CATEGORY_HACKS_INFO_0_TR NULL
+#define CATEGORY_VIDEO_INFO_0_TR "En boy oranını, görüntü kırpmayı, renk paletini ve video filtresi ayarlarını değiştirin."
+#define CATEGORY_AUDIO_LABEL_TR "Ses"
+#define CATEGORY_AUDIO_INFO_0_TR "Ses efektlerini ve kanal ses düzeylerini değiştirin."
+#define CATEGORY_INPUT_LABEL_TR "Girdi"
+#define CATEGORY_INPUT_INFO_0_TR "Girdi cihazlarını ve girdilerle ilgili diğer ayarları değiştirin."
+#define CATEGORY_HACKS_LABEL_TR "Emülatör Geliştirmeleri"
+#define CATEGORY_HACKS_INFO_0_TR "Düşük seviyeli performansı ve uyumluluğu etkileyen işlemci hız aşırtma ve taklit doğruluğu ayarlarını değiştirin."
 #define NESTOPIA_BLARGG_NTSC_FILTER_LABEL_TR "Blargg NTSC Filtresi"
 #define NESTOPIA_BLARGG_NTSC_FILTER_INFO_0_TR "Blargg NTSC filtrelerini etkinleştirin."
-#define OPTION_VAL_COMPOSITE_TR "Kompozit Video"
+#define OPTION_VAL_COMPOSITE_TR NULL
 #define OPTION_VAL_SVIDEO_TR NULL
 #define OPTION_VAL_RGB_TR NULL
-#define OPTION_VAL_MONOCHROME_TR "Tek renkli"
+#define OPTION_VAL_MONOCHROME_TR "Tek Renk"
 #define NESTOPIA_PALETTE_LABEL_TR "Palet"
-#define NESTOPIA_PALETTE_INFO_0_TR "Hangi renk paletinin kullanılacağını seçin."
+#define NESTOPIA_PALETTE_INFO_0_TR "Kullanılacak renk paleti."
 #define OPTION_VAL_CXA2025AS_TR NULL
-#define OPTION_VAL_CONSUMER_TR NULL
+#define OPTION_VAL_CONSUMER_TR "Kullanıcı"
 #define OPTION_VAL_CANONICAL_TR "Standart"
 #define OPTION_VAL_ALTERNATIVE_TR "Alternatif"
 #define OPTION_VAL_RGB_O1_TR NULL
 #define OPTION_VAL_PAL_TR NULL
-#define OPTION_VAL_COMPOSITE_DIRECT_FBX_TR "Doğrudan Kompozit FBx"
+#define OPTION_VAL_COMPOSITE_DIRECT_FBX_TR "Composite Direk FBx"
 #define OPTION_VAL_PVM_STYLE_D93_FBX_TR NULL
 #define OPTION_VAL_NTSC_HARDWARE_FBX_TR "NTSC donanım FBx"
-#define OPTION_VAL_NES_CLASSIC_FBX_FS_TR "NES Klasik FBx FS"
-#define OPTION_VAL_RAW_TR NULL
+#define OPTION_VAL_NES_CLASSIC_FBX_FS_TR "NES Classic FBx (düzeltilmiş)"
+#define OPTION_VAL_RAW_TR "İşlenmemiş"
 #define OPTION_VAL_CUSTOM_TR "Özel"
-#define NESTOPIA_NOSPRITELIMIT_LABEL_TR "Sprite Limitini Kaldır"
-#define NESTOPIA_NOSPRITELIMIT_INFO_0_TR "Tarama başına 8 sprite donanım sınırını kaldır."
-#define NESTOPIA_OVERCLOCK_LABEL_TR "CPU Hızı (Hız aşırtma)"
-#define NESTOPIA_OVERCLOCK_INFO_0_TR "Öykünülmüş CPU'ya hız aşırtma uygula."
+#define NESTOPIA_NOSPRITELIMIT_LABEL_TR "Hareket Sınırını Kaldır"
+#define NESTOPIA_NOSPRITELIMIT_INFO_0_TR "Tarama başına 8 hareket donanım sınırını kaldır."
+#define NESTOPIA_OVERCLOCK_LABEL_TR "CPU Hızı (Hız Aşırtma)"
+#define NESTOPIA_OVERCLOCK_INFO_0_TR "Taklit edilmiş CPU için hız aşırtma uygula."
 #define OPTION_VAL_1X_TR NULL
 #define OPTION_VAL_2X_TR NULL
 #define NESTOPIA_SELECT_ADAPTER_LABEL_TR "4 Oyuncu Adaptörü"
-#define NESTOPIA_SELECT_ADAPTER_INFO_0_TR "Gerekirse manuel olarak bir 4 Oyuncu Adaptörü seçin. Bazı oyunlar bağdaştırıcıyı NstDatabase.xml veritabanıyla doğru bir şekilde tanıyamayabilir, bu seçenek bunu düzeltmeye yardımcı olur."
+#define NESTOPIA_SELECT_ADAPTER_INFO_0_TR "Gerekirse el ile bir 4 Oyuncu Adaptörü seçin. Bazı oyunlar bağdaştırıcıyı NstDatabase.xml veritabanı ile doğru bir şekilde tanıyamayabilir, bu seçenek bunu düzeltmeye yardımcı olur."
 #define OPTION_VAL_AUTO_TR "Otomatik"
 #define OPTION_VAL_NTSC_TR NULL
 #define OPTION_VAL_FAMICOM_TR NULL
-#define NESTOPIA_FDS_AUTO_INSERT_LABEL_TR "FDS Otomatik Ekleme"
+#define NESTOPIA_FDS_AUTO_INSERT_LABEL_TR "FDS Otomatik Ekle"
 #define NESTOPIA_FDS_AUTO_INSERT_INFO_0_TR "Yeniden başlatmada ilk FDS diskini otomatik olarak yerleştirir."
-#define NESTOPIA_OVERSCAN_V_LABEL_TR "Aşırı Taşmayı Maskele (Dikey)"
-#define NESTOPIA_OVERSCAN_V_INFO_0_TR "Standart tanımlı bir televizyon ekranının kenarı çevresinde çerçeve tarafından gizlenmiş olabilecek potansiyel olarak rastgele aksaklık video çıkışını maskeleyin (dikey olarak)."
-#define NESTOPIA_OVERSCAN_H_LABEL_TR "Aşırı Taşmayı Maskele (Yatay)"
-#define NESTOPIA_OVERSCAN_H_INFO_0_TR "Standart tanımlı bir televizyon ekranının kenarı çevresinde çerçeve tarafından gizlenmiş olabilecek rastgele aksaklıklı video çıkışını maskeleyin (yatay olarak)."
+#define NESTOPIA_OVERSCAN_V_LABEL_TR "Aşırı Taramayı Maskele (Dikey)"
+#define NESTOPIA_OVERSCAN_V_INFO_0_TR "Standart tanımlı bir televizyon ekranının kenarındaki çerçeve tarafından gizlenmiş olabilecek olası rastgele arızalı video çıkışını (dikey olarak) maskeleyin."
+#define NESTOPIA_OVERSCAN_H_LABEL_TR "Aşırı Taramayı Maskele (Yatay)"
+#define NESTOPIA_OVERSCAN_H_INFO_0_TR "Standart tanımlı bir televizyon ekranının kenarındaki çerçeve tarafından gizlenmiş olabilecek olası rastgele arızalı video çıkışını (yatay olarak) maskeleyin."
 #define NESTOPIA_ASPECT_LABEL_TR "Tercih Edilen En Boy Oranı"
-#define NESTOPIA_ASPECT_INFO_0_TR "Tercih edilen en boy oranını seçin. RetroArch'ın en boy oranı, Video ayarlarında 'Çekirdek Tarafından Sağlanan'  olarak ayarlanmalıdır. 'Otomatik', en-boy oranı otomatik belirlemesi için NstDatabase.xml veritabanını kullanır. Eğer mevcut bir veritabanı yoksa, 'Otomatik' için NTSC'ye varsayılan olacaktır."
+#define NESTOPIA_ASPECT_INFO_0_TR "RetroArch en boy oranı, Video ayarlarında sağlanan Çekirdek olarak ayarlanmalıdır. 'Otomatik', en boy oranı otomatik algılaması için NstDatabase.xml veritabanı dosyasını kullanır. Mevcut bir veritabanı yoksa, varsayılan olarak NTSC'ye geçecektir."
 #define OPTION_VAL_4_3_TR NULL
-#define NESTOPIA_GENIE_DISTORTION_LABEL_TR "Game Genie Ses Bozulma"
+#define NESTOPIA_GENIE_DISTORTION_LABEL_TR "Game Genie Ses Bozulması"
 #define NESTOPIA_GENIE_DISTORTION_INFO_0_TR "Game Genie hile cihazı yanlışlıkla oyunlarda ses bozulmalarına neden olabilir. Bunu etkinleştirerek, oyun sesine ekleyeceği bozulmayı taklit edebilirsiniz."
 #define NESTOPIA_FAVORED_SYSTEM_LABEL_TR "Sistem Bölgesi"
-#define NESTOPIA_FAVORED_SYSTEM_INFO_0_TR "Sistemin hangi bölgeden olacağını seçin. 'Otomatik' bölgenin otomatik belirlenmesi için NstDatabase.xml veritabanı dosyasını kullanır. Eğer mevcut bir veritabanı yoksa, 'Otomatik' için NTSC'ye varsayılan olacaktır."
+#define NESTOPIA_FAVORED_SYSTEM_INFO_0_TR "'Otomatik', bölge otomatik algılaması için NstDatabase.xml veritabanı dosyasını kullanır. Mevcut bir veritabanı yoksa, varsayılan olarak NTSC olacaktır."
 #define OPTION_VAL_DENDY_TR NULL
-#define NESTOPIA_RAM_POWER_STATE_LABEL_TR "Açılıştaki RAM Durumu"
-#define NESTOPIA_RAM_POWER_STATE_INFO_0_TR NULL
+#define NESTOPIA_RAM_POWER_STATE_LABEL_TR "RAM Açılış Durumu"
+#define NESTOPIA_RAM_POWER_STATE_INFO_0_TR "Açılışta RAM değerleri. Bazı oyunlar, örnek olarak rastgele sayı üretimi için ilk RAM değerlerine güvenir."
 #define OPTION_VAL_0X00_TR NULL
 #define OPTION_VAL_0XFF_TR NULL
 #define OPTION_VAL_RANDOM_TR "Rastgele"
-#define NESTOPIA_BUTTON_SHIFT_LABEL_TR "A/B/X/Y Saat Yönünde Kaydırma"
-#define NESTOPIA_BUTTON_SHIFT_INFO_0_TR "A/B/X/Y tuşlarını saat yönünde çevirir."
-#define NESTOPIA_ARKANOID_DEVICE_LABEL_TR NULL
-#define NESTOPIA_ARKANOID_DEVICE_INFO_0_TR NULL
-#define OPTION_VAL_MOUSE_TR NULL
-#define OPTION_VAL_POINTER_TR NULL
-#define NESTOPIA_ZAPPER_DEVICE_LABEL_TR NULL
-#define NESTOPIA_ZAPPER_DEVICE_INFO_0_TR NULL
+#define NESTOPIA_BUTTON_SHIFT_LABEL_TR "Shift Düğmeleri Saat Yönünde"
+#define NESTOPIA_BUTTON_SHIFT_INFO_0_TR "A/B/X/Y düğmelerini saat yönünde çevirin."
+#define NESTOPIA_ARKANOID_DEVICE_LABEL_TR "Arkanoid cihazı"
+#define NESTOPIA_ARKANOID_DEVICE_INFO_0_TR "Arkanoid kürek için kullanmak istediğiniz cihazı seçin."
+#define OPTION_VAL_MOUSE_TR "Fare"
+#define OPTION_VAL_POINTER_TR "İşaretçi"
+#define NESTOPIA_ZAPPER_DEVICE_LABEL_TR "Zapper cihazı"
+#define NESTOPIA_ZAPPER_DEVICE_INFO_0_TR "Zapper için kullanmak istediğiniz cihazı seçin."
 #define OPTION_VAL_LIGHTGUN_TR NULL
-#define NESTOPIA_SHOW_CROSSHAIR_LABEL_TR NULL
-#define NESTOPIA_SHOW_CROSSHAIR_INFO_0_TR NULL
+#define NESTOPIA_SHOW_CROSSHAIR_LABEL_TR "Nişangahı Göster"
+#define NESTOPIA_SHOW_CROSSHAIR_INFO_0_TR "Zapper kullanıldığında nişangahın gösterilip gösterilmeyeceğini ayarlayın."
 #define NESTOPIA_TURBO_PULSE_LABEL_TR NULL
 #define NESTOPIA_TURBO_PULSE_INFO_0_TR "Turbo B ve Turbo A düğmeleri için turbo hızını ayarlayın."
 #define NESTOPIA_SHOW_ADVANCED_AV_SETTINGS_LABEL_TR NULL

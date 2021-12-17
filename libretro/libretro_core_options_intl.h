@@ -17722,11 +17722,11 @@ struct retro_core_options_v2 options_pl = {
 #define CATEGORY_VIDEO_LABEL_PT_BR "Vídeo"
 #define CATEGORY_VIDEO_INFO_0_PT_BR "Altera as configurações de proporção da tela, corte da tela, paleta de cores e filtro de vídeo."
 #define CATEGORY_AUDIO_LABEL_PT_BR "Áudio"
-#define CATEGORY_AUDIO_INFO_0_PT_BR "Alterar efeitos de áudio e volumes do canal."
+#define CATEGORY_AUDIO_INFO_0_PT_BR "Altera os efeitos de áudio e os volumes do canal."
 #define CATEGORY_INPUT_LABEL_PT_BR "Entrada"
-#define CATEGORY_INPUT_INFO_0_PT_BR "Alterar os dispositivos de entrada e outras configurações relacionadas a entrada."
+#define CATEGORY_INPUT_INFO_0_PT_BR "Altera os dispositivos de entrada e as outras configurações relacionadas com a entrada."
 #define CATEGORY_HACKS_LABEL_PT_BR "Hacks de emulação"
-#define CATEGORY_HACKS_INFO_0_PT_BR "Seleciona as configurações de precisão de overclock e emulação do processador que afetam o baixo desempenho e a compatibilidade."
+#define CATEGORY_HACKS_INFO_0_PT_BR "Seleciona as configurações de precisão do overclock e a emulação do processador que afetam o baixo desempenho e a compatibilidade."
 #define NESTOPIA_BLARGG_NTSC_FILTER_LABEL_PT_BR "Filtro Blargg NTSC"
 #define NESTOPIA_BLARGG_NTSC_FILTER_INFO_0_PT_BR "Ativa os filtros blargg NTSC."
 #define OPTION_VAL_COMPOSITE_PT_BR "Vídeo composto"
@@ -17776,43 +17776,43 @@ struct retro_core_options_v2 options_pl = {
 #define NESTOPIA_RAM_POWER_STATE_INFO_0_PT_BR "Os valores da RAM ao ligar. Alguns jogos dependem de valores iniciais da RAM para a geração de números aleatórios."
 #define OPTION_VAL_0X00_PT_BR NULL
 #define OPTION_VAL_0XFF_PT_BR NULL
-#define OPTION_VAL_RANDOM_PT_BR NULL
-#define NESTOPIA_BUTTON_SHIFT_LABEL_PT_BR NULL
-#define NESTOPIA_BUTTON_SHIFT_INFO_0_PT_BR "Girar os botões A/B/X/Y no sentido horário."
-#define NESTOPIA_ARKANOID_DEVICE_LABEL_PT_BR NULL
-#define NESTOPIA_ARKANOID_DEVICE_INFO_0_PT_BR NULL
+#define OPTION_VAL_RANDOM_PT_BR "Aleatório"
+#define NESTOPIA_BUTTON_SHIFT_LABEL_PT_BR "Girar os botões no sentido horário"
+#define NESTOPIA_BUTTON_SHIFT_INFO_0_PT_BR "Gira os botões A/B/X/Y no sentido horário."
+#define NESTOPIA_ARKANOID_DEVICE_LABEL_PT_BR "Dispositivo Arkanoid"
+#define NESTOPIA_ARKANOID_DEVICE_INFO_0_PT_BR "Seleciona o dispositivo que você deseja usar para a palheta Arkanoid."
 #define OPTION_VAL_MOUSE_PT_BR NULL
-#define OPTION_VAL_POINTER_PT_BR NULL
-#define NESTOPIA_ZAPPER_DEVICE_LABEL_PT_BR NULL
-#define NESTOPIA_ZAPPER_DEVICE_INFO_0_PT_BR NULL
-#define OPTION_VAL_LIGHTGUN_PT_BR NULL
-#define NESTOPIA_SHOW_CROSSHAIR_LABEL_PT_BR NULL
-#define NESTOPIA_SHOW_CROSSHAIR_INFO_0_PT_BR NULL
-#define NESTOPIA_TURBO_PULSE_LABEL_PT_BR NULL
-#define NESTOPIA_TURBO_PULSE_INFO_0_PT_BR NULL
-#define NESTOPIA_SHOW_ADVANCED_AV_SETTINGS_LABEL_PT_BR NULL
-#define NESTOPIA_SHOW_ADVANCED_AV_SETTINGS_INFO_0_PT_BR NULL
-#define NESTOPIA_AUDIO_VOL_SQ1_LABEL_PT_BR NULL
-#define NESTOPIA_AUDIO_VOL_SQ1_INFO_0_PT_BR NULL
-#define NESTOPIA_AUDIO_VOL_SQ2_LABEL_PT_BR NULL
-#define NESTOPIA_AUDIO_VOL_SQ2_INFO_0_PT_BR NULL
-#define NESTOPIA_AUDIO_VOL_TRI_LABEL_PT_BR NULL
-#define NESTOPIA_AUDIO_VOL_TRI_INFO_0_PT_BR NULL
-#define NESTOPIA_AUDIO_VOL_NOISE_LABEL_PT_BR NULL
-#define NESTOPIA_AUDIO_VOL_NOISE_INFO_0_PT_BR NULL
-#define NESTOPIA_AUDIO_VOL_DPCM_LABEL_PT_BR NULL
-#define NESTOPIA_AUDIO_VOL_DPCM_INFO_0_PT_BR NULL
-#define NESTOPIA_AUDIO_VOL_FDS_LABEL_PT_BR NULL
-#define NESTOPIA_AUDIO_VOL_FDS_INFO_0_PT_BR NULL
-#define NESTOPIA_AUDIO_VOL_MMC5_LABEL_PT_BR NULL
-#define NESTOPIA_AUDIO_VOL_MMC5_INFO_0_PT_BR NULL
-#define NESTOPIA_AUDIO_VOL_VRC6_LABEL_PT_BR NULL
-#define NESTOPIA_AUDIO_VOL_VRC6_INFO_0_PT_BR NULL
-#define NESTOPIA_AUDIO_VOL_VRC7_LABEL_PT_BR NULL
-#define NESTOPIA_AUDIO_VOL_VRC7_INFO_0_PT_BR NULL
-#define NESTOPIA_AUDIO_VOL_N163_LABEL_PT_BR NULL
-#define NESTOPIA_AUDIO_VOL_N163_INFO_0_PT_BR NULL
-#define NESTOPIA_AUDIO_VOL_S5B_LABEL_PT_BR NULL
+#define OPTION_VAL_POINTER_PT_BR "Ponteiro"
+#define NESTOPIA_ZAPPER_DEVICE_LABEL_PT_BR "Dispositivo Zapper"
+#define NESTOPIA_ZAPPER_DEVICE_INFO_0_PT_BR "Selecione o dispositivo que deseja usar para o Zapper."
+#define OPTION_VAL_LIGHTGUN_PT_BR "Pistola de luz"
+#define NESTOPIA_SHOW_CROSSHAIR_LABEL_PT_BR "Mostrar mira"
+#define NESTOPIA_SHOW_CROSSHAIR_INFO_0_PT_BR "Define se deve mostrar a mira quando o Zapper é usado."
+#define NESTOPIA_TURBO_PULSE_LABEL_PT_BR "Velocidade dos botões turbo"
+#define NESTOPIA_TURBO_PULSE_INFO_0_PT_BR "Define a velocidade do pressionamento dos botões Turbo B e Turbo A."
+#define NESTOPIA_SHOW_ADVANCED_AV_SETTINGS_LABEL_PT_BR "Mostrar configurações avançadas de áudio (reabrir menu)"
+#define NESTOPIA_SHOW_ADVANCED_AV_SETTINGS_INFO_0_PT_BR "Habilita o ajuste dos parâmetros de baixo nível do canal de áudio."
+#define NESTOPIA_AUDIO_VOL_SQ1_LABEL_PT_BR "Volume do canal de ondas quadradas 1 (%)"
+#define NESTOPIA_AUDIO_VOL_SQ1_INFO_0_PT_BR "Modifica o volume do canal de ondas quadradas 1 (em porcentagem)."
+#define NESTOPIA_AUDIO_VOL_SQ2_LABEL_PT_BR "Volume do canal de ondas quadradas 2 (%)"
+#define NESTOPIA_AUDIO_VOL_SQ2_INFO_0_PT_BR "Modifica o volume do canal de ondas quadradas 2 (em porcentagem)."
+#define NESTOPIA_AUDIO_VOL_TRI_LABEL_PT_BR "Volume do canal de ondas triangulares (%)"
+#define NESTOPIA_AUDIO_VOL_TRI_INFO_0_PT_BR "Modifica o volume do canal de ondas triangulares (em porcentagem)."
+#define NESTOPIA_AUDIO_VOL_NOISE_LABEL_PT_BR "Volume do canal de ruído (%)"
+#define NESTOPIA_AUDIO_VOL_NOISE_INFO_0_PT_BR "Muda o volume do canal de ruído (em porcentagem)."
+#define NESTOPIA_AUDIO_VOL_DPCM_LABEL_PT_BR "Volume do canal DPCM (%)"
+#define NESTOPIA_AUDIO_VOL_DPCM_INFO_0_PT_BR "Modifica o volume do canal DPCM (em porcentagem)."
+#define NESTOPIA_AUDIO_VOL_FDS_LABEL_PT_BR "Volume do canal FDS (%)"
+#define NESTOPIA_AUDIO_VOL_FDS_INFO_0_PT_BR "Modifica o volume do canal FDS (em porcentagem)."
+#define NESTOPIA_AUDIO_VOL_MMC5_LABEL_PT_BR "Volume do canal MMC5 (%)"
+#define NESTOPIA_AUDIO_VOL_MMC5_INFO_0_PT_BR "Modifica o volume do canal MMC5 (em porcentagem)."
+#define NESTOPIA_AUDIO_VOL_VRC6_LABEL_PT_BR "Volume do canal VRC6 (%)"
+#define NESTOPIA_AUDIO_VOL_VRC6_INFO_0_PT_BR "Modifica o volume do canal VRC6 (em porcentagem)."
+#define NESTOPIA_AUDIO_VOL_VRC7_LABEL_PT_BR "Volume do canal VRC7 (%)"
+#define NESTOPIA_AUDIO_VOL_VRC7_INFO_0_PT_BR "Modifica o volume do canal VRC7 (em porcentagem)."
+#define NESTOPIA_AUDIO_VOL_N163_LABEL_PT_BR "Volume do canal N163 (%)"
+#define NESTOPIA_AUDIO_VOL_N163_INFO_0_PT_BR "Modifica o volume do canal N163 (em porcentagem)."
+#define NESTOPIA_AUDIO_VOL_S5B_LABEL_PT_BR "Volume do canal S5B (%)"
 
 struct retro_core_option_v2_category option_cats_pt_br[] = {
    {

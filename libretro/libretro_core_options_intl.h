@@ -39,11 +39,11 @@ extern "C" {
 */
 /* RETRO_LANGUAGE_AR */
 
-#define CATEGORY_VIDEO_LABEL_AR NULL
+#define CATEGORY_VIDEO_LABEL_AR "فيديو"
 #define CATEGORY_VIDEO_INFO_0_AR NULL
-#define CATEGORY_AUDIO_LABEL_AR NULL
+#define CATEGORY_AUDIO_LABEL_AR "نظام تشغيل الصوت"
 #define CATEGORY_AUDIO_INFO_0_AR NULL
-#define CATEGORY_INPUT_LABEL_AR NULL
+#define CATEGORY_INPUT_LABEL_AR "الإدخال"
 #define CATEGORY_INPUT_INFO_0_AR NULL
 #define CATEGORY_HACKS_LABEL_AR NULL
 #define CATEGORY_HACKS_INFO_0_AR NULL
@@ -52,7 +52,7 @@ extern "C" {
 #define OPTION_VAL_COMPOSITE_AR NULL
 #define OPTION_VAL_SVIDEO_AR NULL
 #define OPTION_VAL_RGB_AR NULL
-#define OPTION_VAL_MONOCHROME_AR NULL
+#define OPTION_VAL_MONOCHROME_AR "أحادي اللون"
 #define NESTOPIA_PALETTE_LABEL_AR NULL
 #define NESTOPIA_PALETTE_INFO_0_AR NULL
 #define OPTION_VAL_CXA2025AS_AR NULL
@@ -66,7 +66,7 @@ extern "C" {
 #define OPTION_VAL_NTSC_HARDWARE_FBX_AR NULL
 #define OPTION_VAL_NES_CLASSIC_FBX_FS_AR NULL
 #define OPTION_VAL_RAW_AR NULL
-#define OPTION_VAL_CUSTOM_AR NULL
+#define OPTION_VAL_CUSTOM_AR "مخصص"
 #define NESTOPIA_NOSPRITELIMIT_LABEL_AR NULL
 #define NESTOPIA_NOSPRITELIMIT_INFO_0_AR NULL
 #define NESTOPIA_OVERCLOCK_LABEL_AR NULL
@@ -75,7 +75,7 @@ extern "C" {
 #define OPTION_VAL_2X_AR NULL
 #define NESTOPIA_SELECT_ADAPTER_LABEL_AR NULL
 #define NESTOPIA_SELECT_ADAPTER_INFO_0_AR NULL
-#define OPTION_VAL_AUTO_AR NULL
+#define OPTION_VAL_AUTO_AR "تلقائي"
 #define OPTION_VAL_NTSC_AR NULL
 #define OPTION_VAL_FAMICOM_AR NULL
 #define NESTOPIA_FDS_AUTO_INSERT_LABEL_AR NULL
@@ -769,7 +769,7 @@ struct retro_core_options_v2 options_ar = {
 #define OPTION_VAL_4_3_AST NULL
 #define NESTOPIA_GENIE_DISTORTION_LABEL_AST NULL
 #define NESTOPIA_GENIE_DISTORTION_INFO_0_AST NULL
-#define NESTOPIA_FAVORED_SYSTEM_LABEL_AST NULL
+#define NESTOPIA_FAVORED_SYSTEM_LABEL_AST "Rexón del sistema"
 #define NESTOPIA_FAVORED_SYSTEM_INFO_0_AST NULL
 #define OPTION_VAL_DENDY_AST NULL
 #define NESTOPIA_RAM_POWER_STATE_LABEL_AST NULL
@@ -2079,26 +2079,26 @@ struct retro_core_options_v2 options_ca = {
 
 /* RETRO_LANGUAGE_CHS */
 
-#define CATEGORY_VIDEO_LABEL_CHS NULL
+#define CATEGORY_VIDEO_LABEL_CHS "视频"
 #define CATEGORY_VIDEO_INFO_0_CHS NULL
-#define CATEGORY_AUDIO_LABEL_CHS NULL
+#define CATEGORY_AUDIO_LABEL_CHS "音频"
 #define CATEGORY_AUDIO_INFO_0_CHS NULL
-#define CATEGORY_INPUT_LABEL_CHS NULL
+#define CATEGORY_INPUT_LABEL_CHS "输入"
 #define CATEGORY_INPUT_INFO_0_CHS NULL
-#define CATEGORY_HACKS_LABEL_CHS NULL
+#define CATEGORY_HACKS_LABEL_CHS "模拟修改"
 #define CATEGORY_HACKS_INFO_0_CHS NULL
-#define NESTOPIA_BLARGG_NTSC_FILTER_LABEL_CHS NULL
+#define NESTOPIA_BLARGG_NTSC_FILTER_LABEL_CHS "Blgg NTSC过滤器"
 #define NESTOPIA_BLARGG_NTSC_FILTER_INFO_0_CHS NULL
 #define OPTION_VAL_COMPOSITE_CHS NULL
-#define OPTION_VAL_SVIDEO_CHS NULL
+#define OPTION_VAL_SVIDEO_CHS "S-视频"
 #define OPTION_VAL_RGB_CHS NULL
-#define OPTION_VAL_MONOCHROME_CHS NULL
-#define NESTOPIA_PALETTE_LABEL_CHS NULL
+#define OPTION_VAL_MONOCHROME_CHS "黑白"
+#define NESTOPIA_PALETTE_LABEL_CHS "调色板"
 #define NESTOPIA_PALETTE_INFO_0_CHS NULL
 #define OPTION_VAL_CXA2025AS_CHS NULL
 #define OPTION_VAL_CONSUMER_CHS NULL
 #define OPTION_VAL_CANONICAL_CHS NULL
-#define OPTION_VAL_ALTERNATIVE_CHS NULL
+#define OPTION_VAL_ALTERNATIVE_CHS "候选窗口"
 #define OPTION_VAL_RGB_O1_CHS NULL
 #define OPTION_VAL_PAL_CHS NULL
 #define OPTION_VAL_COMPOSITE_DIRECT_FBX_CHS NULL
@@ -2106,16 +2106,16 @@ struct retro_core_options_v2 options_ca = {
 #define OPTION_VAL_NTSC_HARDWARE_FBX_CHS NULL
 #define OPTION_VAL_NES_CLASSIC_FBX_FS_CHS NULL
 #define OPTION_VAL_RAW_CHS NULL
-#define OPTION_VAL_CUSTOM_CHS NULL
+#define OPTION_VAL_CUSTOM_CHS "自定义"
 #define NESTOPIA_NOSPRITELIMIT_LABEL_CHS NULL
 #define NESTOPIA_NOSPRITELIMIT_INFO_0_CHS NULL
 #define NESTOPIA_OVERCLOCK_LABEL_CHS NULL
 #define NESTOPIA_OVERCLOCK_INFO_0_CHS NULL
 #define OPTION_VAL_1X_CHS NULL
-#define OPTION_VAL_2X_CHS NULL
+#define OPTION_VAL_2X_CHS "2 倍"
 #define NESTOPIA_SELECT_ADAPTER_LABEL_CHS NULL
 #define NESTOPIA_SELECT_ADAPTER_INFO_0_CHS NULL
-#define OPTION_VAL_AUTO_CHS NULL
+#define OPTION_VAL_AUTO_CHS "自动"
 #define OPTION_VAL_NTSC_CHS NULL
 #define OPTION_VAL_FAMICOM_CHS NULL
 #define NESTOPIA_FDS_AUTO_INSERT_LABEL_CHS NULL
@@ -2129,20 +2129,20 @@ struct retro_core_options_v2 options_ca = {
 #define OPTION_VAL_4_3_CHS NULL
 #define NESTOPIA_GENIE_DISTORTION_LABEL_CHS NULL
 #define NESTOPIA_GENIE_DISTORTION_INFO_0_CHS NULL
-#define NESTOPIA_FAVORED_SYSTEM_LABEL_CHS NULL
+#define NESTOPIA_FAVORED_SYSTEM_LABEL_CHS "系统区域"
 #define NESTOPIA_FAVORED_SYSTEM_INFO_0_CHS NULL
 #define OPTION_VAL_DENDY_CHS NULL
 #define NESTOPIA_RAM_POWER_STATE_LABEL_CHS NULL
 #define NESTOPIA_RAM_POWER_STATE_INFO_0_CHS NULL
 #define OPTION_VAL_0X00_CHS NULL
 #define OPTION_VAL_0XFF_CHS NULL
-#define OPTION_VAL_RANDOM_CHS NULL
+#define OPTION_VAL_RANDOM_CHS "随机"
 #define NESTOPIA_BUTTON_SHIFT_LABEL_CHS NULL
 #define NESTOPIA_BUTTON_SHIFT_INFO_0_CHS NULL
 #define NESTOPIA_ARKANOID_DEVICE_LABEL_CHS NULL
 #define NESTOPIA_ARKANOID_DEVICE_INFO_0_CHS NULL
-#define OPTION_VAL_MOUSE_CHS NULL
-#define OPTION_VAL_POINTER_CHS NULL
+#define OPTION_VAL_MOUSE_CHS "鼠标"
+#define OPTION_VAL_POINTER_CHS "指针"
 #define NESTOPIA_ZAPPER_DEVICE_LABEL_CHS NULL
 #define NESTOPIA_ZAPPER_DEVICE_INFO_0_CHS NULL
 #define OPTION_VAL_LIGHTGUN_CHS NULL
@@ -2759,11 +2759,11 @@ struct retro_core_options_v2 options_chs = {
 
 /* RETRO_LANGUAGE_CHT */
 
-#define CATEGORY_VIDEO_LABEL_CHT NULL
+#define CATEGORY_VIDEO_LABEL_CHT "視訊"
 #define CATEGORY_VIDEO_INFO_0_CHT NULL
-#define CATEGORY_AUDIO_LABEL_CHT NULL
+#define CATEGORY_AUDIO_LABEL_CHT "音訊"
 #define CATEGORY_AUDIO_INFO_0_CHT NULL
-#define CATEGORY_INPUT_LABEL_CHT NULL
+#define CATEGORY_INPUT_LABEL_CHT "輸入"
 #define CATEGORY_INPUT_INFO_0_CHT NULL
 #define CATEGORY_HACKS_LABEL_CHT NULL
 #define CATEGORY_HACKS_INFO_0_CHT NULL
@@ -2786,7 +2786,7 @@ struct retro_core_options_v2 options_chs = {
 #define OPTION_VAL_NTSC_HARDWARE_FBX_CHT NULL
 #define OPTION_VAL_NES_CLASSIC_FBX_FS_CHT NULL
 #define OPTION_VAL_RAW_CHT NULL
-#define OPTION_VAL_CUSTOM_CHT NULL
+#define OPTION_VAL_CUSTOM_CHT "自定義"
 #define NESTOPIA_NOSPRITELIMIT_LABEL_CHT NULL
 #define NESTOPIA_NOSPRITELIMIT_INFO_0_CHT NULL
 #define NESTOPIA_OVERCLOCK_LABEL_CHT NULL
@@ -2795,7 +2795,7 @@ struct retro_core_options_v2 options_chs = {
 #define OPTION_VAL_2X_CHT NULL
 #define NESTOPIA_SELECT_ADAPTER_LABEL_CHT NULL
 #define NESTOPIA_SELECT_ADAPTER_INFO_0_CHT NULL
-#define OPTION_VAL_AUTO_CHT NULL
+#define OPTION_VAL_AUTO_CHT "自動"
 #define OPTION_VAL_NTSC_CHT NULL
 #define OPTION_VAL_FAMICOM_CHT NULL
 #define NESTOPIA_FDS_AUTO_INSERT_LABEL_CHT NULL
@@ -2809,7 +2809,7 @@ struct retro_core_options_v2 options_chs = {
 #define OPTION_VAL_4_3_CHT NULL
 #define NESTOPIA_GENIE_DISTORTION_LABEL_CHT NULL
 #define NESTOPIA_GENIE_DISTORTION_INFO_0_CHT NULL
-#define NESTOPIA_FAVORED_SYSTEM_LABEL_CHT NULL
+#define NESTOPIA_FAVORED_SYSTEM_LABEL_CHT "系統區域"
 #define NESTOPIA_FAVORED_SYSTEM_INFO_0_CHT NULL
 #define OPTION_VAL_DENDY_CHT NULL
 #define NESTOPIA_RAM_POWER_STATE_LABEL_CHT NULL
@@ -3441,9 +3441,9 @@ struct retro_core_options_v2 options_cht = {
 
 #define CATEGORY_VIDEO_LABEL_CS NULL
 #define CATEGORY_VIDEO_INFO_0_CS NULL
-#define CATEGORY_AUDIO_LABEL_CS NULL
+#define CATEGORY_AUDIO_LABEL_CS "Zvuk"
 #define CATEGORY_AUDIO_INFO_0_CS NULL
-#define CATEGORY_INPUT_LABEL_CS NULL
+#define CATEGORY_INPUT_LABEL_CS "Vstup"
 #define CATEGORY_INPUT_INFO_0_CS NULL
 #define CATEGORY_HACKS_LABEL_CS NULL
 #define CATEGORY_HACKS_INFO_0_CS NULL
@@ -4123,7 +4123,7 @@ struct retro_core_options_v2 options_cs = {
 #define CATEGORY_VIDEO_INFO_0_CY NULL
 #define CATEGORY_AUDIO_LABEL_CY NULL
 #define CATEGORY_AUDIO_INFO_0_CY NULL
-#define CATEGORY_INPUT_LABEL_CY NULL
+#define CATEGORY_INPUT_LABEL_CY "Mewnbwn"
 #define CATEGORY_INPUT_INFO_0_CY NULL
 #define CATEGORY_HACKS_LABEL_CY NULL
 #define CATEGORY_HACKS_INFO_0_CY NULL
@@ -4801,7 +4801,7 @@ struct retro_core_options_v2 options_cy = {
 
 #define CATEGORY_VIDEO_LABEL_DA NULL
 #define CATEGORY_VIDEO_INFO_0_DA NULL
-#define CATEGORY_AUDIO_LABEL_DA NULL
+#define CATEGORY_AUDIO_LABEL_DA "Lyd"
 #define CATEGORY_AUDIO_INFO_0_DA NULL
 #define CATEGORY_INPUT_LABEL_DA NULL
 #define CATEGORY_INPUT_INFO_0_DA NULL
@@ -5485,14 +5485,14 @@ struct retro_core_options_v2 options_da = {
 #define CATEGORY_AUDIO_INFO_0_DE NULL
 #define CATEGORY_INPUT_LABEL_DE NULL
 #define CATEGORY_INPUT_INFO_0_DE NULL
-#define CATEGORY_HACKS_LABEL_DE NULL
+#define CATEGORY_HACKS_LABEL_DE "Emulations-Hacks"
 #define CATEGORY_HACKS_INFO_0_DE NULL
 #define NESTOPIA_BLARGG_NTSC_FILTER_LABEL_DE NULL
 #define NESTOPIA_BLARGG_NTSC_FILTER_INFO_0_DE NULL
 #define OPTION_VAL_COMPOSITE_DE NULL
 #define OPTION_VAL_SVIDEO_DE NULL
 #define OPTION_VAL_RGB_DE NULL
-#define OPTION_VAL_MONOCHROME_DE NULL
+#define OPTION_VAL_MONOCHROME_DE "Monochrom"
 #define NESTOPIA_PALETTE_LABEL_DE NULL
 #define NESTOPIA_PALETTE_INFO_0_DE NULL
 #define OPTION_VAL_CXA2025AS_DE NULL
@@ -5505,17 +5505,17 @@ struct retro_core_options_v2 options_da = {
 #define OPTION_VAL_PVM_STYLE_D93_FBX_DE NULL
 #define OPTION_VAL_NTSC_HARDWARE_FBX_DE NULL
 #define OPTION_VAL_NES_CLASSIC_FBX_FS_DE NULL
-#define OPTION_VAL_RAW_DE NULL
-#define OPTION_VAL_CUSTOM_DE NULL
+#define OPTION_VAL_RAW_DE "Roh"
+#define OPTION_VAL_CUSTOM_DE "Benutzerdefiniert"
 #define NESTOPIA_NOSPRITELIMIT_LABEL_DE NULL
 #define NESTOPIA_NOSPRITELIMIT_INFO_0_DE NULL
 #define NESTOPIA_OVERCLOCK_LABEL_DE NULL
 #define NESTOPIA_OVERCLOCK_INFO_0_DE NULL
-#define OPTION_VAL_1X_DE NULL
-#define OPTION_VAL_2X_DE NULL
+#define OPTION_VAL_1X_DE "1 x"
+#define OPTION_VAL_2X_DE "2 x"
 #define NESTOPIA_SELECT_ADAPTER_LABEL_DE NULL
 #define NESTOPIA_SELECT_ADAPTER_INFO_0_DE NULL
-#define OPTION_VAL_AUTO_DE NULL
+#define OPTION_VAL_AUTO_DE "Automatisch"
 #define OPTION_VAL_NTSC_DE NULL
 #define OPTION_VAL_FAMICOM_DE NULL
 #define NESTOPIA_FDS_AUTO_INSERT_LABEL_DE NULL
@@ -5529,7 +5529,7 @@ struct retro_core_options_v2 options_da = {
 #define OPTION_VAL_4_3_DE NULL
 #define NESTOPIA_GENIE_DISTORTION_LABEL_DE NULL
 #define NESTOPIA_GENIE_DISTORTION_INFO_0_DE NULL
-#define NESTOPIA_FAVORED_SYSTEM_LABEL_DE NULL
+#define NESTOPIA_FAVORED_SYSTEM_LABEL_DE "Systemregion"
 #define NESTOPIA_FAVORED_SYSTEM_INFO_0_DE NULL
 #define OPTION_VAL_DENDY_DE NULL
 #define NESTOPIA_RAM_POWER_STATE_LABEL_DE NULL
@@ -6159,11 +6159,11 @@ struct retro_core_options_v2 options_de = {
 
 /* RETRO_LANGUAGE_EL */
 
-#define CATEGORY_VIDEO_LABEL_EL NULL
+#define CATEGORY_VIDEO_LABEL_EL "Οδηγός Βίντεο"
 #define CATEGORY_VIDEO_INFO_0_EL NULL
-#define CATEGORY_AUDIO_LABEL_EL NULL
+#define CATEGORY_AUDIO_LABEL_EL "Οδηγός Ήχου"
 #define CATEGORY_AUDIO_INFO_0_EL NULL
-#define CATEGORY_INPUT_LABEL_EL NULL
+#define CATEGORY_INPUT_LABEL_EL "Οδηγός Εισαγωγής"
 #define CATEGORY_INPUT_INFO_0_EL NULL
 #define CATEGORY_HACKS_LABEL_EL NULL
 #define CATEGORY_HACKS_INFO_0_EL NULL
@@ -6172,7 +6172,7 @@ struct retro_core_options_v2 options_de = {
 #define OPTION_VAL_COMPOSITE_EL NULL
 #define OPTION_VAL_SVIDEO_EL NULL
 #define OPTION_VAL_RGB_EL NULL
-#define OPTION_VAL_MONOCHROME_EL NULL
+#define OPTION_VAL_MONOCHROME_EL "Μονόχρωμο"
 #define NESTOPIA_PALETTE_LABEL_EL NULL
 #define NESTOPIA_PALETTE_INFO_0_EL NULL
 #define OPTION_VAL_CXA2025AS_EL NULL
@@ -6839,11 +6839,11 @@ struct retro_core_options_v2 options_el = {
 
 /* RETRO_LANGUAGE_EO */
 
-#define CATEGORY_VIDEO_LABEL_EO NULL
+#define CATEGORY_VIDEO_LABEL_EO "Video Driver"
 #define CATEGORY_VIDEO_INFO_0_EO NULL
-#define CATEGORY_AUDIO_LABEL_EO NULL
+#define CATEGORY_AUDIO_LABEL_EO "Audio Driver"
 #define CATEGORY_AUDIO_INFO_0_EO NULL
-#define CATEGORY_INPUT_LABEL_EO NULL
+#define CATEGORY_INPUT_LABEL_EO "Input Driver"
 #define CATEGORY_INPUT_INFO_0_EO NULL
 #define CATEGORY_HACKS_LABEL_EO NULL
 #define CATEGORY_HACKS_INFO_0_EO NULL
@@ -7526,15 +7526,15 @@ struct retro_core_options_v2 options_eo = {
 #define CATEGORY_INPUT_LABEL_ES "Entrada"
 #define CATEGORY_INPUT_INFO_0_ES "Cambia los ajustes de los dispositivos de entrada."
 #define CATEGORY_HACKS_LABEL_ES "Arreglos de emulación"
-#define CATEGORY_HACKS_INFO_0_ES "Cambia las opciones de overclockeo del procesador y de precisión de la emulación que afectan al rendimiento a bajo nivel y a la compatibilidad."
+#define CATEGORY_HACKS_INFO_0_ES "Cambia las opciones de velocidad del procesador y de precisión de la emulación que afectan al rendimiento a bajo nivel y a la compatibilidad."
 #define NESTOPIA_BLARGG_NTSC_FILTER_LABEL_ES "Filtro NTSC de Blargg"
-#define NESTOPIA_BLARGG_NTSC_FILTER_INFO_0_ES "Activa los filtros NTSC de blargg."
+#define NESTOPIA_BLARGG_NTSC_FILTER_INFO_0_ES "Activa los filtros NTSC de Blargg."
 #define OPTION_VAL_COMPOSITE_ES "Vídeo compuesto"
 #define OPTION_VAL_SVIDEO_ES NULL
 #define OPTION_VAL_RGB_ES "SCART RGB"
 #define OPTION_VAL_MONOCHROME_ES "Monocromo"
 #define NESTOPIA_PALETTE_LABEL_ES "Paleta"
-#define NESTOPIA_PALETTE_INFO_0_ES "Indica la paleta de colores a utilizar."
+#define NESTOPIA_PALETTE_INFO_0_ES "Indica la paleta de colores utilizada."
 #define OPTION_VAL_CXA2025AS_ES NULL
 #define OPTION_VAL_CONSUMER_ES "Para consumidores"
 #define OPTION_VAL_CANONICAL_ES "Canónica"
@@ -7548,9 +7548,9 @@ struct retro_core_options_v2 options_eo = {
 #define OPTION_VAL_RAW_ES "Datos en bruto"
 #define OPTION_VAL_CUSTOM_ES "Personalizar"
 #define NESTOPIA_NOSPRITELIMIT_LABEL_ES "Desactivar límite de sprites"
-#define NESTOPIA_NOSPRITELIMIT_INFO_0_ES "Elimina el límite de 8 sprites por líneas de exploración que tenía el hardware original."
-#define NESTOPIA_OVERCLOCK_LABEL_ES "Velocidad de la CPU (overclockear)"
-#define NESTOPIA_OVERCLOCK_INFO_0_ES "Acelera la CPU emulada."
+#define NESTOPIA_NOSPRITELIMIT_INFO_0_ES "Elimina el límite de 8 sprites por línea de barrido que tenía el hardware original."
+#define NESTOPIA_OVERCLOCK_LABEL_ES "Velocidad de la CPU (aceleración)"
+#define NESTOPIA_OVERCLOCK_INFO_0_ES "Aumenta la velocidad de la CPU emulada."
 #define OPTION_VAL_1X_ES NULL
 #define OPTION_VAL_2X_ES NULL
 #define NESTOPIA_SELECT_ADAPTER_LABEL_ES "Adaptador para 4 jugadores"
@@ -7560,9 +7560,9 @@ struct retro_core_options_v2 options_eo = {
 #define OPTION_VAL_FAMICOM_ES NULL
 #define NESTOPIA_FDS_AUTO_INSERT_LABEL_ES "Autoinsertar disquete de FDS"
 #define NESTOPIA_FDS_AUTO_INSERT_INFO_0_ES "Introduce automáticamente el primer disquete del FDS al reiniciar."
-#define NESTOPIA_OVERSCAN_V_LABEL_ES "Camuflar «overscan» (vertical)"
+#define NESTOPIA_OVERSCAN_V_LABEL_ES "Camuflar barrido adicional u «overscan» (vertical)"
 #define NESTOPIA_OVERSCAN_V_INFO_0_ES "Camufla (la parte vertical de) los posibles defectos visuales aleatorios de vídeo que normalmente ocultaría el marco de un televisor de definición estándar."
-#define NESTOPIA_OVERSCAN_H_LABEL_ES "Camuflar «overscan» (horizontal)"
+#define NESTOPIA_OVERSCAN_H_LABEL_ES "Camuflar barrido adicional u «overscan» (horizontal)"
 #define NESTOPIA_OVERSCAN_H_INFO_0_ES "Camufla (la parte horizontal de) los posibles defectos visuales aleatorios de vídeo que normalmente ocultaría el marco de un televisor de definición estándar."
 #define NESTOPIA_ASPECT_LABEL_ES "Relación de aspecto preferida"
 #define NESTOPIA_ASPECT_INFO_0_ES "Es necesario configurar la relación de aspecto de RetroArch como «Indicada por el núcleo» en los ajustes de vídeo. «Selección automática» utilizará la base de datos NstDatabase.xml para elegir automáticamente la relación de aspecto. En caso de no existir esta base de datos, se utilizará la relación NTSC por defecto."
@@ -7580,17 +7580,17 @@ struct retro_core_options_v2 options_eo = {
 #define NESTOPIA_BUTTON_SHIFT_LABEL_ES "Rotar los botones en sentido horario"
 #define NESTOPIA_BUTTON_SHIFT_INFO_0_ES "Cambia el uso de los botones A/B/X/Y girando su utilización en el sentido de las agujas del reloj."
 #define NESTOPIA_ARKANOID_DEVICE_LABEL_ES "Dispositivo para Arkanoid"
-#define NESTOPIA_ARKANOID_DEVICE_INFO_0_ES "Selecciona el dispositivo que quieres usar para la paleta de Arkanoid."
+#define NESTOPIA_ARKANOID_DEVICE_INFO_0_ES "Selecciona el dispositivo que quieres usar para el mando analógico de Arkanoid."
 #define OPTION_VAL_MOUSE_ES "Ratón"
 #define OPTION_VAL_POINTER_ES "Puntero/Pantalla táctil"
 #define NESTOPIA_ZAPPER_DEVICE_LABEL_ES "Dispositivo para Zapper"
-#define NESTOPIA_ZAPPER_DEVICE_INFO_0_ES "Selecciona el dispositivo que quieres usar para la Zapper."
+#define NESTOPIA_ZAPPER_DEVICE_INFO_0_ES "Selecciona el dispositivo que quieres usar para Zapper."
 #define OPTION_VAL_LIGHTGUN_ES "Pistola de luz"
 #define NESTOPIA_SHOW_CROSSHAIR_LABEL_ES "Mostrar punto de mira"
-#define NESTOPIA_SHOW_CROSSHAIR_INFO_0_ES "Muestra o no un punto de mira al utilizar la Zapper."
+#define NESTOPIA_SHOW_CROSSHAIR_INFO_0_ES "Muestra un punto de mira al utilizar la Zapper."
 #define NESTOPIA_TURBO_PULSE_LABEL_ES "Velocidad de pulsación del turbo"
 #define NESTOPIA_TURBO_PULSE_INFO_0_ES "Establece la velocidad de pulsación de los botones Turbo B y Turbo A."
-#define NESTOPIA_SHOW_ADVANCED_AV_SETTINGS_LABEL_ES "Mostrar ajustes avanzados de audio (es necesario abrir y cerrar el menú)"
+#define NESTOPIA_SHOW_ADVANCED_AV_SETTINGS_LABEL_ES "Mostrar ajustes avanzados de audio (necesario abrir y cerrar el menú)"
 #define NESTOPIA_SHOW_ADVANCED_AV_SETTINGS_INFO_0_ES "Permite configurar los ajustes de bajo nivel de los canales de audio."
 #define NESTOPIA_AUDIO_VOL_SQ1_LABEL_ES "Volumen del canal de ondas cuadradas 1 (%)"
 #define NESTOPIA_AUDIO_VOL_SQ1_INFO_0_ES "Modifica el volumen del canal de ondas cuadradas 1 (en porcentaje)."
@@ -8199,11 +8199,11 @@ struct retro_core_options_v2 options_es = {
 
 /* RETRO_LANGUAGE_FA */
 
-#define CATEGORY_VIDEO_LABEL_FA NULL
+#define CATEGORY_VIDEO_LABEL_FA "ویدیو"
 #define CATEGORY_VIDEO_INFO_0_FA NULL
-#define CATEGORY_AUDIO_LABEL_FA NULL
+#define CATEGORY_AUDIO_LABEL_FA "صدا"
 #define CATEGORY_AUDIO_INFO_0_FA NULL
-#define CATEGORY_INPUT_LABEL_FA NULL
+#define CATEGORY_INPUT_LABEL_FA "داده"
 #define CATEGORY_INPUT_INFO_0_FA NULL
 #define CATEGORY_HACKS_LABEL_FA NULL
 #define CATEGORY_HACKS_INFO_0_FA NULL
@@ -8896,16 +8896,16 @@ struct retro_core_options_v2 options_fa = {
 #define NESTOPIA_PALETTE_LABEL_FI "Paletti"
 #define NESTOPIA_PALETTE_INFO_0_FI "Käytettävä väripaletti."
 #define OPTION_VAL_CXA2025AS_FI NULL
-#define OPTION_VAL_CONSUMER_FI NULL
-#define OPTION_VAL_CANONICAL_FI NULL
-#define OPTION_VAL_ALTERNATIVE_FI NULL
+#define OPTION_VAL_CONSUMER_FI "Kuluttaja"
+#define OPTION_VAL_CANONICAL_FI "Kanoninen"
+#define OPTION_VAL_ALTERNATIVE_FI "Vaihtoehtoinen"
 #define OPTION_VAL_RGB_O1_FI NULL
 #define OPTION_VAL_PAL_FI NULL
 #define OPTION_VAL_COMPOSITE_DIRECT_FBX_FI "Komposiitti Direct FBx"
 #define OPTION_VAL_PVM_STYLE_D93_FBX_FI "PVM-tyylinen D93 FBx"
 #define OPTION_VAL_NTSC_HARDWARE_FBX_FI "NTSC laitteisto FBx"
-#define OPTION_VAL_NES_CLASSIC_FBX_FS_FI NULL
-#define OPTION_VAL_RAW_FI NULL
+#define OPTION_VAL_NES_CLASSIC_FBX_FS_FI "NES Classic FBx (korjattu)"
+#define OPTION_VAL_RAW_FI "Tavallinen"
 #define OPTION_VAL_CUSTOM_FI "Mukautettu"
 #define NESTOPIA_NOSPRITELIMIT_LABEL_FI "Remove sprite-rajoitus"
 #define NESTOPIA_NOSPRITELIMIT_INFO_0_FI "Poista 8 spriten vaakasuuntainen laitteisto rajoitus."
@@ -10239,13 +10239,13 @@ struct retro_core_options_v2 options_fr = {
 
 /* RETRO_LANGUAGE_GL */
 
-#define CATEGORY_VIDEO_LABEL_GL NULL
+#define CATEGORY_VIDEO_LABEL_GL "Vídeo"
 #define CATEGORY_VIDEO_INFO_0_GL NULL
-#define CATEGORY_AUDIO_LABEL_GL NULL
+#define CATEGORY_AUDIO_LABEL_GL "Son"
 #define CATEGORY_AUDIO_INFO_0_GL NULL
-#define CATEGORY_INPUT_LABEL_GL NULL
+#define CATEGORY_INPUT_LABEL_GL "Entrada"
 #define CATEGORY_INPUT_INFO_0_GL NULL
-#define CATEGORY_HACKS_LABEL_GL NULL
+#define CATEGORY_HACKS_LABEL_GL "Hacks de emulación"
 #define CATEGORY_HACKS_INFO_0_GL NULL
 #define NESTOPIA_BLARGG_NTSC_FILTER_LABEL_GL NULL
 #define NESTOPIA_BLARGG_NTSC_FILTER_INFO_0_GL NULL
@@ -10919,11 +10919,11 @@ struct retro_core_options_v2 options_gl = {
 
 /* RETRO_LANGUAGE_HE */
 
-#define CATEGORY_VIDEO_LABEL_HE NULL
+#define CATEGORY_VIDEO_LABEL_HE "וידאו"
 #define CATEGORY_VIDEO_INFO_0_HE NULL
-#define CATEGORY_AUDIO_LABEL_HE NULL
+#define CATEGORY_AUDIO_LABEL_HE "שמע"
 #define CATEGORY_AUDIO_INFO_0_HE NULL
-#define CATEGORY_INPUT_LABEL_HE NULL
+#define CATEGORY_INPUT_LABEL_HE "קלט"
 #define CATEGORY_INPUT_INFO_0_HE NULL
 #define CATEGORY_HACKS_LABEL_HE NULL
 #define CATEGORY_HACKS_INFO_0_HE NULL
@@ -11599,11 +11599,11 @@ struct retro_core_options_v2 options_he = {
 
 /* RETRO_LANGUAGE_HU */
 
-#define CATEGORY_VIDEO_LABEL_HU NULL
+#define CATEGORY_VIDEO_LABEL_HU "Videó"
 #define CATEGORY_VIDEO_INFO_0_HU NULL
-#define CATEGORY_AUDIO_LABEL_HU NULL
+#define CATEGORY_AUDIO_LABEL_HU "Hang"
 #define CATEGORY_AUDIO_INFO_0_HU NULL
-#define CATEGORY_INPUT_LABEL_HU NULL
+#define CATEGORY_INPUT_LABEL_HU "Bevitel"
 #define CATEGORY_INPUT_INFO_0_HU NULL
 #define CATEGORY_HACKS_LABEL_HU NULL
 #define CATEGORY_HACKS_INFO_0_HU NULL
@@ -12281,9 +12281,9 @@ struct retro_core_options_v2 options_hu = {
 
 #define CATEGORY_VIDEO_LABEL_ID NULL
 #define CATEGORY_VIDEO_INFO_0_ID NULL
-#define CATEGORY_AUDIO_LABEL_ID NULL
+#define CATEGORY_AUDIO_LABEL_ID "Suara"
 #define CATEGORY_AUDIO_INFO_0_ID NULL
-#define CATEGORY_INPUT_LABEL_ID NULL
+#define CATEGORY_INPUT_LABEL_ID "Masukan"
 #define CATEGORY_INPUT_INFO_0_ID NULL
 #define CATEGORY_HACKS_LABEL_ID NULL
 #define CATEGORY_HACKS_INFO_0_ID NULL
@@ -13639,20 +13639,20 @@ struct retro_core_options_v2 options_it = {
 
 /* RETRO_LANGUAGE_JA */
 
-#define CATEGORY_VIDEO_LABEL_JA NULL
+#define CATEGORY_VIDEO_LABEL_JA "ビデオのドライバ"
 #define CATEGORY_VIDEO_INFO_0_JA NULL
-#define CATEGORY_AUDIO_LABEL_JA NULL
+#define CATEGORY_AUDIO_LABEL_JA "オーディオのドライバ"
 #define CATEGORY_AUDIO_INFO_0_JA NULL
-#define CATEGORY_INPUT_LABEL_JA NULL
+#define CATEGORY_INPUT_LABEL_JA "入力"
 #define CATEGORY_INPUT_INFO_0_JA NULL
-#define CATEGORY_HACKS_LABEL_JA NULL
+#define CATEGORY_HACKS_LABEL_JA "エミュレーションハック"
 #define CATEGORY_HACKS_INFO_0_JA NULL
 #define NESTOPIA_BLARGG_NTSC_FILTER_LABEL_JA NULL
 #define NESTOPIA_BLARGG_NTSC_FILTER_INFO_0_JA NULL
 #define OPTION_VAL_COMPOSITE_JA NULL
 #define OPTION_VAL_SVIDEO_JA NULL
 #define OPTION_VAL_RGB_JA NULL
-#define OPTION_VAL_MONOCHROME_JA NULL
+#define OPTION_VAL_MONOCHROME_JA "モノクローム"
 #define NESTOPIA_PALETTE_LABEL_JA NULL
 #define NESTOPIA_PALETTE_INFO_0_JA NULL
 #define OPTION_VAL_CXA2025AS_JA NULL
@@ -13666,7 +13666,7 @@ struct retro_core_options_v2 options_it = {
 #define OPTION_VAL_NTSC_HARDWARE_FBX_JA NULL
 #define OPTION_VAL_NES_CLASSIC_FBX_FS_JA NULL
 #define OPTION_VAL_RAW_JA NULL
-#define OPTION_VAL_CUSTOM_JA NULL
+#define OPTION_VAL_CUSTOM_JA "カスタム"
 #define NESTOPIA_NOSPRITELIMIT_LABEL_JA NULL
 #define NESTOPIA_NOSPRITELIMIT_INFO_0_JA NULL
 #define NESTOPIA_OVERCLOCK_LABEL_JA NULL
@@ -13675,7 +13675,7 @@ struct retro_core_options_v2 options_it = {
 #define OPTION_VAL_2X_JA NULL
 #define NESTOPIA_SELECT_ADAPTER_LABEL_JA NULL
 #define NESTOPIA_SELECT_ADAPTER_INFO_0_JA NULL
-#define OPTION_VAL_AUTO_JA NULL
+#define OPTION_VAL_AUTO_JA "自動"
 #define OPTION_VAL_NTSC_JA NULL
 #define OPTION_VAL_FAMICOM_JA NULL
 #define NESTOPIA_FDS_AUTO_INSERT_LABEL_JA NULL
@@ -13689,7 +13689,7 @@ struct retro_core_options_v2 options_it = {
 #define OPTION_VAL_4_3_JA NULL
 #define NESTOPIA_GENIE_DISTORTION_LABEL_JA NULL
 #define NESTOPIA_GENIE_DISTORTION_INFO_0_JA NULL
-#define NESTOPIA_FAVORED_SYSTEM_LABEL_JA NULL
+#define NESTOPIA_FAVORED_SYSTEM_LABEL_JA "システム地域"
 #define NESTOPIA_FAVORED_SYSTEM_INFO_0_JA NULL
 #define OPTION_VAL_DENDY_JA NULL
 #define NESTOPIA_RAM_POWER_STATE_LABEL_JA NULL
@@ -15681,9 +15681,9 @@ struct retro_core_options_v2 options_mt = {
 
 #define CATEGORY_VIDEO_LABEL_NL NULL
 #define CATEGORY_VIDEO_INFO_0_NL NULL
-#define CATEGORY_AUDIO_LABEL_NL NULL
+#define CATEGORY_AUDIO_LABEL_NL "Geluid"
 #define CATEGORY_AUDIO_INFO_0_NL NULL
-#define CATEGORY_INPUT_LABEL_NL NULL
+#define CATEGORY_INPUT_LABEL_NL "Invoer"
 #define CATEGORY_INPUT_INFO_0_NL NULL
 #define CATEGORY_HACKS_LABEL_NL NULL
 #define CATEGORY_HACKS_INFO_0_NL NULL
@@ -15706,7 +15706,7 @@ struct retro_core_options_v2 options_mt = {
 #define OPTION_VAL_NTSC_HARDWARE_FBX_NL NULL
 #define OPTION_VAL_NES_CLASSIC_FBX_FS_NL NULL
 #define OPTION_VAL_RAW_NL NULL
-#define OPTION_VAL_CUSTOM_NL NULL
+#define OPTION_VAL_CUSTOM_NL "Aangepast"
 #define NESTOPIA_NOSPRITELIMIT_LABEL_NL NULL
 #define NESTOPIA_NOSPRITELIMIT_INFO_0_NL NULL
 #define NESTOPIA_OVERCLOCK_LABEL_NL NULL
@@ -15715,7 +15715,7 @@ struct retro_core_options_v2 options_mt = {
 #define OPTION_VAL_2X_NL NULL
 #define NESTOPIA_SELECT_ADAPTER_LABEL_NL NULL
 #define NESTOPIA_SELECT_ADAPTER_INFO_0_NL NULL
-#define OPTION_VAL_AUTO_NL NULL
+#define OPTION_VAL_AUTO_NL "Automatisch"
 #define OPTION_VAL_NTSC_NL NULL
 #define OPTION_VAL_FAMICOM_NL NULL
 #define NESTOPIA_FDS_AUTO_INSERT_LABEL_NL NULL
@@ -16359,7 +16359,7 @@ struct retro_core_options_v2 options_nl = {
 
 /* RETRO_LANGUAGE_OC */
 
-#define CATEGORY_VIDEO_LABEL_OC NULL
+#define CATEGORY_VIDEO_LABEL_OC "Vidèo"
 #define CATEGORY_VIDEO_INFO_0_OC NULL
 #define CATEGORY_AUDIO_LABEL_OC NULL
 #define CATEGORY_AUDIO_INFO_0_OC NULL
@@ -17039,20 +17039,20 @@ struct retro_core_options_v2 options_oc = {
 
 /* RETRO_LANGUAGE_PL */
 
-#define CATEGORY_VIDEO_LABEL_PL NULL
+#define CATEGORY_VIDEO_LABEL_PL "Wideo"
 #define CATEGORY_VIDEO_INFO_0_PL "Zmień proporcje aspektów, wyświetlanie przycinania, palety kolorów i ustawienia filtrów wideo."
 #define CATEGORY_AUDIO_LABEL_PL NULL
 #define CATEGORY_AUDIO_INFO_0_PL "Zmień efekty dźwiękowe i głośność kanałów."
-#define CATEGORY_INPUT_LABEL_PL NULL
+#define CATEGORY_INPUT_LABEL_PL "Wejście"
 #define CATEGORY_INPUT_INFO_0_PL "Zmień urządzenia wejściowe i inne ustawienia związane z wprowadzaniem."
-#define CATEGORY_HACKS_LABEL_PL NULL
-#define CATEGORY_HACKS_INFO_0_PL NULL
-#define NESTOPIA_BLARGG_NTSC_FILTER_LABEL_PL NULL
+#define CATEGORY_HACKS_LABEL_PL "Hacki emulacyjne"
+#define CATEGORY_HACKS_INFO_0_PL "Zmiana ustawień przetaktowania procesora i dokładności emulacji wpływająca na niską wydajność i kompatybilność."
+#define NESTOPIA_BLARGG_NTSC_FILTER_LABEL_PL "Duży filtr NTSC"
 #define NESTOPIA_BLARGG_NTSC_FILTER_INFO_0_PL NULL
 #define OPTION_VAL_COMPOSITE_PL NULL
 #define OPTION_VAL_SVIDEO_PL NULL
 #define OPTION_VAL_RGB_PL NULL
-#define OPTION_VAL_MONOCHROME_PL NULL
+#define OPTION_VAL_MONOCHROME_PL "Monochromia"
 #define NESTOPIA_PALETTE_LABEL_PL NULL
 #define NESTOPIA_PALETTE_INFO_0_PL NULL
 #define OPTION_VAL_CXA2025AS_PL NULL
@@ -17066,7 +17066,7 @@ struct retro_core_options_v2 options_oc = {
 #define OPTION_VAL_NTSC_HARDWARE_FBX_PL NULL
 #define OPTION_VAL_NES_CLASSIC_FBX_FS_PL "NES Classic FBx (naprawiony)"
 #define OPTION_VAL_RAW_PL NULL
-#define OPTION_VAL_CUSTOM_PL NULL
+#define OPTION_VAL_CUSTOM_PL "Własny"
 #define NESTOPIA_NOSPRITELIMIT_LABEL_PL NULL
 #define NESTOPIA_NOSPRITELIMIT_INFO_0_PL NULL
 #define NESTOPIA_OVERCLOCK_LABEL_PL NULL
@@ -17089,7 +17089,7 @@ struct retro_core_options_v2 options_oc = {
 #define OPTION_VAL_4_3_PL NULL
 #define NESTOPIA_GENIE_DISTORTION_LABEL_PL NULL
 #define NESTOPIA_GENIE_DISTORTION_INFO_0_PL NULL
-#define NESTOPIA_FAVORED_SYSTEM_LABEL_PL NULL
+#define NESTOPIA_FAVORED_SYSTEM_LABEL_PL "Region systemowy"
 #define NESTOPIA_FAVORED_SYSTEM_INFO_0_PL NULL
 #define OPTION_VAL_DENDY_PL NULL
 #define NESTOPIA_RAM_POWER_STATE_LABEL_PL NULL
@@ -18399,11 +18399,11 @@ struct retro_core_options_v2 options_pt_br = {
 
 /* RETRO_LANGUAGE_PT_PT */
 
-#define CATEGORY_VIDEO_LABEL_PT_PT NULL
+#define CATEGORY_VIDEO_LABEL_PT_PT "Vídeo"
 #define CATEGORY_VIDEO_INFO_0_PT_PT NULL
-#define CATEGORY_AUDIO_LABEL_PT_PT NULL
+#define CATEGORY_AUDIO_LABEL_PT_PT "Áudio"
 #define CATEGORY_AUDIO_INFO_0_PT_PT NULL
-#define CATEGORY_INPUT_LABEL_PT_PT NULL
+#define CATEGORY_INPUT_LABEL_PT_PT "Entrada"
 #define CATEGORY_INPUT_INFO_0_PT_PT NULL
 #define CATEGORY_HACKS_LABEL_PT_PT NULL
 #define CATEGORY_HACKS_INFO_0_PT_PT NULL
@@ -18412,7 +18412,7 @@ struct retro_core_options_v2 options_pt_br = {
 #define OPTION_VAL_COMPOSITE_PT_PT NULL
 #define OPTION_VAL_SVIDEO_PT_PT NULL
 #define OPTION_VAL_RGB_PT_PT NULL
-#define OPTION_VAL_MONOCHROME_PT_PT NULL
+#define OPTION_VAL_MONOCHROME_PT_PT "Monocromático"
 #define NESTOPIA_PALETTE_LABEL_PT_PT NULL
 #define NESTOPIA_PALETTE_INFO_0_PT_PT NULL
 #define OPTION_VAL_CXA2025AS_PT_PT NULL
@@ -18426,7 +18426,7 @@ struct retro_core_options_v2 options_pt_br = {
 #define OPTION_VAL_NTSC_HARDWARE_FBX_PT_PT NULL
 #define OPTION_VAL_NES_CLASSIC_FBX_FS_PT_PT NULL
 #define OPTION_VAL_RAW_PT_PT NULL
-#define OPTION_VAL_CUSTOM_PT_PT NULL
+#define OPTION_VAL_CUSTOM_PT_PT "Personalizar"
 #define NESTOPIA_NOSPRITELIMIT_LABEL_PT_PT NULL
 #define NESTOPIA_NOSPRITELIMIT_INFO_0_PT_PT NULL
 #define NESTOPIA_OVERCLOCK_LABEL_PT_PT NULL
@@ -19759,20 +19759,20 @@ struct retro_core_options_v2 options_ro = {
 
 /* RETRO_LANGUAGE_RU */
 
-#define CATEGORY_VIDEO_LABEL_RU NULL
+#define CATEGORY_VIDEO_LABEL_RU "Видео"
 #define CATEGORY_VIDEO_INFO_0_RU NULL
-#define CATEGORY_AUDIO_LABEL_RU NULL
+#define CATEGORY_AUDIO_LABEL_RU "Аудио"
 #define CATEGORY_AUDIO_INFO_0_RU NULL
-#define CATEGORY_INPUT_LABEL_RU NULL
+#define CATEGORY_INPUT_LABEL_RU "Ввод"
 #define CATEGORY_INPUT_INFO_0_RU NULL
-#define CATEGORY_HACKS_LABEL_RU NULL
-#define CATEGORY_HACKS_INFO_0_RU NULL
-#define NESTOPIA_BLARGG_NTSC_FILTER_LABEL_RU NULL
+#define CATEGORY_HACKS_LABEL_RU "Хаки эмуляции"
+#define CATEGORY_HACKS_INFO_0_RU "Настройка разгона процессора и параметров точности эмуляции, влияющих на производительность и совместимость."
+#define NESTOPIA_BLARGG_NTSC_FILTER_LABEL_RU "NTSC-фильтр Blargg'а"
 #define NESTOPIA_BLARGG_NTSC_FILTER_INFO_0_RU NULL
 #define OPTION_VAL_COMPOSITE_RU NULL
 #define OPTION_VAL_SVIDEO_RU NULL
 #define OPTION_VAL_RGB_RU NULL
-#define OPTION_VAL_MONOCHROME_RU NULL
+#define OPTION_VAL_MONOCHROME_RU "Монохромный"
 #define NESTOPIA_PALETTE_LABEL_RU NULL
 #define NESTOPIA_PALETTE_INFO_0_RU NULL
 #define OPTION_VAL_CXA2025AS_RU NULL
@@ -19786,7 +19786,7 @@ struct retro_core_options_v2 options_ro = {
 #define OPTION_VAL_NTSC_HARDWARE_FBX_RU NULL
 #define OPTION_VAL_NES_CLASSIC_FBX_FS_RU NULL
 #define OPTION_VAL_RAW_RU NULL
-#define OPTION_VAL_CUSTOM_RU NULL
+#define OPTION_VAL_CUSTOM_RU "Кастомная"
 #define NESTOPIA_NOSPRITELIMIT_LABEL_RU NULL
 #define NESTOPIA_NOSPRITELIMIT_INFO_0_RU NULL
 #define NESTOPIA_OVERCLOCK_LABEL_RU NULL
@@ -19795,7 +19795,7 @@ struct retro_core_options_v2 options_ro = {
 #define OPTION_VAL_2X_RU NULL
 #define NESTOPIA_SELECT_ADAPTER_LABEL_RU NULL
 #define NESTOPIA_SELECT_ADAPTER_INFO_0_RU NULL
-#define OPTION_VAL_AUTO_RU NULL
+#define OPTION_VAL_AUTO_RU "Авто"
 #define OPTION_VAL_NTSC_RU NULL
 #define OPTION_VAL_FAMICOM_RU NULL
 #define NESTOPIA_FDS_AUTO_INSERT_LABEL_RU NULL
@@ -19809,7 +19809,7 @@ struct retro_core_options_v2 options_ro = {
 #define OPTION_VAL_4_3_RU NULL
 #define NESTOPIA_GENIE_DISTORTION_LABEL_RU NULL
 #define NESTOPIA_GENIE_DISTORTION_INFO_0_RU NULL
-#define NESTOPIA_FAVORED_SYSTEM_LABEL_RU NULL
+#define NESTOPIA_FAVORED_SYSTEM_LABEL_RU "Регион системы"
 #define NESTOPIA_FAVORED_SYSTEM_INFO_0_RU NULL
 #define OPTION_VAL_DENDY_RU NULL
 #define NESTOPIA_RAM_POWER_STATE_LABEL_RU NULL
@@ -21121,9 +21121,9 @@ struct retro_core_options_v2 options_si = {
 
 #define CATEGORY_VIDEO_LABEL_SK NULL
 #define CATEGORY_VIDEO_INFO_0_SK NULL
-#define CATEGORY_AUDIO_LABEL_SK NULL
+#define CATEGORY_AUDIO_LABEL_SK "Zvuk"
 #define CATEGORY_AUDIO_INFO_0_SK NULL
-#define CATEGORY_INPUT_LABEL_SK NULL
+#define CATEGORY_INPUT_LABEL_SK "Vstup"
 #define CATEGORY_INPUT_INFO_0_SK NULL
 #define CATEGORY_HACKS_LABEL_SK NULL
 #define CATEGORY_HACKS_INFO_0_SK NULL
@@ -21801,9 +21801,9 @@ struct retro_core_options_v2 options_sk = {
 
 #define CATEGORY_VIDEO_LABEL_SR NULL
 #define CATEGORY_VIDEO_INFO_0_SR NULL
-#define CATEGORY_AUDIO_LABEL_SR NULL
+#define CATEGORY_AUDIO_LABEL_SR "Zvuk"
 #define CATEGORY_AUDIO_INFO_0_SR NULL
-#define CATEGORY_INPUT_LABEL_SR NULL
+#define CATEGORY_INPUT_LABEL_SR "Ulaz"
 #define CATEGORY_INPUT_INFO_0_SR NULL
 #define CATEGORY_HACKS_LABEL_SR NULL
 #define CATEGORY_HACKS_INFO_0_SR NULL
@@ -22479,11 +22479,11 @@ struct retro_core_options_v2 options_sr = {
 
 /* RETRO_LANGUAGE_SV */
 
-#define CATEGORY_VIDEO_LABEL_SV NULL
+#define CATEGORY_VIDEO_LABEL_SV "Bild"
 #define CATEGORY_VIDEO_INFO_0_SV NULL
-#define CATEGORY_AUDIO_LABEL_SV NULL
+#define CATEGORY_AUDIO_LABEL_SV "Ljud"
 #define CATEGORY_AUDIO_INFO_0_SV NULL
-#define CATEGORY_INPUT_LABEL_SV NULL
+#define CATEGORY_INPUT_LABEL_SV "Inmatning"
 #define CATEGORY_INPUT_INFO_0_SV NULL
 #define CATEGORY_HACKS_LABEL_SV NULL
 #define CATEGORY_HACKS_INFO_0_SV NULL
@@ -22506,7 +22506,7 @@ struct retro_core_options_v2 options_sr = {
 #define OPTION_VAL_NTSC_HARDWARE_FBX_SV NULL
 #define OPTION_VAL_NES_CLASSIC_FBX_FS_SV NULL
 #define OPTION_VAL_RAW_SV NULL
-#define OPTION_VAL_CUSTOM_SV NULL
+#define OPTION_VAL_CUSTOM_SV "Anpassad"
 #define NESTOPIA_NOSPRITELIMIT_LABEL_SV NULL
 #define NESTOPIA_NOSPRITELIMIT_INFO_0_SV NULL
 #define NESTOPIA_OVERCLOCK_LABEL_SV NULL
@@ -22515,7 +22515,7 @@ struct retro_core_options_v2 options_sr = {
 #define OPTION_VAL_2X_SV NULL
 #define NESTOPIA_SELECT_ADAPTER_LABEL_SV NULL
 #define NESTOPIA_SELECT_ADAPTER_INFO_0_SV NULL
-#define OPTION_VAL_AUTO_SV NULL
+#define OPTION_VAL_AUTO_SV "Automatiskt"
 #define OPTION_VAL_NTSC_SV NULL
 #define OPTION_VAL_FAMICOM_SV NULL
 #define NESTOPIA_FDS_AUTO_INSERT_LABEL_SV NULL
@@ -23228,31 +23228,31 @@ struct retro_core_options_v2 options_sv = {
 #define OPTION_VAL_LIGHTGUN_TR NULL
 #define NESTOPIA_SHOW_CROSSHAIR_LABEL_TR "Nişangahı Göster"
 #define NESTOPIA_SHOW_CROSSHAIR_INFO_0_TR "Zapper kullanıldığında nişangahın gösterilip gösterilmeyeceğini ayarlayın."
-#define NESTOPIA_TURBO_PULSE_LABEL_TR NULL
+#define NESTOPIA_TURBO_PULSE_LABEL_TR "Turbo Darbe Hızı"
 #define NESTOPIA_TURBO_PULSE_INFO_0_TR "Turbo B ve Turbo A düğmeleri için turbo hızını ayarlayın."
-#define NESTOPIA_SHOW_ADVANCED_AV_SETTINGS_LABEL_TR NULL
-#define NESTOPIA_SHOW_ADVANCED_AV_SETTINGS_INFO_0_TR NULL
-#define NESTOPIA_AUDIO_VOL_SQ1_LABEL_TR NULL
-#define NESTOPIA_AUDIO_VOL_SQ1_INFO_0_TR NULL
-#define NESTOPIA_AUDIO_VOL_SQ2_LABEL_TR NULL
-#define NESTOPIA_AUDIO_VOL_SQ2_INFO_0_TR NULL
-#define NESTOPIA_AUDIO_VOL_TRI_LABEL_TR NULL
-#define NESTOPIA_AUDIO_VOL_TRI_INFO_0_TR NULL
-#define NESTOPIA_AUDIO_VOL_NOISE_LABEL_TR NULL
-#define NESTOPIA_AUDIO_VOL_NOISE_INFO_0_TR NULL
-#define NESTOPIA_AUDIO_VOL_DPCM_LABEL_TR NULL
-#define NESTOPIA_AUDIO_VOL_DPCM_INFO_0_TR NULL
-#define NESTOPIA_AUDIO_VOL_FDS_LABEL_TR NULL
-#define NESTOPIA_AUDIO_VOL_FDS_INFO_0_TR NULL
-#define NESTOPIA_AUDIO_VOL_MMC5_LABEL_TR NULL
-#define NESTOPIA_AUDIO_VOL_MMC5_INFO_0_TR NULL
-#define NESTOPIA_AUDIO_VOL_VRC6_LABEL_TR NULL
-#define NESTOPIA_AUDIO_VOL_VRC6_INFO_0_TR NULL
-#define NESTOPIA_AUDIO_VOL_VRC7_LABEL_TR NULL
-#define NESTOPIA_AUDIO_VOL_VRC7_INFO_0_TR NULL
-#define NESTOPIA_AUDIO_VOL_N163_LABEL_TR NULL
-#define NESTOPIA_AUDIO_VOL_N163_INFO_0_TR NULL
-#define NESTOPIA_AUDIO_VOL_S5B_LABEL_TR NULL
+#define NESTOPIA_SHOW_ADVANCED_AV_SETTINGS_LABEL_TR "Gelişmiş Ses Ayarlarını Göster (Menüyü yeniden aç)"
+#define NESTOPIA_SHOW_ADVANCED_AV_SETTINGS_INFO_0_TR "Düşük seviyeli ses kanalı parametrelerinin ayarlarını etkinleştirin."
+#define NESTOPIA_AUDIO_VOL_SQ1_LABEL_TR "Kare 1. Kanal Seviyesi %"
+#define NESTOPIA_AUDIO_VOL_SQ1_INFO_0_TR "Kare 1. Kanal Seviyesini Düzenle %."
+#define NESTOPIA_AUDIO_VOL_SQ2_LABEL_TR "Kare 2. Kanal Seviyesi %"
+#define NESTOPIA_AUDIO_VOL_SQ2_INFO_0_TR "Kare 2. Kanal Seviyesini Düzenle %."
+#define NESTOPIA_AUDIO_VOL_TRI_LABEL_TR "Üçgen Kanal Seviyesi %"
+#define NESTOPIA_AUDIO_VOL_TRI_INFO_0_TR "Üçgen Kanal Seviyesini Düzenle %."
+#define NESTOPIA_AUDIO_VOL_NOISE_LABEL_TR "Gürültü Kanalı Seviyesi %"
+#define NESTOPIA_AUDIO_VOL_NOISE_INFO_0_TR "Gürültü Kanalı Seviyesini Düzenle %."
+#define NESTOPIA_AUDIO_VOL_DPCM_LABEL_TR "DPCM Kanal Seviyesi %"
+#define NESTOPIA_AUDIO_VOL_DPCM_INFO_0_TR "DPCM Kanal Seviyesini Düzenle %."
+#define NESTOPIA_AUDIO_VOL_FDS_LABEL_TR "FDS Kanal Seviyesi %"
+#define NESTOPIA_AUDIO_VOL_FDS_INFO_0_TR "FDS Kanal Seviyesini Düzenle %."
+#define NESTOPIA_AUDIO_VOL_MMC5_LABEL_TR "MMC5 Kanal Seviyesi %"
+#define NESTOPIA_AUDIO_VOL_MMC5_INFO_0_TR "MMC5 Kanal Seviyesini Düzenle %."
+#define NESTOPIA_AUDIO_VOL_VRC6_LABEL_TR "VRC6 Kanal Seviyesi %"
+#define NESTOPIA_AUDIO_VOL_VRC6_INFO_0_TR "VRC6 Kanal Seviyesini Düzenle %."
+#define NESTOPIA_AUDIO_VOL_VRC7_LABEL_TR "VRC7 Kanal Seviyesi %"
+#define NESTOPIA_AUDIO_VOL_VRC7_INFO_0_TR "VRC7 Kanal Seviyesini Düzenle %."
+#define NESTOPIA_AUDIO_VOL_N163_LABEL_TR "N163 Kanal Seviyesi %"
+#define NESTOPIA_AUDIO_VOL_N163_INFO_0_TR "N163 Kanal Seviyesini Düzenle %."
+#define NESTOPIA_AUDIO_VOL_S5B_LABEL_TR "S5B Kanal Seviyesi %"
 
 struct retro_core_option_v2_category option_cats_tr[] = {
    {
@@ -23839,20 +23839,20 @@ struct retro_core_options_v2 options_tr = {
 
 /* RETRO_LANGUAGE_UK */
 
-#define CATEGORY_VIDEO_LABEL_UK NULL
+#define CATEGORY_VIDEO_LABEL_UK "Відео"
 #define CATEGORY_VIDEO_INFO_0_UK NULL
-#define CATEGORY_AUDIO_LABEL_UK NULL
+#define CATEGORY_AUDIO_LABEL_UK "Аудіо"
 #define CATEGORY_AUDIO_INFO_0_UK NULL
-#define CATEGORY_INPUT_LABEL_UK NULL
+#define CATEGORY_INPUT_LABEL_UK "Ввід"
 #define CATEGORY_INPUT_INFO_0_UK NULL
-#define CATEGORY_HACKS_LABEL_UK NULL
-#define CATEGORY_HACKS_INFO_0_UK NULL
+#define CATEGORY_HACKS_LABEL_UK "Гаки емуляції"
+#define CATEGORY_HACKS_INFO_0_UK "Налаштування розгону процесора та точності емуляції, що впливають на низькорівневу продуктивність та сумісність."
 #define NESTOPIA_BLARGG_NTSC_FILTER_LABEL_UK NULL
 #define NESTOPIA_BLARGG_NTSC_FILTER_INFO_0_UK NULL
 #define OPTION_VAL_COMPOSITE_UK NULL
 #define OPTION_VAL_SVIDEO_UK NULL
 #define OPTION_VAL_RGB_UK NULL
-#define OPTION_VAL_MONOCHROME_UK NULL
+#define OPTION_VAL_MONOCHROME_UK "Монотонні"
 #define NESTOPIA_PALETTE_LABEL_UK NULL
 #define NESTOPIA_PALETTE_INFO_0_UK NULL
 #define OPTION_VAL_CXA2025AS_UK NULL
@@ -23866,7 +23866,7 @@ struct retro_core_options_v2 options_tr = {
 #define OPTION_VAL_NTSC_HARDWARE_FBX_UK NULL
 #define OPTION_VAL_NES_CLASSIC_FBX_FS_UK NULL
 #define OPTION_VAL_RAW_UK NULL
-#define OPTION_VAL_CUSTOM_UK NULL
+#define OPTION_VAL_CUSTOM_UK "Користувацька"
 #define NESTOPIA_NOSPRITELIMIT_LABEL_UK NULL
 #define NESTOPIA_NOSPRITELIMIT_INFO_0_UK NULL
 #define NESTOPIA_OVERCLOCK_LABEL_UK NULL
@@ -23875,7 +23875,7 @@ struct retro_core_options_v2 options_tr = {
 #define OPTION_VAL_2X_UK NULL
 #define NESTOPIA_SELECT_ADAPTER_LABEL_UK NULL
 #define NESTOPIA_SELECT_ADAPTER_INFO_0_UK NULL
-#define OPTION_VAL_AUTO_UK NULL
+#define OPTION_VAL_AUTO_UK "Авто"
 #define OPTION_VAL_NTSC_UK NULL
 #define OPTION_VAL_FAMICOM_UK NULL
 #define NESTOPIA_FDS_AUTO_INSERT_LABEL_UK NULL
@@ -23889,7 +23889,7 @@ struct retro_core_options_v2 options_tr = {
 #define OPTION_VAL_4_3_UK NULL
 #define NESTOPIA_GENIE_DISTORTION_LABEL_UK NULL
 #define NESTOPIA_GENIE_DISTORTION_INFO_0_UK NULL
-#define NESTOPIA_FAVORED_SYSTEM_LABEL_UK NULL
+#define NESTOPIA_FAVORED_SYSTEM_LABEL_UK "Регіон системи"
 #define NESTOPIA_FAVORED_SYSTEM_INFO_0_UK NULL
 #define OPTION_VAL_DENDY_UK NULL
 #define NESTOPIA_RAM_POWER_STATE_LABEL_UK NULL
@@ -24519,11 +24519,11 @@ struct retro_core_options_v2 options_uk = {
 
 /* RETRO_LANGUAGE_VN */
 
-#define CATEGORY_VIDEO_LABEL_VN NULL
+#define CATEGORY_VIDEO_LABEL_VN "Hình ảnh"
 #define CATEGORY_VIDEO_INFO_0_VN NULL
-#define CATEGORY_AUDIO_LABEL_VN NULL
+#define CATEGORY_AUDIO_LABEL_VN "Âm thanh"
 #define CATEGORY_AUDIO_INFO_0_VN NULL
-#define CATEGORY_INPUT_LABEL_VN NULL
+#define CATEGORY_INPUT_LABEL_VN "Input Driver"
 #define CATEGORY_INPUT_INFO_0_VN NULL
 #define CATEGORY_HACKS_LABEL_VN NULL
 #define CATEGORY_HACKS_INFO_0_VN NULL
@@ -24546,7 +24546,7 @@ struct retro_core_options_v2 options_uk = {
 #define OPTION_VAL_NTSC_HARDWARE_FBX_VN NULL
 #define OPTION_VAL_NES_CLASSIC_FBX_FS_VN NULL
 #define OPTION_VAL_RAW_VN NULL
-#define OPTION_VAL_CUSTOM_VN NULL
+#define OPTION_VAL_CUSTOM_VN "Tùy chỉnh"
 #define NESTOPIA_NOSPRITELIMIT_LABEL_VN NULL
 #define NESTOPIA_NOSPRITELIMIT_INFO_0_VN NULL
 #define NESTOPIA_OVERCLOCK_LABEL_VN NULL
@@ -24555,7 +24555,7 @@ struct retro_core_options_v2 options_uk = {
 #define OPTION_VAL_2X_VN NULL
 #define NESTOPIA_SELECT_ADAPTER_LABEL_VN NULL
 #define NESTOPIA_SELECT_ADAPTER_INFO_0_VN NULL
-#define OPTION_VAL_AUTO_VN NULL
+#define OPTION_VAL_AUTO_VN "Tự động"
 #define OPTION_VAL_NTSC_VN NULL
 #define OPTION_VAL_FAMICOM_VN NULL
 #define NESTOPIA_FDS_AUTO_INSERT_LABEL_VN NULL

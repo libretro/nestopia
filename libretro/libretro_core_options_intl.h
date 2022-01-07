@@ -7560,9 +7560,9 @@ struct retro_core_options_v2 options_eo = {
 #define OPTION_VAL_FAMICOM_ES NULL
 #define NESTOPIA_FDS_AUTO_INSERT_LABEL_ES "Autoinsertar disquete de FDS"
 #define NESTOPIA_FDS_AUTO_INSERT_INFO_0_ES "Introduce automáticamente el primer disquete del FDS al reiniciar."
-#define NESTOPIA_OVERSCAN_V_LABEL_ES "Camuflar barrido adicional u «overscan» (vertical)"
+#define NESTOPIA_OVERSCAN_V_LABEL_ES "Camuflar sobrebarrido (vertical)"
 #define NESTOPIA_OVERSCAN_V_INFO_0_ES "Camufla (la parte vertical de) los posibles defectos visuales aleatorios de vídeo que normalmente ocultaría el marco de un televisor de definición estándar."
-#define NESTOPIA_OVERSCAN_H_LABEL_ES "Camuflar barrido adicional u «overscan» (horizontal)"
+#define NESTOPIA_OVERSCAN_H_LABEL_ES "Camuflar sobrebarrido (horizontal)"
 #define NESTOPIA_OVERSCAN_H_INFO_0_ES "Camufla (la parte horizontal de) los posibles defectos visuales aleatorios de vídeo que normalmente ocultaría el marco de un televisor de definición estándar."
 #define NESTOPIA_ASPECT_LABEL_ES "Relación de aspecto preferida"
 #define NESTOPIA_ASPECT_INFO_0_ES "Es necesario configurar la relación de aspecto de RetroArch como «Indicada por el núcleo» en los ajustes de vídeo. «Selección automática» utilizará la base de datos NstDatabase.xml para elegir automáticamente la relación de aspecto. En caso de no existir esta base de datos, se utilizará la relación NTSC por defecto."
@@ -22492,11 +22492,11 @@ struct retro_core_options_v2 options_sr = {
 #define OPTION_VAL_COMPOSITE_SV NULL
 #define OPTION_VAL_SVIDEO_SV NULL
 #define OPTION_VAL_RGB_SV NULL
-#define OPTION_VAL_MONOCHROME_SV NULL
-#define NESTOPIA_PALETTE_LABEL_SV NULL
+#define OPTION_VAL_MONOCHROME_SV "Monokrom"
+#define NESTOPIA_PALETTE_LABEL_SV "Palett"
 #define NESTOPIA_PALETTE_INFO_0_SV NULL
 #define OPTION_VAL_CXA2025AS_SV NULL
-#define OPTION_VAL_CONSUMER_SV NULL
+#define OPTION_VAL_CONSUMER_SV "Konsument"
 #define OPTION_VAL_CANONICAL_SV NULL
 #define OPTION_VAL_ALTERNATIVE_SV NULL
 #define OPTION_VAL_RGB_O1_SV NULL
@@ -22541,8 +22541,8 @@ struct retro_core_options_v2 options_sr = {
 #define NESTOPIA_BUTTON_SHIFT_INFO_0_SV NULL
 #define NESTOPIA_ARKANOID_DEVICE_LABEL_SV NULL
 #define NESTOPIA_ARKANOID_DEVICE_INFO_0_SV NULL
-#define OPTION_VAL_MOUSE_SV NULL
-#define OPTION_VAL_POINTER_SV NULL
+#define OPTION_VAL_MOUSE_SV "Mus"
+#define OPTION_VAL_POINTER_SV "Pekare"
 #define NESTOPIA_ZAPPER_DEVICE_LABEL_SV NULL
 #define NESTOPIA_ZAPPER_DEVICE_INFO_0_SV NULL
 #define OPTION_VAL_LIGHTGUN_SV NULL

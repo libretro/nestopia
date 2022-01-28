@@ -1399,11 +1399,11 @@ struct retro_core_options_v2 options_ast = {
 
 /* RETRO_LANGUAGE_CA */
 
-#define CATEGORY_VIDEO_LABEL_CA NULL
+#define CATEGORY_VIDEO_LABEL_CA "Vídeo"
 #define CATEGORY_VIDEO_INFO_0_CA NULL
-#define CATEGORY_AUDIO_LABEL_CA NULL
+#define CATEGORY_AUDIO_LABEL_CA "Àudio"
 #define CATEGORY_AUDIO_INFO_0_CA NULL
-#define CATEGORY_INPUT_LABEL_CA NULL
+#define CATEGORY_INPUT_LABEL_CA "Dispositius de joc"
 #define CATEGORY_INPUT_INFO_0_CA NULL
 #define CATEGORY_HACKS_LABEL_CA NULL
 #define CATEGORY_HACKS_INFO_0_CA NULL
@@ -7534,7 +7534,7 @@ struct retro_core_options_v2 options_eo = {
 #define OPTION_VAL_RGB_ES "SCART RGB"
 #define OPTION_VAL_MONOCHROME_ES "Monocromo"
 #define NESTOPIA_PALETTE_LABEL_ES "Paleta"
-#define NESTOPIA_PALETTE_INFO_0_ES "Indica la paleta de colores utilizada."
+#define NESTOPIA_PALETTE_INFO_0_ES "Selecciona la paleta de colores que se utilizará."
 #define OPTION_VAL_CXA2025AS_ES NULL
 #define OPTION_VAL_CONSUMER_ES "Para consumidores"
 #define OPTION_VAL_CANONICAL_ES "Canónica"
@@ -7584,13 +7584,13 @@ struct retro_core_options_v2 options_eo = {
 #define OPTION_VAL_MOUSE_ES "Ratón"
 #define OPTION_VAL_POINTER_ES "Puntero/Pantalla táctil"
 #define NESTOPIA_ZAPPER_DEVICE_LABEL_ES "Dispositivo para Zapper"
-#define NESTOPIA_ZAPPER_DEVICE_INFO_0_ES "Selecciona el dispositivo que quieres usar para Zapper."
+#define NESTOPIA_ZAPPER_DEVICE_INFO_0_ES "Selecciona el dispositivo que quieres usar para la Zapper."
 #define OPTION_VAL_LIGHTGUN_ES "Pistola de luz"
 #define NESTOPIA_SHOW_CROSSHAIR_LABEL_ES "Mostrar punto de mira"
 #define NESTOPIA_SHOW_CROSSHAIR_INFO_0_ES "Muestra un punto de mira al utilizar la Zapper."
 #define NESTOPIA_TURBO_PULSE_LABEL_ES "Velocidad de pulsación del turbo"
 #define NESTOPIA_TURBO_PULSE_INFO_0_ES "Establece la velocidad de pulsación de los botones Turbo B y Turbo A."
-#define NESTOPIA_SHOW_ADVANCED_AV_SETTINGS_LABEL_ES "Mostrar ajustes avanzados de audio (necesario abrir y cerrar el menú)"
+#define NESTOPIA_SHOW_ADVANCED_AV_SETTINGS_LABEL_ES "Mostrar ajustes avanzados de audio (es necesario abrir y cerrar el menú)"
 #define NESTOPIA_SHOW_ADVANCED_AV_SETTINGS_INFO_0_ES "Permite configurar los ajustes de bajo nivel de los canales de audio."
 #define NESTOPIA_AUDIO_VOL_SQ1_LABEL_ES "Volumen del canal de ondas cuadradas 1 (%)"
 #define NESTOPIA_AUDIO_VOL_SQ1_INFO_0_ES "Modifica el volumen del canal de ondas cuadradas 1 (en porcentaje)."
@@ -25195,6 +25195,686 @@ struct retro_core_option_v2_definition option_defs_uk[] = {
 struct retro_core_options_v2 options_uk = {
    option_cats_uk,
    option_defs_uk
+};
+
+/* RETRO_LANGUAGE_VAL */
+
+#define CATEGORY_VIDEO_LABEL_VAL NULL
+#define CATEGORY_VIDEO_INFO_0_VAL NULL
+#define CATEGORY_AUDIO_LABEL_VAL NULL
+#define CATEGORY_AUDIO_INFO_0_VAL NULL
+#define CATEGORY_INPUT_LABEL_VAL NULL
+#define CATEGORY_INPUT_INFO_0_VAL NULL
+#define CATEGORY_HACKS_LABEL_VAL NULL
+#define CATEGORY_HACKS_INFO_0_VAL NULL
+#define NESTOPIA_BLARGG_NTSC_FILTER_LABEL_VAL NULL
+#define NESTOPIA_BLARGG_NTSC_FILTER_INFO_0_VAL NULL
+#define OPTION_VAL_COMPOSITE_VAL NULL
+#define OPTION_VAL_SVIDEO_VAL NULL
+#define OPTION_VAL_RGB_VAL NULL
+#define OPTION_VAL_MONOCHROME_VAL NULL
+#define NESTOPIA_PALETTE_LABEL_VAL NULL
+#define NESTOPIA_PALETTE_INFO_0_VAL NULL
+#define OPTION_VAL_CXA2025AS_VAL NULL
+#define OPTION_VAL_CONSUMER_VAL NULL
+#define OPTION_VAL_CANONICAL_VAL NULL
+#define OPTION_VAL_ALTERNATIVE_VAL NULL
+#define OPTION_VAL_RGB_O1_VAL NULL
+#define OPTION_VAL_PAL_VAL NULL
+#define OPTION_VAL_COMPOSITE_DIRECT_FBX_VAL NULL
+#define OPTION_VAL_PVM_STYLE_D93_FBX_VAL NULL
+#define OPTION_VAL_NTSC_HARDWARE_FBX_VAL NULL
+#define OPTION_VAL_NES_CLASSIC_FBX_FS_VAL NULL
+#define OPTION_VAL_RAW_VAL NULL
+#define OPTION_VAL_CUSTOM_VAL NULL
+#define NESTOPIA_NOSPRITELIMIT_LABEL_VAL NULL
+#define NESTOPIA_NOSPRITELIMIT_INFO_0_VAL NULL
+#define NESTOPIA_OVERCLOCK_LABEL_VAL NULL
+#define NESTOPIA_OVERCLOCK_INFO_0_VAL NULL
+#define OPTION_VAL_1X_VAL NULL
+#define OPTION_VAL_2X_VAL NULL
+#define NESTOPIA_SELECT_ADAPTER_LABEL_VAL NULL
+#define NESTOPIA_SELECT_ADAPTER_INFO_0_VAL NULL
+#define OPTION_VAL_AUTO_VAL NULL
+#define OPTION_VAL_NTSC_VAL NULL
+#define OPTION_VAL_FAMICOM_VAL NULL
+#define NESTOPIA_FDS_AUTO_INSERT_LABEL_VAL NULL
+#define NESTOPIA_FDS_AUTO_INSERT_INFO_0_VAL NULL
+#define NESTOPIA_OVERSCAN_V_LABEL_VAL NULL
+#define NESTOPIA_OVERSCAN_V_INFO_0_VAL NULL
+#define NESTOPIA_OVERSCAN_H_LABEL_VAL NULL
+#define NESTOPIA_OVERSCAN_H_INFO_0_VAL NULL
+#define NESTOPIA_ASPECT_LABEL_VAL NULL
+#define NESTOPIA_ASPECT_INFO_0_VAL NULL
+#define OPTION_VAL_4_3_VAL NULL
+#define NESTOPIA_GENIE_DISTORTION_LABEL_VAL NULL
+#define NESTOPIA_GENIE_DISTORTION_INFO_0_VAL NULL
+#define NESTOPIA_FAVORED_SYSTEM_LABEL_VAL NULL
+#define NESTOPIA_FAVORED_SYSTEM_INFO_0_VAL NULL
+#define OPTION_VAL_DENDY_VAL NULL
+#define NESTOPIA_RAM_POWER_STATE_LABEL_VAL NULL
+#define NESTOPIA_RAM_POWER_STATE_INFO_0_VAL NULL
+#define OPTION_VAL_0X00_VAL NULL
+#define OPTION_VAL_0XFF_VAL NULL
+#define OPTION_VAL_RANDOM_VAL NULL
+#define NESTOPIA_BUTTON_SHIFT_LABEL_VAL NULL
+#define NESTOPIA_BUTTON_SHIFT_INFO_0_VAL NULL
+#define NESTOPIA_ARKANOID_DEVICE_LABEL_VAL NULL
+#define NESTOPIA_ARKANOID_DEVICE_INFO_0_VAL NULL
+#define OPTION_VAL_MOUSE_VAL NULL
+#define OPTION_VAL_POINTER_VAL NULL
+#define NESTOPIA_ZAPPER_DEVICE_LABEL_VAL NULL
+#define NESTOPIA_ZAPPER_DEVICE_INFO_0_VAL NULL
+#define OPTION_VAL_LIGHTGUN_VAL NULL
+#define NESTOPIA_SHOW_CROSSHAIR_LABEL_VAL NULL
+#define NESTOPIA_SHOW_CROSSHAIR_INFO_0_VAL NULL
+#define NESTOPIA_TURBO_PULSE_LABEL_VAL NULL
+#define NESTOPIA_TURBO_PULSE_INFO_0_VAL NULL
+#define NESTOPIA_SHOW_ADVANCED_AV_SETTINGS_LABEL_VAL NULL
+#define NESTOPIA_SHOW_ADVANCED_AV_SETTINGS_INFO_0_VAL NULL
+#define NESTOPIA_AUDIO_VOL_SQ1_LABEL_VAL NULL
+#define NESTOPIA_AUDIO_VOL_SQ1_INFO_0_VAL NULL
+#define NESTOPIA_AUDIO_VOL_SQ2_LABEL_VAL NULL
+#define NESTOPIA_AUDIO_VOL_SQ2_INFO_0_VAL NULL
+#define NESTOPIA_AUDIO_VOL_TRI_LABEL_VAL NULL
+#define NESTOPIA_AUDIO_VOL_TRI_INFO_0_VAL NULL
+#define NESTOPIA_AUDIO_VOL_NOISE_LABEL_VAL NULL
+#define NESTOPIA_AUDIO_VOL_NOISE_INFO_0_VAL NULL
+#define NESTOPIA_AUDIO_VOL_DPCM_LABEL_VAL NULL
+#define NESTOPIA_AUDIO_VOL_DPCM_INFO_0_VAL NULL
+#define NESTOPIA_AUDIO_VOL_FDS_LABEL_VAL NULL
+#define NESTOPIA_AUDIO_VOL_FDS_INFO_0_VAL NULL
+#define NESTOPIA_AUDIO_VOL_MMC5_LABEL_VAL NULL
+#define NESTOPIA_AUDIO_VOL_MMC5_INFO_0_VAL NULL
+#define NESTOPIA_AUDIO_VOL_VRC6_LABEL_VAL NULL
+#define NESTOPIA_AUDIO_VOL_VRC6_INFO_0_VAL NULL
+#define NESTOPIA_AUDIO_VOL_VRC7_LABEL_VAL NULL
+#define NESTOPIA_AUDIO_VOL_VRC7_INFO_0_VAL NULL
+#define NESTOPIA_AUDIO_VOL_N163_LABEL_VAL NULL
+#define NESTOPIA_AUDIO_VOL_N163_INFO_0_VAL NULL
+#define NESTOPIA_AUDIO_VOL_S5B_LABEL_VAL NULL
+
+struct retro_core_option_v2_category option_cats_val[] = {
+   {
+      "video",
+      CATEGORY_VIDEO_LABEL_VAL,
+      CATEGORY_VIDEO_INFO_0_VAL
+   },
+   {
+      "audio",
+      CATEGORY_AUDIO_LABEL_VAL,
+      CATEGORY_AUDIO_INFO_0_VAL
+   },
+   {
+      "input",
+      CATEGORY_INPUT_LABEL_VAL,
+      CATEGORY_INPUT_INFO_0_VAL
+   },
+   {
+      "hacks",
+      CATEGORY_HACKS_LABEL_VAL,
+      CATEGORY_HACKS_INFO_0_VAL
+   },
+   { NULL, NULL, NULL },
+};
+struct retro_core_option_v2_definition option_defs_val[] = {
+   {
+      "nestopia_blargg_ntsc_filter",
+      NESTOPIA_BLARGG_NTSC_FILTER_LABEL_VAL,
+      NULL,
+      NESTOPIA_BLARGG_NTSC_FILTER_INFO_0_VAL,
+      NULL,
+      "video",
+      {
+         { "disabled",   NULL },
+         { "composite",  OPTION_VAL_COMPOSITE_VAL },
+         { "svideo",     OPTION_VAL_SVIDEO_VAL },
+         { "rgb",        OPTION_VAL_RGB_VAL },
+         { "monochrome", OPTION_VAL_MONOCHROME_VAL },
+         { NULL, NULL },
+      },
+      "disabled"
+   },
+   {/* TODO explain the custom option */
+      "nestopia_palette",
+      NESTOPIA_PALETTE_LABEL_VAL,
+      NULL,
+      NESTOPIA_PALETTE_INFO_0_VAL,
+      NULL,
+      "video",
+      {
+         { "cxa2025as",            OPTION_VAL_CXA2025AS_VAL },
+         { "consumer",             OPTION_VAL_CONSUMER_VAL },
+         { "canonical",            OPTION_VAL_CANONICAL_VAL },
+         { "alternative",          OPTION_VAL_ALTERNATIVE_VAL },
+         { "rgb",                  OPTION_VAL_RGB_O1_VAL },
+         { "pal",                  OPTION_VAL_PAL_VAL },
+         { "composite-direct-fbx", OPTION_VAL_COMPOSITE_DIRECT_FBX_VAL },
+         { "pvm-style-d93-fbx",    OPTION_VAL_PVM_STYLE_D93_FBX_VAL },
+         { "ntsc-hardware-fbx",    OPTION_VAL_NTSC_HARDWARE_FBX_VAL },
+         { "nes-classic-fbx-fs",   OPTION_VAL_NES_CLASSIC_FBX_FS_VAL },
+         { "raw",                  OPTION_VAL_RAW_VAL },
+         { "custom",               OPTION_VAL_CUSTOM_VAL },
+         { NULL, NULL },
+      },
+      "cxa2025as" /* TODO/FIXME - is this correct ? */
+   },
+   {
+      "nestopia_nospritelimit",
+      NESTOPIA_NOSPRITELIMIT_LABEL_VAL,
+      NULL,
+      NESTOPIA_NOSPRITELIMIT_INFO_0_VAL,
+      NULL,
+      "hacks",
+      {
+         { "disabled", NULL },
+         { "enabled",  NULL },
+         { NULL, NULL },
+      },
+      "disabled"
+   },
+   {
+      "nestopia_overclock",
+      NESTOPIA_OVERCLOCK_LABEL_VAL,
+      NULL,
+      NESTOPIA_OVERCLOCK_INFO_0_VAL,
+      NULL,
+      "hacks",
+      {
+         { "1x", OPTION_VAL_1X_VAL },
+         { "2x", OPTION_VAL_2X_VAL },
+         { NULL, NULL },
+      },
+      "1x"
+   },
+   {
+      "nestopia_select_adapter",
+      NESTOPIA_SELECT_ADAPTER_LABEL_VAL,
+      NULL,
+      NESTOPIA_SELECT_ADAPTER_INFO_0_VAL,
+      NULL,
+      "input",
+      {
+         { "auto",    OPTION_VAL_AUTO_VAL },
+         { "ntsc",    OPTION_VAL_NTSC_VAL },
+         { "famicom", OPTION_VAL_FAMICOM_VAL },
+         { NULL, NULL },
+      },
+      "auto"
+   },
+   {
+      "nestopia_fds_auto_insert",
+      NESTOPIA_FDS_AUTO_INSERT_LABEL_VAL,
+      NULL,
+      NESTOPIA_FDS_AUTO_INSERT_INFO_0_VAL,
+      NULL,
+      NULL,
+      {
+         { "disabled", NULL },
+         { "enabled",  NULL },
+         { NULL, NULL },
+      },
+      "enabled"
+   },
+   {
+      "nestopia_overscan_v",
+      NESTOPIA_OVERSCAN_V_LABEL_VAL,
+      NULL,
+      NESTOPIA_OVERSCAN_V_INFO_0_VAL,
+      NULL,
+      "video",
+      {
+         { "disabled", NULL },
+         { "enabled",  NULL },
+         { NULL, NULL },
+      },
+      "enabled"
+   },
+   {
+      "nestopia_overscan_h",
+      NESTOPIA_OVERSCAN_H_LABEL_VAL,
+      NULL,
+      NESTOPIA_OVERSCAN_H_INFO_0_VAL,
+      NULL,
+      "video",
+      {
+         { "disabled", NULL },
+         { "enabled",  NULL },
+         { NULL, NULL },
+      },
+      "disabled"
+   },
+   {
+      "nestopia_aspect",
+      NESTOPIA_ASPECT_LABEL_VAL,
+      NULL,
+      NESTOPIA_ASPECT_INFO_0_VAL,
+      NULL,
+      "video",
+      {
+         { "auto", OPTION_VAL_AUTO_VAL },
+         { "ntsc", OPTION_VAL_NTSC_VAL },
+         { "pal",  OPTION_VAL_PAL_VAL },
+         { "4:3",  OPTION_VAL_4_3_VAL },
+         { NULL, NULL },
+      },
+      "auto"
+   },
+   {
+      "nestopia_genie_distortion",
+      NESTOPIA_GENIE_DISTORTION_LABEL_VAL,
+      NULL,
+      NESTOPIA_GENIE_DISTORTION_INFO_0_VAL,
+      NULL,
+      "audio",
+      {
+         { "disabled", NULL },
+         { "enabled",  NULL },
+         { NULL, NULL },
+      },
+      "disabled"
+   },
+   {
+      "nestopia_favored_system",
+      NESTOPIA_FAVORED_SYSTEM_LABEL_VAL,
+      NULL,
+      NESTOPIA_FAVORED_SYSTEM_INFO_0_VAL,
+      NULL,
+      NULL,
+      {
+         { "auto",    OPTION_VAL_AUTO_VAL },
+         { "ntsc",    OPTION_VAL_NTSC_VAL },
+         { "pal",     OPTION_VAL_PAL_VAL },
+         { "famicom", OPTION_VAL_FAMICOM_VAL },
+         { "dendy",   OPTION_VAL_DENDY_VAL },
+         { NULL, NULL },
+      },
+      "auto"
+   },
+   {
+      "nestopia_ram_power_state",
+      NESTOPIA_RAM_POWER_STATE_LABEL_VAL,
+      NULL,
+      NESTOPIA_RAM_POWER_STATE_INFO_0_VAL,
+      NULL,
+      "hacks",
+      {
+         { "0x00",   OPTION_VAL_0X00_VAL },
+         { "0xFF",   OPTION_VAL_0XFF_VAL },
+         { "random", OPTION_VAL_RANDOM_VAL },
+         { NULL, NULL },
+      },
+      "0x00"
+   },
+   {
+      "nestopia_button_shift",
+      NESTOPIA_BUTTON_SHIFT_LABEL_VAL,
+      NULL,
+      NESTOPIA_BUTTON_SHIFT_INFO_0_VAL, /* is this right? @gadsby */
+      NULL,
+      "input",
+      {
+         { "disabled", NULL },
+         { "enabled",  NULL },
+         { NULL, NULL },
+      },
+      "disabled"
+   },
+   {
+      "nestopia_arkanoid_device",
+      NESTOPIA_ARKANOID_DEVICE_LABEL_VAL,
+      NULL,
+      NESTOPIA_ARKANOID_DEVICE_INFO_0_VAL,
+      NULL,
+      "input",
+      {
+         { "mouse", OPTION_VAL_MOUSE_VAL },
+         { "pointer", OPTION_VAL_POINTER_VAL },
+      },
+      "mouse"
+   },
+   {
+      "nestopia_zapper_device",
+      NESTOPIA_ZAPPER_DEVICE_LABEL_VAL,
+      NULL,
+      NESTOPIA_ZAPPER_DEVICE_INFO_0_VAL,
+      NULL,
+      "input",
+      {
+         { "lightgun", OPTION_VAL_LIGHTGUN_VAL },
+         { "mouse", OPTION_VAL_MOUSE_VAL },
+         { "pointer", OPTION_VAL_POINTER_VAL },
+         { NULL, NULL },
+      },
+      "lightgun",
+   },
+   {
+      "nestopia_show_crosshair",
+      NESTOPIA_SHOW_CROSSHAIR_LABEL_VAL,
+      NULL,
+      NESTOPIA_SHOW_CROSSHAIR_INFO_0_VAL,
+      NULL,
+      "input",
+      {
+         { "disabled", NULL},
+         { "enabled", NULL },
+      },
+      "enabled"
+   },
+   {
+      "nestopia_turbo_pulse",
+      NESTOPIA_TURBO_PULSE_LABEL_VAL,
+      NULL,
+      NESTOPIA_TURBO_PULSE_INFO_0_VAL,
+      NULL,
+      "input",
+      {
+         { "2", NULL },
+         { "3", NULL },
+         { "4", NULL },
+         { "5", NULL },
+         { "6", NULL },
+         { "7", NULL },
+         { "8", NULL },
+         { "9", NULL },
+         { NULL, NULL },
+      },
+      "2"
+   },
+   {
+      "nestopia_show_advanced_av_settings",
+      NESTOPIA_SHOW_ADVANCED_AV_SETTINGS_LABEL_VAL,
+      NULL,
+      NESTOPIA_SHOW_ADVANCED_AV_SETTINGS_INFO_0_VAL,
+      NULL,
+      NULL,
+      {
+         { "disabled", NULL },
+         { "enabled",  NULL },
+         { NULL, NULL},
+      },
+      "disabled"
+   },
+   {
+      "nestopia_audio_vol_sq1",
+      NESTOPIA_AUDIO_VOL_SQ1_LABEL_VAL,
+      NULL,
+      NESTOPIA_AUDIO_VOL_SQ1_INFO_0_VAL,
+      NULL,
+      "audio",
+      {
+         { "0", NULL },
+         { "10", NULL },
+         { "20", NULL },
+         { "30", NULL },
+         { "40", NULL },
+         { "50", NULL },
+         { "60", NULL },
+         { "70", NULL },
+         { "80", NULL },
+         { "85", NULL },
+         { "90", NULL },
+         { "95", NULL },
+         { "100", NULL },
+         { NULL, NULL },
+      },
+      "100"
+   },
+   {
+      "nestopia_audio_vol_sq2",
+      NESTOPIA_AUDIO_VOL_SQ2_LABEL_VAL,
+      NULL,
+      NESTOPIA_AUDIO_VOL_SQ2_INFO_0_VAL,
+      NULL,
+      "audio",
+      {
+         { "0", NULL },
+         { "10", NULL },
+         { "20", NULL },
+         { "30", NULL },
+         { "40", NULL },
+         { "50", NULL },
+         { "60", NULL },
+         { "70", NULL },
+         { "80", NULL },
+         { "85", NULL },
+         { "90", NULL },
+         { "95", NULL },
+         { "100", NULL },
+         { NULL, NULL },
+      },
+      "100"
+   },
+   {
+      "nestopia_audio_vol_tri",
+      NESTOPIA_AUDIO_VOL_TRI_LABEL_VAL,
+      NULL,
+      NESTOPIA_AUDIO_VOL_TRI_INFO_0_VAL,
+      NULL,
+      "audio",
+      {
+         { "0", NULL },
+         { "10", NULL },
+         { "20", NULL },
+         { "30", NULL },
+         { "40", NULL },
+         { "50", NULL },
+         { "60", NULL },
+         { "70", NULL },
+         { "80", NULL },
+         { "85", NULL },
+         { "90", NULL },
+         { "95", NULL },
+         { "100", NULL },
+         { NULL, NULL },
+      },
+      "100"
+   },
+   {
+      "nestopia_audio_vol_noise",
+      NESTOPIA_AUDIO_VOL_NOISE_LABEL_VAL,
+      NULL,
+      NESTOPIA_AUDIO_VOL_NOISE_INFO_0_VAL,
+      NULL,
+      "audio",
+      {
+         { "0", NULL },
+         { "10", NULL },
+         { "20", NULL },
+         { "30", NULL },
+         { "40", NULL },
+         { "50", NULL },
+         { "60", NULL },
+         { "70", NULL },
+         { "80", NULL },
+         { "85", NULL },
+         { "90", NULL },
+         { "95", NULL },
+         { "100", NULL },
+         { NULL, NULL },
+      },
+      "100"
+   },
+   {
+      "nestopia_audio_vol_dpcm",
+      NESTOPIA_AUDIO_VOL_DPCM_LABEL_VAL,
+      NULL,
+      NESTOPIA_AUDIO_VOL_DPCM_INFO_0_VAL,
+      NULL,
+      "audio",
+      {
+         { "0", NULL },
+         { "10", NULL },
+         { "20", NULL },
+         { "30", NULL },
+         { "40", NULL },
+         { "50", NULL },
+         { "60", NULL },
+         { "70", NULL },
+         { "80", NULL },
+         { "85", NULL },
+         { "90", NULL },
+         { "95", NULL },
+         { "100", NULL },
+         { NULL, NULL },
+      },
+      "100"
+   },
+   {
+      "nestopia_audio_vol_fds",
+      NESTOPIA_AUDIO_VOL_FDS_LABEL_VAL,
+      NULL,
+      NESTOPIA_AUDIO_VOL_FDS_INFO_0_VAL,
+      NULL,
+      "audio",
+      {
+         { "0", NULL },
+         { "10", NULL },
+         { "20", NULL },
+         { "30", NULL },
+         { "40", NULL },
+         { "50", NULL },
+         { "60", NULL },
+         { "70", NULL },
+         { "80", NULL },
+         { "85", NULL },
+         { "90", NULL },
+         { "95", NULL },
+         { "100", NULL },
+         { NULL, NULL },
+      },
+      "100"
+   },
+   {
+      "nestopia_audio_vol_mmc5",
+      NESTOPIA_AUDIO_VOL_MMC5_LABEL_VAL,
+      NULL,
+      NESTOPIA_AUDIO_VOL_MMC5_INFO_0_VAL,
+      NULL,
+      "audio",
+      {
+         { "0", NULL },
+         { "10", NULL },
+         { "20", NULL },
+         { "30", NULL },
+         { "40", NULL },
+         { "50", NULL },
+         { "60", NULL },
+         { "70", NULL },
+         { "80", NULL },
+         { "85", NULL },
+         { "90", NULL },
+         { "95", NULL },
+         { "100", NULL },
+         { NULL, NULL },
+      },
+      "100"
+   },
+   {
+      "nestopia_audio_vol_vrc6",
+      NESTOPIA_AUDIO_VOL_VRC6_LABEL_VAL,
+      NULL,
+      NESTOPIA_AUDIO_VOL_VRC6_INFO_0_VAL,
+      NULL,
+      "audio",
+      {
+         { "0", NULL },
+         { "10", NULL },
+         { "20", NULL },
+         { "30", NULL },
+         { "40", NULL },
+         { "50", NULL },
+         { "60", NULL },
+         { "70", NULL },
+         { "80", NULL },
+         { "85", NULL },
+         { "90", NULL },
+         { "95", NULL },
+         { "100", NULL },
+         { NULL, NULL },
+      },
+      "100"
+   },
+   {
+      "nestopia_audio_vol_vrc7",
+      NESTOPIA_AUDIO_VOL_VRC7_LABEL_VAL,
+      NULL,
+      NESTOPIA_AUDIO_VOL_VRC7_INFO_0_VAL,
+      NULL,
+      "audio",
+      {
+         { "0", NULL },
+         { "10", NULL },
+         { "20", NULL },
+         { "30", NULL },
+         { "40", NULL },
+         { "50", NULL },
+         { "60", NULL },
+         { "70", NULL },
+         { "80", NULL },
+         { "85", NULL },
+         { "90", NULL },
+         { "95", NULL },
+         { "100", NULL },
+         { NULL, NULL },
+      },
+      "100"
+   },
+   {
+      "nestopia_audio_vol_n163",
+      NESTOPIA_AUDIO_VOL_N163_LABEL_VAL,
+      NULL,
+      NESTOPIA_AUDIO_VOL_N163_INFO_0_VAL,
+      NULL,
+      "audio",
+      {
+         { "0", NULL },
+         { "10", NULL },
+         { "20", NULL },
+         { "30", NULL },
+         { "40", NULL },
+         { "50", NULL },
+         { "60", NULL },
+         { "70", NULL },
+         { "80", NULL },
+         { "85", NULL },
+         { "90", NULL },
+         { "95", NULL },
+         { "100", NULL },
+         { NULL, NULL },
+      },
+      "100"
+   },
+   {
+      "nestopia_audio_vol_s5b",
+      NESTOPIA_AUDIO_VOL_S5B_LABEL_VAL,
+      NULL,
+      NESTOPIA_AUDIO_VOL_N163_INFO_0_VAL,
+      NULL,
+      "audio",
+      {
+         { "0", NULL },
+         { "10", NULL },
+         { "20", NULL },
+         { "30", NULL },
+         { "40", NULL },
+         { "50", NULL },
+         { "60", NULL },
+         { "70", NULL },
+         { "80", NULL },
+         { "85", NULL },
+         { "90", NULL },
+         { "95", NULL },
+         { "100", NULL },
+         { NULL, NULL },
+      },
+      "100"
+   },
+   { NULL, NULL, NULL, NULL, NULL, NULL, {{0}}, NULL },
+};
+struct retro_core_options_v2 options_val = {
+   option_cats_val,
+   option_defs_val
 };
 
 /* RETRO_LANGUAGE_VN */

@@ -191,43 +191,12 @@ else ifeq ($(platform), ctr)
 	PLATFORM_DEFINES += -fomit-frame-pointer -fstrict-aliasing -ffast-math
 	STATIC_LINKING = 1
 
-# Raspberry Pi 1 (Raspbian)
-else ifeq ($(platform), rpi1)
+# Raspberry Pi (GCC will provide the proper march and mcpu flags for each model)
+else ifeq ($(platform), rpi)
 	TARGET := $(TARGET_NAME)_libretro.so
 	fpic := -fPIC
 	SHARED := -shared -Wl,-version-script=link.T -Wl,-no-undefined
-	PLATFORM_DEFINES += -marm -mcpu=arm1176jzf-s -mfpu=vfp -mfloat-abi=hard -ffast-math
-	PLATFORM_DEFINES += -DARM11
-
-# Raspberry Pi 2 (Raspbian)
-else ifeq ($(platform), rpi2)
-	TARGET := $(TARGET_NAME)_libretro.so
-	fpic := -fPIC
-	SHARED := -shared -Wl,-version-script=link.T -Wl,-no-undefined
-	PLATFORM_DEFINES += -marm -mcpu=cortex-a7 -mfpu=neon-vfpv4 -mfloat-abi=hard -ffast-math
-	PLATFORM_DEFINES += -DARM
-
-# Raspberry Pi 3 (Raspbian)
-else ifeq ($(platform), rpi3)
-	TARGET := $(TARGET_NAME)_libretro.so
-	fpic := -fPIC
-	SHARED := -shared -Wl,-version-script=link.T -Wl,-no-undefined
-	PLATFORM_DEFINES += -marm -mcpu=cortex-a53 -mfpu=neon-fp-armv8 -mfloat-abi=hard -ffast-math
-	PLATFORM_DEFINES += -DARM
-
-# Raspberry Pi 3 (64-bit)
-else ifeq ($(platform), rpi3_64)
-	TARGET := $(TARGET_NAME)_libretro.so
-	fpic := -fPIC
-	SHARED := -shared -Wl,-version-script=link.T -Wl,-no-undefined
-	PLATFORM_DEFINES += -mcpu=cortex-a53 -mtune=cortex-a53 -ffast-math
-
-# Raspberry Pi 4 (64-bit)
-else ifeq ($(platform), rpi4_64)
-	TARGET := $(TARGET_NAME)_libretro.so
-	fpic := -fPIC
-	SHARED := -shared -Wl,-version-script=link.T -Wl,-no-undefined
-	PLATFORM_DEFINES += -mcpu=cortex-a72 -mtune=cortex-a72 -ffast-math
+	PLATFORM_DEFINES += -march=native -mcpu=native -ftree-vectorize -pipe -fomit-frame-pointer
 
 # Lightweight PS3 Homebrew SDK
 else ifeq ($(platform), psl1ght)

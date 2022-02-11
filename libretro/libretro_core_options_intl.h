@@ -20440,25 +20440,25 @@ struct retro_core_options_v2 options_ro = {
 /* RETRO_LANGUAGE_RU */
 
 #define CATEGORY_VIDEO_LABEL_RU "Видео"
-#define CATEGORY_VIDEO_INFO_0_RU NULL
+#define CATEGORY_VIDEO_INFO_0_RU "Настройки соотношения сторон, кадрирования, цветовой палитры и фильтрации изображения."
 #define CATEGORY_AUDIO_LABEL_RU "Аудио"
-#define CATEGORY_AUDIO_INFO_0_RU NULL
+#define CATEGORY_AUDIO_INFO_0_RU "Настройки звуковых эффектов и громкости каналов."
 #define CATEGORY_INPUT_LABEL_RU "Ввод"
-#define CATEGORY_INPUT_INFO_0_RU NULL
+#define CATEGORY_INPUT_INFO_0_RU "Изменение устройств ввода и связанных настроек."
 #define CATEGORY_HACKS_LABEL_RU "Хаки эмуляции"
 #define CATEGORY_HACKS_INFO_0_RU "Настройка разгона процессора и параметров точности эмуляции, влияющих на производительность и совместимость."
 #define NESTOPIA_BLARGG_NTSC_FILTER_LABEL_RU "NTSC-фильтр Blargg'а"
-#define NESTOPIA_BLARGG_NTSC_FILTER_INFO_0_RU NULL
-#define OPTION_VAL_COMPOSITE_RU NULL
+#define NESTOPIA_BLARGG_NTSC_FILTER_INFO_0_RU "Включает NTSC-фильтры Blargg'а."
+#define OPTION_VAL_COMPOSITE_RU "Композитное видео"
 #define OPTION_VAL_SVIDEO_RU NULL
 #define OPTION_VAL_RGB_RU NULL
 #define OPTION_VAL_MONOCHROME_RU "Монохромный"
-#define NESTOPIA_PALETTE_LABEL_RU NULL
-#define NESTOPIA_PALETTE_INFO_0_RU NULL
+#define NESTOPIA_PALETTE_LABEL_RU "Палитра"
+#define NESTOPIA_PALETTE_INFO_0_RU "Используемая цветовая палитра."
 #define OPTION_VAL_CXA2025AS_RU NULL
 #define OPTION_VAL_CONSUMER_RU NULL
-#define OPTION_VAL_CANONICAL_RU NULL
-#define OPTION_VAL_ALTERNATIVE_RU NULL
+#define OPTION_VAL_CANONICAL_RU "Каноничная"
+#define OPTION_VAL_ALTERNATIVE_RU "Альтернативная"
 #define OPTION_VAL_RGB_O1_RU NULL
 #define OPTION_VAL_PAL_RU NULL
 #define OPTION_VAL_COMPOSITE_DIRECT_FBX_RU NULL
@@ -25199,11 +25199,11 @@ struct retro_core_options_v2 options_uk = {
 
 /* RETRO_LANGUAGE_VAL */
 
-#define CATEGORY_VIDEO_LABEL_VAL NULL
+#define CATEGORY_VIDEO_LABEL_VAL "Vídeo"
 #define CATEGORY_VIDEO_INFO_0_VAL NULL
-#define CATEGORY_AUDIO_LABEL_VAL NULL
+#define CATEGORY_AUDIO_LABEL_VAL "Àudio"
 #define CATEGORY_AUDIO_INFO_0_VAL NULL
-#define CATEGORY_INPUT_LABEL_VAL NULL
+#define CATEGORY_INPUT_LABEL_VAL "Entrada"
 #define CATEGORY_INPUT_INFO_0_VAL NULL
 #define CATEGORY_HACKS_LABEL_VAL NULL
 #define CATEGORY_HACKS_INFO_0_VAL NULL

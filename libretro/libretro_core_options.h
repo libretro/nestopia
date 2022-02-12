@@ -209,10 +209,11 @@ struct retro_core_option_v2_definition option_defs_us[] = {
       NULL,
       "video",
       {
-         { "auto", "Auto" },
-         { "ntsc", "NTSC" },
-         { "pal",  "PAL" },
-         { "4:3",  "4:3" },
+         { "auto",        "Auto" },
+         { "ntsc",        "NTSC" },
+         { "pal",         "PAL" },
+         { "4:3",         "4:3" },
+         { "uncorrected", "Uncorrected" },
          { NULL, NULL },
       },
       "auto"

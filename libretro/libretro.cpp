@@ -405,11 +405,21 @@ double get_aspect_ratio(void)
   double aspect_ratio = is_pal ? NES_PAL_PAR : NES_NTSC_PAR;
 
   if (aspect_ratio_mode == 1)
+  {
     aspect_ratio = NES_NTSC_PAR;
+  }
   else if (aspect_ratio_mode == 2)
+  {
     aspect_ratio = NES_PAL_PAR;
+  }
   else if (aspect_ratio_mode == 3)
+  {
     aspect_ratio = NES_4_3_DAR;
+  }
+  else if (aspect_ratio_mode == 4)
+  {
+    aspect_ratio = 0;
+  }
     
   return aspect_ratio;
 }
@@ -1076,6 +1086,8 @@ static void check_variables(void)
        aspect_ratio_mode = 2;
      else if (!strcmp(var.value, "4:3"))
        aspect_ratio_mode = 3;
+     else if (!strcmp(var.value, "uncorrected"))
+       aspect_ratio_mode = 4;
      else
        aspect_ratio_mode = 0;
    }

@@ -1266,7 +1266,6 @@ void retro_run(void)
    unsigned frames = is_pal ? SAMPLERATE / 50 : SAMPLERATE / 60;
    for (unsigned i = 0; i < frames; i++)
       audio_stereo_buffer[(i << 1) + 0] = audio_stereo_buffer[(i << 1) + 1] = audio_buffer[i];
-   audio_batch_cb(audio_stereo_buffer, frames);
    
    bool updated = false;
    if (environ_cb(RETRO_ENVIRONMENT_GET_VARIABLE_UPDATE, &updated) && updated)
@@ -1284,6 +1283,8 @@ void retro_run(void)
          video_width - (overscan_h ? 2 * dif : 0),
          Api::Video::Output::HEIGHT - (overscan_v ? 16 : 0),
          pitch);
+
+   audio_batch_cb(audio_stereo_buffer, frames);
 }
 
 static void extract_basename(char *buf, const char *path, size_t size)

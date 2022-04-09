@@ -27079,18 +27079,6 @@
         <peripherals>
             <device type="fourplayer" />
         </peripherals>
-        <cartridge system="NES-NTSC" dump="ok" crc="4E6B9078" sha1="93FF8CEC778771C7200F785798E0D1599EE8FEB5">
-            <board type="NES-NROM-256" mapper="0">
-                <prg size="32k" />
-                <chr size="8k" />
-                <pad h="0" v="1" />
-            </board>
-        </cartridge>
-    </game>
-    <game>
-        <peripherals>
-            <device type="fourplayer" />
-        </peripherals>
         <cartridge system="NES-NTSC" dump="ok" crc="8C29D397" sha1="69612DDE41A2C52A802D9768D7C2942572939867">
             <board type="NES-NROM-256" mapper="0">
                 <prg size="32k" />

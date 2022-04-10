@@ -84,7 +84,7 @@ size_t pitch;
 static Api::Video::Output *video;
 static Api::Sound::Output *audio;
 static Api::Input::Controllers *input;
-static unsigned input_type[4];
+static unsigned input_type[4] = { RETRO_DEVICE_AUTO, RETRO_DEVICE_AUTO, RETRO_DEVICE_AUTO, RETRO_DEVICE_AUTO };
 static Api::Machine::FavoredSystem favsystem;
 
 static void *sram;
@@ -583,7 +583,7 @@ static void update_input()
    {
       switch (input_type[p])
       {
-         case  RETRO_DEVICE_AUTO:
+         case RETRO_DEVICE_AUTO:
             Api::Input(emulator).AutoSelectController(p);
             break;
          case RETRO_DEVICE_NONE:
@@ -799,21 +799,21 @@ static void check_variables(void)
    var.key = "nestopia_arkanoid_device";
    if (environ_cb(RETRO_ENVIRONMENT_GET_VARIABLE, &var))
    {
-      if (strcmp(var.value, "mouse") == 0)
-         arkanoid_device = ARKANOID_DEVICE_MOUSE;
       if (strcmp(var.value, "pointer") == 0)
          arkanoid_device = ARKANOID_DEVICE_POINTER;
+      else
+         arkanoid_device = ARKANOID_DEVICE_MOUSE;
    }
 
    var.key = "nestopia_zapper_device";
    if (environ_cb(RETRO_ENVIRONMENT_GET_VARIABLE, &var))
    {
-      if (strcmp(var.value, "lightgun") == 0)
-         zapper_device = ZAPPER_DEVICE_LIGHTGUN;
-      else if (strcmp(var.value, "mouse") == 0)
+      if (strcmp(var.value, "mouse") == 0)
          zapper_device = ZAPPER_DEVICE_MOUSE;
       else if (strcmp(var.value, "pointer") == 0)
          zapper_device = ZAPPER_DEVICE_POINTER;
+      else
+         zapper_device = ZAPPER_DEVICE_LIGHTGUN;
    }
 
    var.key = "nestopia_show_crosshair";
@@ -1329,7 +1329,7 @@ bool retro_load_game(const struct retro_game_info *info)
    char db_path[256];
    char palette_path[256];
    
-#if defined(_WIN32)
+#if PSS_STYLE == 2
    slash = '\\';
 #else
    slash = '/';
@@ -1394,6 +1394,8 @@ bool retro_load_game(const struct retro_game_info *info)
       { 0 },
    };
 
+   environ_cb(RETRO_ENVIRONMENT_SET_INPUT_DESCRIPTORS, desc);
+
 #ifdef _3DS
    video_buffer = (uint32_t*)linearMemAlign(Api::Video::Output::NTSC_WIDTH * Api::Video::Output::HEIGHT * sizeof(uint32_t), 0x80);
 #else
@@ -1403,8 +1405,6 @@ bool retro_load_game(const struct retro_game_info *info)
    machine = new Api::Machine(emulator);
    input = new Api::Input::Controllers;
    Api::User::fileIoCallback.Set(file_io_callback, 0);
-
-   environ_cb(RETRO_ENVIRONMENT_SET_INPUT_DESCRIPTORS, desc);
 
    if (!environ_cb(RETRO_ENVIRONMENT_GET_SYSTEM_DIRECTORY, &dir) || !dir)
       return false;

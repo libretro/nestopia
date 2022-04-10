@@ -1,6 +1,7 @@
 DEBUG = 0
 GIT_VERSION := " $(shell git rev-parse --short HEAD)"
 HAS_GCC = 1
+PSS_STYLE := 1
 
 SPACE :=
 SPACE := $(SPACE) $(SPACE)
@@ -709,6 +710,7 @@ else
 	CC ?= gcc
 	CXX ?= g++
 	SHARED := -shared -static-libgcc -static-libstdc++ -Wl,-no-undefined -Wl,-version-script=link.T
+	PSS_STYLE :=2
 
 endif
 
@@ -749,7 +751,7 @@ CXXFLAGS += -std=c++98
 CXXFLAGS += -fno-rtti
 endif
 
-DEFINES := -D__LIBRETRO__ $(PLATFORM_DEFINES) $(GCC_FLAGS) $(GCC_WARNINGS) -DNST_NO_ZLIB $(INCFLAGS) $(INCFLAGS_PLATFORM)
+DEFINES := -D__LIBRETRO__ $(PLATFORM_DEFINES) -DPSS_STYLE=$(PSS_STYLE) $(GCC_FLAGS) $(GCC_WARNINGS) -DNST_NO_ZLIB $(INCFLAGS) $(INCFLAGS_PLATFORM)
 
 CFLAGS += $(fpic) $(DEFINES) $(C_VER)
 CXXFLAGS += $(fpic) $(DEFINES)

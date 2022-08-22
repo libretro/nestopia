@@ -52,6 +52,11 @@ extern "C" {
 
 struct retro_core_option_v2_category option_cats_us[] = {
    {
+      "system",
+      "System",
+      "Change system region and other hardware-related settings."
+   },
+   {
       "video",
       "Video",
       "Change aspect ratio, display cropping, color palette and video filter settings."
@@ -75,6 +80,43 @@ struct retro_core_option_v2_category option_cats_us[] = {
 };
 
 struct retro_core_option_v2_definition option_defs_us[] = {
+
+/* System */
+
+   {
+      "nestopia_favored_system",
+      "System Region",
+      NULL,
+      "'Auto' will use the NstDatabase.xml database file for region autodetection. If there is no database present, it will default to NTSC.",
+      NULL,
+      "system",
+      {
+         { "auto",    "Auto" },
+         { "ntsc",    "NTSC" },
+         { "pal",     "PAL" },
+         { "famicom", "Famicom" },
+         { "dendy",   "Dendy" },
+         { NULL, NULL },
+      },
+      "auto"
+   },
+   {
+      "nestopia_fds_auto_insert",
+      "FDS Auto Insert",
+      NULL,
+      "Automatically insert first FDS disk on reset.",
+      NULL,
+      "system",
+      {
+         { "disabled", NULL },
+         { "enabled",  NULL },
+         { NULL, NULL },
+      },
+      "enabled"
+   },
+
+/* Video */
+
    {
       "nestopia_blargg_ntsc_filter",
       "Blargg NTSC Filter",
@@ -92,11 +134,11 @@ struct retro_core_option_v2_definition option_defs_us[] = {
       },
       "disabled"
    },
-   {/* TODO explain the custom option */
+   {
       "nestopia_palette",
       "Palette",
       NULL,
-      "Color palette to be used.",
+      "Color palette to be used. If 'Custom' is selected, the palette used will be taken from the 'custom.pal' file placed in the RetroArch System/BIOS directory.",
       NULL,
       "video",
       {
@@ -115,63 +157,6 @@ struct retro_core_option_v2_definition option_defs_us[] = {
          { NULL, NULL },
       },
       "cxa2025as" /* TODO/FIXME - is this correct ? */
-   },
-   {
-      "nestopia_nospritelimit",
-      "Remove Sprite Limit",
-      NULL,
-      "Remove 8-sprites-per-scanline hardware limit.",
-      NULL,
-      "hacks",
-      {
-         { "disabled", NULL },
-         { "enabled",  NULL },
-         { NULL, NULL },
-      },
-      "disabled"
-   },
-   {
-      "nestopia_overclock",
-      "CPU Speed (Overclock)",
-      NULL,
-      "Overclock the emulated CPU.",
-      NULL,
-      "hacks",
-      {
-         { "1x", NULL },
-         { "2x", NULL },
-         { NULL, NULL },
-      },
-      "1x"
-   },
-   {
-      "nestopia_select_adapter",
-      "4 Player Adapter",
-      NULL,
-      "Manually select a 4 Player Adapter if needed. Some games will not recognize the adapter correctly through the NstDatabase.xml database, this option should help fix that.",
-      NULL,
-      "input",
-      {
-         { "auto",    "Auto" },
-         { "ntsc",    "NTSC" },
-         { "famicom", "Famicom" },
-         { NULL, NULL },
-      },
-      "auto"
-   },
-   {
-      "nestopia_fds_auto_insert",
-      "FDS Auto Insert",
-      NULL,
-      "Automatically insert first FDS disk on reset.",
-      NULL,
-      NULL,
-      {
-         { "disabled", NULL },
-         { "enabled",  NULL },
-         { NULL, NULL },
-      },
-      "enabled"
    },
    {
       "nestopia_overscan_v",
@@ -205,7 +190,7 @@ struct retro_core_option_v2_definition option_defs_us[] = {
       "nestopia_aspect",
       "Preferred Aspect Ratio",
       NULL,
-      "RetroArch's aspect ratio must be set to Core, provided in the Video settings. 'Auto' will use the NstDatabase.xml database file for aspect ratio autodetection. If there is no database present, it will default to NTSC.",
+      "RetroArch's aspect ratio must be set to 'Core Provided' in the Video settings. 'Auto' will use the NstDatabase.xml database file for aspect ratio autodetection. If there is no database present, it will default to NTSC.",
       NULL,
       "video",
       {
@@ -218,6 +203,9 @@ struct retro_core_option_v2_definition option_defs_us[] = {
       },
       "auto"
    },
+
+/* Audio */
+
    {
       "nestopia_genie_distortion",
       "Game Genie Sound Distortion",
@@ -233,119 +221,12 @@ struct retro_core_option_v2_definition option_defs_us[] = {
       "disabled"
    },
    {
-      "nestopia_favored_system",
-      "System Region",
-      NULL,
-      "'Auto' will use the NstDatabase.xml database file for region autodetection. If there is no database present, it will default to NTSC.",
-      NULL,
-      NULL,
-      {
-         { "auto",    "Auto" },
-         { "ntsc",    "NTSC" },
-         { "pal",     "PAL" },
-         { "famicom", "Famicom" },
-         { "dendy",   "Dendy" },
-         { NULL, NULL },
-      },
-      "auto"
-   },
-   {
-      "nestopia_ram_power_state",
-      "RAM Power-on State",
-      NULL,
-      "RAM values on power up. Some games rely on initial RAM values for random number generation as an example.",
-      NULL,
-      "hacks",
-      {
-         { "0x00",   NULL },
-         { "0xFF",   NULL },
-         { "random", "Random" },
-         { NULL, NULL },
-      },
-      "0x00"
-   },
-   {
-      "nestopia_button_shift",
-      "Shift Buttons Clockwise",
-      NULL,
-      "Rotate the A/B/X/Y buttons clockwise.", /* is this right? @gadsby */
-      NULL,
-      "input",
-      {
-         { "disabled", NULL },
-         { "enabled",  NULL },
-         { NULL, NULL },
-      },
-      "disabled"
-   },
-   {
-      "nestopia_arkanoid_device",
-      "Arkanoid device",
-      NULL,
-      "Select the device you wish to use for the Arkanoid paddle.",
-      NULL,
-      "input",
-      {
-         { "mouse", "Mouse" },
-         { "pointer", "Pointer" },
-      },
-      "mouse"
-   },
-   {
-      "nestopia_zapper_device",
-      "Zapper device",
-      NULL,
-      "Select the device you wish to use for the Zapper.",
-      NULL,
-      "input",
-      {
-         { "lightgun", "Light gun" },
-         { "mouse", "Mouse" },
-         { "pointer", "Pointer" },
-         { NULL, NULL },
-      },
-      "lightgun",
-   },
-   {
-      "nestopia_show_crosshair",
-      "Show Crosshair",
-      NULL,
-      "Set whether to show the crosshair when the Zapper is used.",
-      NULL,
-      "input",
-      {
-         { "disabled", NULL},
-         { "enabled", NULL },
-      },
-      "enabled"
-   },
-   {
-      "nestopia_turbo_pulse",
-      "Turbo Pulse Speed",
-      NULL,
-      "Set the turbo pulse speed for the Turbo B and Turbo A buttons.",
-      NULL,
-      "input",
-      {
-         { "2", NULL },
-         { "3", NULL },
-         { "4", NULL },
-         { "5", NULL },
-         { "6", NULL },
-         { "7", NULL },
-         { "8", NULL },
-         { "9", NULL },
-         { NULL, NULL },
-      },
-      "2"
-   },
-   {
       "nestopia_show_advanced_av_settings",
       "Show Advanced Audio Settings (Reopen menu)",
       NULL,
       "Enable configuration of low-level audio channel parameters.",
       NULL,
-      NULL,
+      "audio",
       {
          { "disabled", NULL },
          { "enabled",  NULL },
@@ -607,7 +488,7 @@ struct retro_core_option_v2_definition option_defs_us[] = {
       "nestopia_audio_vol_s5b",
       "S5B Channel Volume %",
       NULL,
-      "Modify N163 Channel Volume %.",
+      "Modify S5B Channel Volume %.",
       NULL,
       "audio",
       {
@@ -628,6 +509,145 @@ struct retro_core_option_v2_definition option_defs_us[] = {
       },
       "100"
    },
+
+/* Input */
+
+   {
+      "nestopia_select_adapter",
+      "4 Player Adapter",
+      NULL,
+      "Manually select a 4 Player Adapter if needed. Some games will not recognize the adapter correctly through the NstDatabase.xml database, this option should help fix that.",
+      NULL,
+      "input",
+      {
+         { "auto",    "Auto" },
+         { "ntsc",    "NTSC" },
+         { "famicom", "Famicom" },
+         { NULL, NULL },
+      },
+      "auto"
+   },
+   {
+      "nestopia_button_shift",
+      "Shift Buttons Clockwise",
+      NULL,
+      "Rotate the A/B/X/Y buttons clockwise.", /* is this right? @gadsby */
+      NULL,
+      "input",
+      {
+         { "disabled", NULL },
+         { "enabled",  NULL },
+         { NULL, NULL },
+      },
+      "disabled"
+   },
+   {
+      "nestopia_arkanoid_device",
+      "Arkanoid device",
+      NULL,
+      "Select the device you wish to use for the Arkanoid paddle.",
+      NULL,
+      "input",
+      {
+         { "mouse", "Mouse" },
+         { "pointer", "Pointer" },
+      },
+      "mouse"
+   },
+   {
+      "nestopia_zapper_device",
+      "Zapper device",
+      NULL,
+      "Select the device you wish to use for the Zapper.",
+      NULL,
+      "input",
+      {
+         { "lightgun", "Light gun" },
+         { "mouse", "Mouse" },
+         { "pointer", "Pointer" },
+         { NULL, NULL },
+      },
+      "lightgun",
+   },
+   {
+      "nestopia_show_crosshair",
+      "Show Crosshair",
+      NULL,
+      "Set whether to show the crosshair when the Zapper is used.",
+      NULL,
+      "input",
+      {
+         { "disabled", NULL},
+         { "enabled", NULL },
+      },
+      "enabled"
+   },
+   {
+      "nestopia_turbo_pulse",
+      "Turbo Pulse Speed",
+      NULL,
+      "Set the turbo pulse speed for the Turbo B and Turbo A buttons.",
+      NULL,
+      "input",
+      {
+         { "2", NULL },
+         { "3", NULL },
+         { "4", NULL },
+         { "5", NULL },
+         { "6", NULL },
+         { "7", NULL },
+         { "8", NULL },
+         { "9", NULL },
+         { NULL, NULL },
+      },
+      "2"
+   },
+
+/* Emulation Hacks */
+
+   {
+      "nestopia_nospritelimit",
+      "Remove Sprite Limit",
+      NULL,
+      "Remove 8-sprites-per-scanline hardware limit.",
+      NULL,
+      "hacks",
+      {
+         { "disabled", NULL },
+         { "enabled",  NULL },
+         { NULL, NULL },
+      },
+      "disabled"
+   },
+   {
+      "nestopia_overclock",
+      "CPU Speed (Overclock)",
+      NULL,
+      "Overclock the emulated CPU.",
+      NULL,
+      "hacks",
+      {
+         { "1x", NULL },
+         { "2x", NULL },
+         { NULL, NULL },
+      },
+      "1x"
+   },
+   {
+      "nestopia_ram_power_state",
+      "RAM Power-on State",
+      NULL,
+      "RAM values on power up. Some games rely on initial RAM values for random number generation as an example.",
+      NULL,
+      "hacks",
+      {
+         { "0x00",   NULL },
+         { "0xFF",   NULL },
+         { "random", "Random" },
+         { NULL, NULL },
+      },
+      "0x00"
+   },
    { NULL, NULL, NULL, NULL, NULL, NULL, {{0}}, NULL },
 };
 
@@ -644,7 +664,7 @@ struct retro_core_options_v2 options_us = {
 
 #ifndef HAVE_NO_LANGEXTRA
 struct retro_core_options_v2 *options_intl[RETRO_LANGUAGE_LAST] = {
-   &options_us, /* RETRO_LANGUAGE_ENGLISH */
+   &options_us,      /* RETRO_LANGUAGE_ENGLISH */
    &options_ja,      /* RETRO_LANGUAGE_JAPANESE */
    &options_fr,      /* RETRO_LANGUAGE_FRENCH */
    &options_es,      /* RETRO_LANGUAGE_SPANISH */

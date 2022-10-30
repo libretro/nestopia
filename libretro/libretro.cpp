@@ -1431,15 +1431,36 @@ bool retro_load_game(const struct retro_game_info *info)
          log_cb(RETRO_LOG_INFO, "custom.pal not found in system directory.\n");
    }
    delete custompalette;
+
+   sprintf(db_path, "%s%cNstDatabase.xml", dir, slash);
+
+   if (log_cb)
+      log_cb(RETRO_LOG_INFO, "NstDatabase.xml path: %s\n", db_path);
    
    Api::Cartridge::Database database(emulator);
-   
-   size_t db_size = sizeof(nst_db_xml)/sizeof(unsigned char);
-   std::string db_buf((const char*)nst_db_xml, db_size);
-   std::istringstream *db_file = new std::istringstream(db_buf);
-   
-   database.Load(*db_file);
+
+   std::ifstream *db_file = new std::ifstream(db_path, std::ifstream::in|std::ifstream::binary);
+
+   if (db_file->is_open())
+   {
+      database.Load(*db_file);
+      if (log_cb)
+         log_cb(RETRO_LOG_INFO, "Using external XML database\n");
+   }
+   else
+   {
+      size_t db_size = sizeof(nst_db_xml)/sizeof(unsigned char);
+      std::string db_buf((const char*)nst_db_xml, db_size);
+      std::istringstream *db_baked = new std::istringstream(db_buf);
+      database.Load(*db_baked);
+      if (log_cb)
+         log_cb(RETRO_LOG_INFO, "Using baked in XML database\n");
+   }
+
    database.Enable(true);
+
+   if (db_file)
+      delete db_file;
    
    if (info->path != NULL)
    {

@@ -75,6 +75,11 @@ static enum {
    SHOW_CROSSHAIR_ON,
 } show_crosshair;
 
+static enum {
+   AUDIO_TYPE_MONO,
+   AUDIO_TYPE_STEREO,
+} audio_type;
+
 static bool libretro_supports_bitmasks = false;
 static bool show_advanced_av_settings = true;
 
@@ -1207,7 +1212,20 @@ static void check_variables(void)
    if (environ_cb(RETRO_ENVIRONMENT_GET_VARIABLE, &var) && var.value)
    {
       sound.SetVolume(Api::Sound::CHANNEL_S5B, atoi(var.value));
-   }   
+   }
+
+   var.key = "nestopia_audio_type";
+   if (environ_cb(RETRO_ENVIRONMENT_GET_VARIABLE, &var))
+   {
+      if (strcmp(var.value, "mono") == 0)
+      {
+         audio_type = AUDIO_TYPE_MONO;
+      }
+      else
+      {
+         audio_type = AUDIO_TYPE_STEREO;
+      }
+   }
 
   /* "Show settings" are not required if categories are supported */
   option_display.visible = !libretro_supports_option_categories;
@@ -1264,8 +1282,10 @@ void retro_run(void)
       draw_crosshair(crossx, crossy);
    
    unsigned frames = is_pal ? SAMPLERATE / 50 : SAMPLERATE / 60;
-   for (unsigned i = 0; i < frames; i++)
-      audio_stereo_buffer[(i << 1) + 0] = audio_stereo_buffer[(i << 1) + 1] = audio_buffer[i];
+   for (unsigned i = 0; i < frames; i++) {
+      audio_stereo_buffer[(i << 1) + 0] = audio_buffer[i];
+      audio_stereo_buffer[(i << 1) + 1] = audio_type == AUDIO_TYPE_STEREO ? audio_buffer[i] : 0;
+   }
    
    bool updated = false;
    if (environ_cb(RETRO_ENVIRONMENT_GET_VARIABLE_UPDATE, &updated) && updated)

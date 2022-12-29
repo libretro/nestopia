@@ -540,6 +540,7 @@ namespace Nes
 						TXC_POLICEMAN              = MakeId<   36,  512,  128,  0,  0, CRM_0,  NMT_X,  0 >::ID,
 						TXC_TW                     = MakeId<  189,  128,  256,  0,  0, CRM_0,  NMT_X,  0 >::ID,
 						// Unlicensed
+						UNL_158B                   = MakeId<  258,  128,  128,  0,  0, CRM_0,  NMT_X,  0 >::ID,
 						UNL_A9746                  = MakeId<  219,  128,  256,  0,  0, CRM_0,  NMT_X,  0 >::ID,
 						UNL_CC21                   = MakeId<   27,   32,    8,  0,  0, CRM_0,  NMT_Z,  0 >::ID,
 						UNL_EDU2000                = MakeId<  329, 1024,    0,  0, 32, CRM_8,  NMT_Z,  0 >::ID,
@@ -548,6 +549,7 @@ namespace Nes
 						UNL_KINGOFFIGHTERS97       = MakeId<  263,  256,  256,  0,  0, CRM_0,  NMT_X,  0 >::ID,
 						UNL_MORTALKOMBAT2          = MakeId<   91,  256,  512,  0,  0, CRM_0,  NMT_X,  0 >::ID,
 						UNL_N625092                = MakeId<  221, 1024,    8,  0,  0, CRM_0,  NMT_V,  0 >::ID,
+						UNL_RETX7GBL               = MakeId<  400, 2048,    0,  0,  0, CRM_32, NMT_X,  0 >::ID,
 						UNL_SUPERFIGHTER3          = MakeId<  197,  512,  512,  0,  0, CRM_0,  NMT_X,  0 >::ID,
 						UNL_SHERO                  = MakeId<  262,  512,  512,  0,  0, CRM_8,  NMT_4,  0 >::ID,
 						UNL_TF1201                 = MakeId<  298,  128,  128,  0,  0, CRM_0,  NMT_V,  0 >::ID,
@@ -562,6 +564,7 @@ namespace Nes
 						UNL_TRXROM                 = MakeId<    4,  512,  256,  8,  0, CRM_0,  NMT_4,  0 >::ID,
 						UNL_XZY                    = MakeId<  176, 1024,  256,  8,  0, CRM_0,  NMT_X,  0 >::ID,
 						UNL_MMC3BIGCHRRAM          = MakeId<    4,  512,    0,  0,  0, CRM_32, NMT_X,  0 >::ID,
+						UNL_MMC3BIGPRGROM          = MakeId<    4, 1024,    0,  8,  0, CRM_8,  NMT_X,  0 >::ID,
 						// Waixing
 						WAIXING_PS2_0              = MakeId<   15, 1024,    0,  0,  0, CRM_8,  NMT_V,  0 >::ID,
 						WAIXING_PS2_1              = MakeId<   15, 1024,    0,  8,  0, CRM_8,  NMT_V,  0 >::ID,

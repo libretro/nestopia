@@ -2,7 +2,7 @@
 //
 // Nestopia - NES/Famicom emulator written in C++
 //
-// Copyright (C) 2003-2008 Martin Freij
+// Copyright (C) 2022 Rupert Carmichael
 //
 // This file is part of Nestopia.
 //
@@ -22,45 +22,46 @@
 //
 ////////////////////////////////////////////////////////////////////////////////////////
 
-#include <algorithm>
-#include "NstCpu.hpp"
-#include "NstSoundRenderer.hpp"
+#ifndef NST_BOARD_UNL_158B_H
+#define NST_BOARD_UNL_158B_H
+
+#ifdef NST_PRAGMA_ONCE
+#pragma once
+#endif
+
+#include "NstBoardMmc3.hpp"
 
 namespace Nes
 {
 	namespace Core
 	{
-		namespace Sound
+		namespace Boards
 		{
-			#ifdef NST_MSVC_OPTIMIZE
-			#pragma optimize("s", on)
-			#endif
-
-			Buffer::Buffer(uint bits)
-			: output(new iword [SIZE])
+			namespace Unlicensed
 			{
-				Reset( true );
+				class Gd98158b : public Mmc3
+				{
+				public:
+
+					explicit Gd98158b(const Context&);
+
+				private:
+
+					void SubReset(bool);
+					void SubLoad(State::Loader&,dword);
+					void SubSave(State::Saver&) const;
+
+					void NST_FASTCALL UpdatePrg(uint, uint);
+
+					NES_DECL_PEEK( 5000 );
+					NES_DECL_POKE( 5000 );
+
+					byte lut[8];
+					uint reg;
+				};
 			}
-
-			Buffer::~Buffer()
-			{
-				delete [] output;
-			}
-
-			void Buffer::Reset(bool clear)
-			{
-				pos = start = 0;
-				history.pos = 0;
-
-				std::fill( history.buffer, history.buffer+History::SIZE, iword(0) );
-
-				if (clear)
-					std::fill( output, output+SIZE, iword(0) );
-			}
-
-			#ifdef NST_MSVC_OPTIMIZE
-			#pragma optimize("", on)
-			#endif
 		}
 	}
 }
+
+#endif

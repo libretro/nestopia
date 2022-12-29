@@ -97,13 +97,16 @@
 #include "NstBoardWaixing.hpp"
 #include "NstBoardWhirlwind.hpp"
 #include "NstBoardBenshengBs5.hpp"
+#include "NstBoardUnl158b.hpp"
 #include "NstBoardUnlA9746.hpp"
 #include "NstBoardUnlCc21.hpp"
 #include "NstBoardUnlEdu2000.hpp"
 #include "NstBoardUnlKingOfFighters96.hpp"
 #include "NstBoardUnlKingOfFighters97.hpp"
+#include "NstBoardUnlMmc3BigPrgRom.hpp"
 #include "NstBoardUnlMortalKombat2.hpp"
 #include "NstBoardUnlN625092.hpp"
+#include "NstBoardUnlRetX7Gbl.hpp"
 #include "NstBoardUnlSuperFighter3.hpp"
 #include "NstBoardUnlTf1201.hpp"
 #include "NstBoardUnlWorldHero.hpp"
@@ -1096,6 +1099,7 @@ namespace Nes
 					{ "TENGEN-800032",               Type::TENGEN_800032            },
 					{ "TENGEN-800037",               Type::TENGEN_800037            },
 					{ "TENGEN-800042",               Type::TENGEN_800042            },
+					{ "UNL-158B",                    Type::UNL_158B                 },
 					{ "UNL-22211",                   Type::TXC_22211A               },
 					{ "UNL-603-5052",                Type::BTL_6035052              },
 					{ "UNL-8237",                    Type::SUPERGAME_POCAHONTAS2    },
@@ -1472,6 +1476,13 @@ namespace Nes
 							break;
 						}
 
+						if (prg > SIZE_512K)
+						{
+							name = "UNL-MMC3BIGPRGROM";
+							id = Type::UNL_MMC3BIGPRGROM;
+							break;
+						}
+
 						if (nmt == Type::NMT_FOURSCREEN)
 						{
 							if (prg == SIZE_64K && (chr == SIZE_32K || chr == SIZE_64K) && !wram && !useWramAuto)
@@ -1803,35 +1814,54 @@ namespace Nes
 						break;
 
 					case 21:
-						
-						if (submapper == 1)
+
+						if (submapper == 2 || wram >= SIZE_8K) // VRC4c
 						{
 							Chips::Type& chip = chips.Add(L"Konami VRC IV");
-
+							chip.Pin(3) = L"PRG A7";
+							chip.Pin(4) = L"PRG A6";
+							name = "KONAMI VRC4";
+							id = Type::KONAMI_VRC4_2;
+						}
+						else // VRC4a - submapper 1
+						{
+							Chips::Type& chip = chips.Add(L"Konami VRC IV");
 							chip.Pin(3) = L"PRG A2";
 							chip.Pin(4) = L"PRG A1";
-
-							name = "KONAMI VRC4";
 							id = Type::KONAMI_VRC4_0;
 						}
-					case 25:
-
-						if (submapper == 2)
-						{ // The correct board is VRC2 but the functionality is implemented in the VRC4 code currently
-							Chips::Type& chip = chips.Add(L"Konami VRC IV");
-							chip.Pin(3)  = L"PRG A0";
-							chip.Pin(4)  = L"PRG A1";
-
-							name = "KONAMI VRC2";
-							id = Type::KONAMI_VRC4_2;
-							break;
-						}
-
-						if (!this->chips.Has(L"Konami VRC IV"))
-							return false;
 
 						name = "KONAMI VRC4";
-						id = Type::KONAMI_VRC4_2;
+
+						break;
+
+					case 25:
+
+						if (submapper == 3 || wram >= SIZE_8K) // VRC2c, but emulated as VRC4
+						{
+							Chips::Type& chip = chips.Add(L"Konami VRC IV");
+							chip.Pin(3) = L"PRG A0";
+							chip.Pin(4) = L"PRG A1";
+							id = Type::KONAMI_VRC4_2;
+							name = "KONAMI VRC2";
+							break;
+						}
+						else if (submapper == 2 || prg >= SIZE_256K) // VRC4d
+						{
+							Chips::Type& chip = chips.Add(L"Konami VRC IV");
+							chip.Pin(3) = L"PRG A2";
+							chip.Pin(4) = L"PRG A3";
+							id = Type::KONAMI_VRC4_0;
+						}
+						else // VRC4b - submapper 1
+						{
+							Chips::Type& chip = chips.Add(L"Konami VRC IV");
+							chip.Pin(3) = L"PRG A0";
+							chip.Pin(4) = L"PRG A1";
+							id = Type::KONAMI_VRC4_1;
+						}
+
+						name = "KONAMI VRC4";
 						break;
 
 					case 22:
@@ -1858,50 +1888,49 @@ namespace Nes
 
 					case 23:
 
-						if (submapper == 2)
+						if (submapper == 1) // VRC4f - Unknown, but plausibly World Hero?
 						{
 							Chips::Type& chip = chips.Add(L"Konami VRC IV");
-
-							chip.Pin(3) = L"PRG A3";
-							chip.Pin(4) = L"PRG A2";
-
+							chip.Pin(3) = L"PRG A1";
+							chip.Pin(4) = L"PRG A0";
 							name = "KONAMI VRC4";
 							id = Type::KONAMI_VRC4_0;
 						}
-						else if (submapper == 3)
+						else if (submapper == 2) // VRC4e
 						{
-							name = "KONAMI VRC2";
-							id = Type::KONAMI_VRC2;
-							break;
+							Chips::Type& chip = chips.Add(L"Konami VRC IV");
+							chip.Pin(3) = L"PRG A3";
+							chip.Pin(4) = L"PRG A2";
+							name = "KONAMI VRC4";
+							id = Type::KONAMI_VRC4_1;
 						}
-
-						if (prg >= SIZE_512K)
+						else if (prg >= SIZE_512K)
 						{
-							if (!this->chips.Has(L"Konami VRC IV"))
-							{
-								Chips::Type& chip = chips.Add(L"Konami VRC IV");
-
-								chip.Pin(3) = L"PRG A3";
-								chip.Pin(4) = L"PRG A2";
-							}
-
+							Chips::Type& chip = chips.Add(L"Konami VRC IV");
+							chip.Pin(3) = L"PRG A3";
+							chip.Pin(4) = L"PRG A2";
 							name = "BMC VRC4";
 							id = Type::BMC_VRC4;
 						}
-						else if (this->chips.Has(L"Konami VRC II"))
+						else // VRC2b - submapper 3
 						{
+							Chips::Type& chip = chips.Add(L"Konami VRC II");
+
+							chip.Pin(3)  = L"PRG A1";
+							chip.Pin(4)  = L"PRG A0";
+							chip.Pin(21) = L"CHR A10";
+							chip.Pin(22) = L"CHR A16";
+							chip.Pin(23) = L"CHR A11";
+							chip.Pin(24) = L"CHR A13";
+							chip.Pin(25) = L"CHR A14";
+							chip.Pin(26) = L"CHR A12";
+							chip.Pin(27) = L"CHR A15";
+							chip.Pin(28) = (chr >= SIZE_256K ? L"CHR A17" : L"NC");
+
 							name = "KONAMI VRC2";
 							id = Type::KONAMI_VRC2;
 						}
-						else if (this->chips.Has(L"Konami VRC IV"))
-						{
-							name = "KONAMI VRC4";
-							id = Type::KONAMI_VRC4_2;
-						}
-						else
-						{
-							return false;
-						}
+
 						break;
 
 					case 24:
@@ -2344,13 +2373,6 @@ namespace Nes
 
 					case 78:
 
-						if (submapper == 1)
-						{
-							name = "JALECO JF-16";
-							id = Type::JALECO_JF16;
-							break;
-						}
-						
 						if (submapper == 3)
 						{
 							name = "IREM-HOLYDIVER";
@@ -2358,6 +2380,7 @@ namespace Nes
 							break;
 						}
 
+						// Default to submapper 1
 						name = "JALECO JF-16";
 						id = Type::JALECO_JF16;
 						break;
@@ -3385,6 +3408,12 @@ namespace Nes
 						id = Type::BMC_110IN1;
 						break;
 
+					case 258:
+
+						name = "UNL-158B";
+						id = Type::UNL_158B;
+						break;
+
 					case 262:
 
 						name = "UNL-SHERO";
@@ -3492,6 +3521,12 @@ namespace Nes
 
 						name = "BMC-WS";
 						id = Type::BMC_SUPER_40IN1;
+						break;
+
+					case 400:
+
+						name = "UNL-RET-X7-GBL";
+						id = Type::UNL_RETX7GBL;
 						break;
 
 					case 521:
@@ -3887,14 +3922,17 @@ namespace Nes
 					case Type::TXC_MXMDHTWO               : return new Txc::Mxmdhtwo(c);
 					case Type::TXC_POLICEMAN              : return new Txc::Policeman(c);
 					case Type::TXC_TW                     : return new Txc::Tw(c);
+					case Type::UNL_158B                   : return new Unlicensed::Gd98158b(c);
 					case Type::UNL_A9746                  : return new Unlicensed::A9746(c);
 					case Type::UNL_CC21                   : return new Unlicensed::Cc21(c);
 					case Type::UNL_EDU2000                : return new Unlicensed::Edu2000(c);
 					case Type::UNL_FS304                  : return new Waixing::Fs304(c);
 					case Type::UNL_KINGOFFIGHTERS96       : return new Unlicensed::KingOfFighters96(c);
 					case Type::UNL_KINGOFFIGHTERS97       : return new Unlicensed::KingOfFighters97(c);
+					case Type::UNL_MMC3BIGPRGROM          : return new Unlicensed::Mmc3BigPrgRom(c);
 					case Type::UNL_MORTALKOMBAT2          : return new Unlicensed::MortalKombat2(c);
 					case Type::UNL_N625092                : return new Unlicensed::N625092(c);
+					case Type::UNL_RETX7GBL               : return new Unlicensed::RetX7Gbl(c);
 					case Type::UNL_SUPERFIGHTER3          : return new Unlicensed::SuperFighter3(c);
 					case Type::UNL_SHERO                  : return new Sachen::StreetHeroes(c);
 					case Type::UNL_TF1201                 : return new Unlicensed::Tf1201(c);

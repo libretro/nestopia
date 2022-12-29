@@ -2,7 +2,7 @@
 //
 // Nestopia - NES/Famicom emulator written in C++
 //
-// Copyright (C) 2003-2008 Martin Freij
+// Copyright (C) 2022 Rupert Carmichael
 //
 // This file is part of Nestopia.
 //
@@ -22,45 +22,46 @@
 //
 ////////////////////////////////////////////////////////////////////////////////////////
 
-#include <algorithm>
-#include "NstCpu.hpp"
-#include "NstSoundRenderer.hpp"
+#ifndef NST_BOARD_UNL_RETX7GBL_H
+#define NST_BOARD_UNL_RETX7GBL_H
+
+#ifdef NST_PRAGMA_ONCE
+#pragma once
+#endif
 
 namespace Nes
 {
 	namespace Core
 	{
-		namespace Sound
+		namespace Boards
 		{
-			#ifdef NST_MSVC_OPTIMIZE
-			#pragma optimize("s", on)
-			#endif
-
-			Buffer::Buffer(uint bits)
-			: output(new iword [SIZE])
+			namespace Unlicensed
 			{
-				Reset( true );
+				class RetX7Gbl : public Board
+				{
+				public:
+
+					explicit RetX7Gbl(const Context& c)
+					: Board(c) {}
+
+				private:
+
+					void SubReset(bool);
+					void SubLoad(State::Loader&,dword);
+					void SubSave(State::Saver&) const;
+
+					void UpdatePrg();
+
+					NES_DECL_POKE( 7800 );
+					NES_DECL_POKE( 8000 );
+					NES_DECL_POKE( C000 );
+
+					uint regs[2];
+					uint led;
+				};
 			}
-
-			Buffer::~Buffer()
-			{
-				delete [] output;
-			}
-
-			void Buffer::Reset(bool clear)
-			{
-				pos = start = 0;
-				history.pos = 0;
-
-				std::fill( history.buffer, history.buffer+History::SIZE, iword(0) );
-
-				if (clear)
-					std::fill( output, output+SIZE, iword(0) );
-			}
-
-			#ifdef NST_MSVC_OPTIMIZE
-			#pragma optimize("", on)
-			#endif
 		}
 	}
 }
+
+#endif

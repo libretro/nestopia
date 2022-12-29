@@ -22,7 +22,7 @@
 
 #include "nstdatabase.hpp"
 
-#define NST_VERSION "1.51.1"
+#define NST_VERSION "1.52.0"
 
 #define MIN(a,b)      ((a)<(b)?(a):(b))
 #define MAX(a,b)      ((a)>(b)?(a):(b))
@@ -1557,7 +1557,6 @@ bool retro_load_game(const struct retro_game_info *info)
    ivideo.SetRenderState(state);
 
    Api::Sound isound(emulator);
-   isound.SetSampleBits(16);
    isound.SetSampleRate(SAMPLERATE);
    isound.SetSpeaker(Api::Sound::SPEAKER_MONO);
 

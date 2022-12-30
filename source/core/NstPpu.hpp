@@ -186,6 +186,7 @@ namespace Nes
 			NST_FORCE_INLINE uint FetchSpPattern() const;
 			NST_FORCE_INLINE void FetchBgPattern0();
 			NST_FORCE_INLINE void FetchBgPattern1();
+			NST_FORCE_INLINE void UpdateDecay(byte);
 
 			NST_FORCE_INLINE void EvaluateSpritesEven();
 			NST_FORCE_INLINE void EvaluateSpritesOdd();
@@ -407,6 +408,12 @@ namespace Nes
 				Cycle reset;
 			}   cycles;
 
+			struct
+			{
+				Cycle timestamp[8];
+				Cycle rd2007;
+			}   decay;
+
 			Io io;
 			Regs regs;
 			Scroll scroll;
@@ -419,7 +426,6 @@ namespace Nes
 
 		public:
 			Output output;
-
 		private:
 			PpuModel model;
 			Hook hActiveHook;

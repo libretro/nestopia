@@ -52,8 +52,8 @@ extern "C" void linearFree(void* mem);
 #endif
 static uint32_t* video_buffer = NULL;
 
-static int16_t audio_buffer[(SAMPLERATE / 50)];
-static int16_t audio_stereo_buffer[2 * (SAMPLERATE / 50)];
+static int16_t audio_buffer[(SAMPLERATE / 50) << 1];
+static int16_t audio_stereo_buffer[(SAMPLERATE / 50) << 1];
 static Api::Emulator emulator;
 static Api::Machine *machine;
 static Api::Fds *fds;
@@ -74,11 +74,6 @@ static enum {
    SHOW_CROSSHAIR_OFF,
    SHOW_CROSSHAIR_ON,
 } show_crosshair;
-
-static enum {
-   AUDIO_TYPE_MONO,
-   AUDIO_TYPE_STEREO,
-} audio_type;
 
 static bool libretro_supports_bitmasks = false;
 static bool show_advanced_av_settings = true;
@@ -1219,11 +1214,11 @@ static void check_variables(void)
    {
       if (strcmp(var.value, "mono") == 0)
       {
-         audio_type = AUDIO_TYPE_MONO;
+         sound.SetSpeaker(Api::Sound::SPEAKER_MONO);
       }
       else
       {
-         audio_type = AUDIO_TYPE_STEREO;
+         sound.SetSpeaker(Api::Sound::SPEAKER_STEREO);
       }
    }
 
@@ -1282,10 +1277,6 @@ void retro_run(void)
       draw_crosshair(crossx, crossy);
    
    unsigned frames = is_pal ? SAMPLERATE / 50 : SAMPLERATE / 60;
-   for (unsigned i = 0; i < frames; i++) {
-      audio_stereo_buffer[(i << 1) + 0] = audio_buffer[i];
-      audio_stereo_buffer[(i << 1) + 1] = audio_type == AUDIO_TYPE_STEREO ? audio_buffer[i] : 0;
-   }
    
    bool updated = false;
    if (environ_cb(RETRO_ENVIRONMENT_GET_VARIABLE_UPDATE, &updated) && updated)
@@ -1295,16 +1286,28 @@ void retro_run(void)
       video = 0;
       video = new Api::Video::Output(video_buffer, video_width * sizeof(uint32_t));
    }
-   
-   // Absolute mess of inline if statements...
+
    int dif = blargg_ntsc ? 18 : 8;
 
+   // Absolute mess of inline if statements...
    video_cb(video_buffer + (overscan_v ? ((overscan_h ? dif : 0) + (blargg_ntsc ? Api::Video::Output::NTSC_WIDTH : Api::Video::Output::WIDTH) * 8) : (overscan_h ? dif : 0) + 0),
          video_width - (overscan_h ? 2 * dif : 0),
          Api::Video::Output::HEIGHT - (overscan_v ? 16 : 0),
          pitch);
 
-   audio_batch_cb(audio_stereo_buffer, frames);
+   // Use audio buffer untouched for stereo, duplicate samples for mono
+   if (Api::Sound(emulator).GetSpeaker() == Api::Sound::SPEAKER_MONO)
+   {
+      for (unsigned i = 0; i < frames; i++)
+      {
+         audio_stereo_buffer[(i << 1) + 0] = audio_stereo_buffer[(i << 1) + 1] = audio_buffer[i];
+      }
+      audio_batch_cb(audio_stereo_buffer, frames);
+   }
+   else
+   {
+      audio_batch_cb(audio_buffer, frames);
+   }
 }
 
 static void extract_basename(char *buf, const char *path, size_t size)

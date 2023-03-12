@@ -26,8 +26,8 @@
 
 #define MIN(a,b)      ((a)<(b)?(a):(b))
 #define MAX(a,b)      ((a)>(b)?(a):(b))
-#define NES_NTSC_PAR ((Api::Video::Output::WIDTH - (overscan_h ? 16 : 0)) * (8.0 / 7.0)) / (Api::Video::Output::HEIGHT - (overscan_v ? 16 : 0))
-#define NES_PAL_PAR ((Api::Video::Output::WIDTH - (overscan_h ? 16 : 0)) * (2950000.0 / 2128137.0)) / (Api::Video::Output::HEIGHT - (overscan_v ? 16 : 0))
+#define NES_NTSC_PAR ((Api::Video::Output::WIDTH - (overscan_h_left + overscan_h_right)) * (8.0 / 7.0)) / (Api::Video::Output::HEIGHT - (overscan_v_top + overscan_v_bottom))
+#define NES_PAL_PAR ((Api::Video::Output::WIDTH - (overscan_h_left + overscan_h_right)) * (2950000.0 / 2128137.0)) / (Api::Video::Output::HEIGHT - (overscan_v_top + overscan_v_bottom))
 #define NES_4_3_DAR (4.0 / 3.0);
 #define SAMPLERATE 48000
 
@@ -63,8 +63,8 @@ static char *g_save_dir;
 static char samp_dir[256];
 static unsigned blargg_ntsc;
 static bool fds_auto_insert;
-static bool overscan_v;
-static bool overscan_h;
+static int overscan_v_top, overscan_v_bottom;
+static int overscan_h_left, overscan_h_right;
 static bool libretro_supports_option_categories = false;
 static unsigned aspect_ratio_mode;
 static unsigned tpulse;
@@ -431,8 +431,8 @@ void retro_get_system_av_info(struct retro_system_av_info *info)
 
    // It's better if the size is based on NTSC_WIDTH if the filter is on
    const retro_game_geometry geom = {
-      Api::Video::Output::WIDTH - (overscan_h ? 16 : 0),
-      Api::Video::Output::HEIGHT - (overscan_v ? 16 : 0),
+      Api::Video::Output::WIDTH - (overscan_h_left + overscan_h_right),
+      Api::Video::Output::HEIGHT - (overscan_v_top + overscan_v_bottom),
       Api::Video::Output::NTSC_WIDTH,
       Api::Video::Output::HEIGHT,
       get_aspect_ratio(),
@@ -571,10 +571,10 @@ static void update_input()
    if (show_crosshair)
       show_crosshair = SHOW_CROSSHAIR_OFF;
 
-   int min_x = overscan_h ? 8 : 0;
-   int max_x = overscan_h ? 247 : 255; 
-   int min_y = overscan_v ? 8 : 0;
-   int max_y = overscan_v ? 231 : 239;
+   int min_x = overscan_h_left;
+   int max_x = 255 - overscan_h_right;
+   int min_y = overscan_v_top;
+   int max_y = 239 - overscan_v_bottom;
 
    static int cur_x = min_x;
    static int cur_y = min_y;
@@ -1066,15 +1066,29 @@ static void check_variables(void)
       }
    }
    
-   var.key = "nestopia_overscan_v";
+   var.key = "nestopia_overscan_v_top";
 
-   if (environ_cb(RETRO_ENVIRONMENT_GET_VARIABLE, &var))
-      overscan_v = (strcmp(var.value, "enabled") == 0);
-   
-   var.key = "nestopia_overscan_h";
+   if (environ_cb(RETRO_ENVIRONMENT_GET_VARIABLE, &var)) {
+      overscan_v_top = atoi(var.value);
+   }
 
-   if (environ_cb(RETRO_ENVIRONMENT_GET_VARIABLE, &var))
-      overscan_h = (strcmp(var.value, "enabled") == 0);
+   var.key = "nestopia_overscan_v_bottom";
+
+   if (environ_cb(RETRO_ENVIRONMENT_GET_VARIABLE, &var)) {
+      overscan_v_bottom = atoi(var.value);
+   }
+
+   var.key = "nestopia_overscan_h_left";
+
+   if (environ_cb(RETRO_ENVIRONMENT_GET_VARIABLE, &var)) {
+      overscan_h_left = atoi(var.value);
+   }
+
+   var.key = "nestopia_overscan_h_right";
+
+   if (environ_cb(RETRO_ENVIRONMENT_GET_VARIABLE, &var)) {
+      overscan_h_right = atoi(var.value);
+   }
 
    var.key = "nestopia_aspect";
 
@@ -1287,12 +1301,12 @@ void retro_run(void)
       video = new Api::Video::Output(video_buffer, video_width * sizeof(uint32_t));
    }
 
-   int dif = blargg_ntsc ? 18 : 8;
+   int dif = blargg_ntsc ? 9 : 4;
 
    // Absolute mess of inline if statements...
-   video_cb(video_buffer + (overscan_v ? ((overscan_h ? dif : 0) + (blargg_ntsc ? Api::Video::Output::NTSC_WIDTH : Api::Video::Output::WIDTH) * 8) : (overscan_h ? dif : 0) + 0),
-         video_width - (overscan_h ? 2 * dif : 0),
-         Api::Video::Output::HEIGHT - (overscan_v ? 16 : 0),
+   video_cb(video_buffer + ((blargg_ntsc ? Api::Video::Output::NTSC_WIDTH : Api::Video::Output::WIDTH) * overscan_v_top) + ((overscan_h_left * dif) / 4) + 0,
+         video_width - (((overscan_h_left + overscan_h_right) * dif) / 4),
+         Api::Video::Output::HEIGHT - (overscan_v_top + overscan_v_bottom),
          pitch);
 
    // Use audio buffer untouched for stereo, duplicate samples for mono

@@ -159,32 +159,72 @@ struct retro_core_option_v2_definition option_defs_us[] = {
       "cxa2025as" /* TODO/FIXME - is this correct ? */
    },
    {
-      "nestopia_overscan_v",
-      "Mask Overscan (Vertical)",
+      "nestopia_overscan_v_top",
+      "Mask Overscan (Top Vertical)",
       NULL,
       "Mask out (vertically) the potentially random glitchy video output that would have been hidden by the bezel around the edge of a standard-definition television screen.",
       NULL,
       "video",
       {
-         { "disabled", NULL },
-         { "enabled",  NULL },
+         { "0", NULL },
+         { "4",  NULL },
+         { "8",  NULL },
+         { "12",  NULL },
+         { "16",  NULL },
          { NULL, NULL },
       },
-      "enabled"
+      "8"
    },
    {
-      "nestopia_overscan_h",
-      "Mask Overscan (Horizontal)",
+      "nestopia_overscan_v_bottom",
+      "Mask Overscan (Bottom Vertical)",
+      NULL,
+      "Mask out (vertically) the potentially random glitchy video output that would have been hidden by the bezel around the edge of a standard-definition television screen.",
+      NULL,
+      "video",
+      {
+         { "0", NULL },
+         { "4",  NULL },
+         { "8",  NULL },
+         { "12",  NULL },
+         { "16",  NULL },
+         { NULL, NULL },
+      },
+      "8"
+   },
+   {
+      "nestopia_overscan_h_left",
+      "Mask Overscan (Left Horizontal)",
       NULL,
       "Mask out (horizontally) the potentially random glitchy video output that would have been hidden by the bezel around the edge of a standard-definition television screen.",
       NULL,
       "video",
       {
-         { "disabled", NULL },
-         { "enabled",  NULL },
+         { "0", NULL },
+         { "4",  NULL },
+         { "8",  NULL },
+         { "12",  NULL },
+         { "16",  NULL },
          { NULL, NULL },
       },
-      "disabled"
+      "0"
+   },
+   {
+      "nestopia_overscan_h_right",
+      "Mask Overscan (Right Horizontal)",
+      NULL,
+      "Mask out (horizontally) the potentially random glitchy video output that would have been hidden by the bezel around the edge of a standard-definition television screen.",
+      NULL,
+      "video",
+      {
+         { "0", NULL },
+         { "4",  NULL },
+         { "8",  NULL },
+         { "12",  NULL },
+         { "16",  NULL },
+         { NULL, NULL },
+      },
+      "0"
    },
    {
       "nestopia_aspect",

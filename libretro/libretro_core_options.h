@@ -171,6 +171,8 @@ struct retro_core_option_v2_definition option_defs_us[] = {
          { "8",  NULL },
          { "12",  NULL },
          { "16",  NULL },
+         { "20",  NULL },
+         { "24",  NULL },
          { NULL, NULL },
       },
       "8"
@@ -188,6 +190,8 @@ struct retro_core_option_v2_definition option_defs_us[] = {
          { "8",  NULL },
          { "12",  NULL },
          { "16",  NULL },
+         { "20",  NULL },
+         { "24",  NULL },
          { NULL, NULL },
       },
       "8"

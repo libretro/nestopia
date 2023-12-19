@@ -389,7 +389,21 @@ void retro_set_controller_port_device(unsigned port, unsigned device)
          Api::Input(emulator).ConnectController(port, Api::Input::UNCONNECTED);
          break;
       case RETRO_DEVICE_GAMEPAD:
-         Api::Input(emulator).ConnectController(port, (Api::Input::Type) (port + Api::Input::PAD1));
+         switch (port)
+         {
+            case 0:
+               Api::Input(emulator).ConnectController(port, Api::Input::PAD1);
+               break;
+            case 1:
+               Api::Input(emulator).ConnectController(port, Api::Input::PAD2);
+               break;
+            case 2:
+               Api::Input(emulator).ConnectController(port, Api::Input::PAD3);
+               break;
+            case 3:
+               Api::Input(emulator).ConnectController(port, Api::Input::PAD4);
+               break;
+         }
          break;
       case RETRO_DEVICE_ARKANOID:
          Api::Input(emulator).ConnectController(port, Api::Input::PADDLE);
@@ -576,16 +590,12 @@ static keymap bindmap_shifted[] = {
 
 static keymap *bindmap = bindmap_default;
 
-static bool NST_CALLBACK gamepad_callback(void *user_data, Core::Input::Controllers::Pad &pad, unsigned int port)
+static bool NST_CALLBACK gamepad_callback(Api::Base::UserData data, Core::Input::Controllers::Pad& pad, unsigned int port)
 {
    input_poll_cb();
 
    static unsigned tstate = 2;
    bool pressed_l3        = false;
-   bool pressed_l2        = false;
-   bool pressed_r2        = false;
-   bool pressed_l         = false;
-   bool pressed_r         = false;
 
    uint buttons = 0;
    int16_t ret = 0;
@@ -612,67 +622,23 @@ static bool NST_CALLBACK gamepad_callback(void *user_data, Core::Input::Controll
    if (port == 0)
    {
       pressed_l3       = ret & (1 << RETRO_DEVICE_ID_JOYPAD_L3);
-      pressed_l2       = ret & (1 << RETRO_DEVICE_ID_JOYPAD_L2);
-      pressed_r2       = ret & (1 << RETRO_DEVICE_ID_JOYPAD_R2);
    }
-
-   pressed_l           = ret & (1 << RETRO_DEVICE_ID_JOYPAD_L);
-   pressed_r           = ret & (1 << RETRO_DEVICE_ID_JOYPAD_R);
 
    if (tstate) tstate--; else tstate = tpulse;
-   
-   if (port == 1)
-   {
-      if (pressed_l3)
-         pad.mic |= 0x04;
-      else
-         pad.mic = 0;
-   }
-   
-   input->vsSystem.insertCoin = 0;
-   if (pressed_l2)
-      input->vsSystem.insertCoin |= Core::Input::Controllers::VsSystem::COIN_1;
-      
-   if (pressed_r2)
-      input->vsSystem.insertCoin |= Core::Input::Controllers::VsSystem::COIN_2;
-      
-   if (machine->Is(Nes::Api::Machine::DISK))
-   {
-      bool curL         = pressed_l;
-      static bool prevL = false;
 
-      if (curL && !prevL)
-      {
-         if (!fds->IsAnyDiskInserted())
-            fds->InsertDisk(0, 0);
-         else if (fds->CanChangeDiskSide())
-            fds->ChangeSide();
-      }
-      prevL = curL;
-      
-      bool curR         = pressed_r;
-      static bool prevR = false;
-
-      if (curR && !prevR && (fds->GetNumDisks() > 1))
-      {
-         int currdisk = fds->GetCurrentDisk();
-         fds->EjectDisk();
-         fds->InsertDisk(!currdisk, 0);
-      }
-      prevR = curR;
-   }
+   if (pressed_l3)
+      buttons = pad.mic | 0x04;
+   pad.mic = buttons;
 
    return true;
 }
 
-static bool NST_CALLBACK arkanoid_callback(void *user_data, Core::Input::Controllers::Paddle &paddle)
+static bool NST_CALLBACK arkanoid_callback(Api::Base::UserData data, Core::Input::Controllers::Paddle& paddle)
 {
    input_poll_cb();
 
    int min_x = overscan_h_left;
    int max_x = 255 - overscan_h_right;
-   int min_y = overscan_v_top;
-   int max_y = 239 - overscan_v_bottom;
 
    static int cur_x = min_x;
    unsigned int button = 0;
@@ -680,7 +646,7 @@ static bool NST_CALLBACK arkanoid_callback(void *user_data, Core::Input::Control
    switch (arkanoid_device)
    {
       case ARKANOID_DEVICE_MOUSE:
-         cur_x += input_state_cb(1, RETRO_DEVICE_MOUSE, 0, RETRO_DEVICE_ID_MOUSE_X); 
+         cur_x += input_state_cb(1, RETRO_DEVICE_MOUSE, 0, RETRO_DEVICE_ID_MOUSE_X);
          button = input_state_cb(1, RETRO_DEVICE_MOUSE, 0, RETRO_DEVICE_ID_MOUSE_LEFT);
          break;
       case ARKANOID_DEVICE_POINTER:
@@ -696,12 +662,37 @@ static bool NST_CALLBACK arkanoid_callback(void *user_data, Core::Input::Control
       cur_x = max_x;
    paddle.x = cur_x;
    paddle.button = button;
-   button = 0;
-   
+
    return true;
 }
 
-static bool NST_CALLBACK zapper_callback(void *user_data, Core::Input::Controllers::Zapper &zapper)
+static bool NST_CALLBACK vssystem_callback(Api::Base::UserData data, Core::Input::Controllers::VsSystem& vsSystem)
+{
+   input_poll_cb();
+
+   uint buttons = 0;
+   int16_t ret = 0;
+
+   if (libretro_supports_bitmasks)
+      ret = input_state_cb(0, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_MASK);
+   else
+   {
+      for (unsigned i = RETRO_DEVICE_ID_JOYPAD_L2; i < (RETRO_DEVICE_ID_JOYPAD_R2 + 1); i++)
+         ret |= input_state_cb(0, RETRO_DEVICE_JOYPAD, 0, i) ? (1 << i) : 0;
+   }
+
+   if (ret & (1 << RETRO_DEVICE_ID_JOYPAD_L2))
+      buttons |= Core::Input::Controllers::VsSystem::COIN_1;
+
+   if (ret & (1 << RETRO_DEVICE_ID_JOYPAD_R2))
+      buttons |= Core::Input::Controllers::VsSystem::COIN_2;
+
+   vsSystem.insertCoin = buttons;
+
+   return true;
+}
+
+static bool NST_CALLBACK zapper_callback(Api::Base::UserData data, Core::Input::Controllers::Zapper& zapper)
 {
    input_poll_cb();
 
@@ -793,6 +784,53 @@ static bool NST_CALLBACK zapper_callback(void *user_data, Core::Input::Controlle
    else { crossy = cur_y; }
 
    return true;
+}
+
+static void poll_fds_buttons()
+{
+   if (machine->Is(Nes::Api::Machine::DISK))
+   {
+      input_poll_cb();
+
+      bool pressed_l         = false;
+      bool pressed_r         = false;
+
+      int16_t ret = 0;
+      if (libretro_supports_bitmasks)
+      {
+         ret = input_state_cb(0, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_MASK);
+         pressed_l           = ret & (1 << RETRO_DEVICE_ID_JOYPAD_L);
+         pressed_r           = ret & (1 << RETRO_DEVICE_ID_JOYPAD_R);
+      }
+      else
+      {
+         pressed_l           = input_state_cb(0, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_L);
+         pressed_r           = input_state_cb(0, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_R);
+      }
+
+      bool curL         = pressed_l;
+      static bool prevL = false;
+
+      if (curL && !prevL)
+      {
+         if (!fds->IsAnyDiskInserted())
+            fds->InsertDisk(0, 0);
+         else if (fds->CanChangeDiskSide())
+            fds->ChangeSide();
+      }
+      prevL = curL;
+
+      bool curR         = pressed_r;
+      static bool prevR = false;
+
+      if (curR && !prevR && (fds->GetNumDisks() > 1))
+      {
+         int currdisk = fds->GetCurrentDisk();
+         fds->EjectDisk();
+         fds->InsertDisk(!currdisk, 0);
+      }
+      prevR = curR;
+   }
 }
 
 static void check_variables(void)
@@ -1290,6 +1328,7 @@ static void check_variables(void)
 
 void retro_run(void)
 {
+   poll_fds_buttons();
    emulator.Execute(video, audio, input);
 
    if (show_crosshair == SHOW_CROSSHAIR_ON)
@@ -1585,6 +1624,7 @@ bool retro_load_game(const struct retro_game_info *info)
    Api::Input(emulator).AutoSelectControllers();
    Api::Input::Controllers::Pad::callback.Set(&gamepad_callback, NULL);
    Api::Input::Controllers::Paddle::callback.Set(&arkanoid_callback, NULL);
+   Api::Input::Controllers::VsSystem::callback.Set(&vssystem_callback, NULL);
    Api::Input::Controllers::Zapper::callback.Set(&zapper_callback, NULL);
 
    machine->Power(true);
@@ -1604,6 +1644,11 @@ bool retro_load_game(const struct retro_game_info *info)
 
 void retro_unload_game(void)
 {
+   Api::Input::Controllers::Pad::callback.Unset();
+   Api::Input::Controllers::Paddle::callback.Unset();
+   Api::Input::Controllers::VsSystem::callback.Unset();
+   Api::Input::Controllers::Zapper::callback.Unset();
+
    if (machine)
    {
       machine->Unload();

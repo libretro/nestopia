@@ -69,12 +69,12 @@ static bool libretro_supports_option_categories = false;
 static unsigned aspect_ratio_mode;
 static unsigned tpulse; // A/B Button turbo pulse width in frames
 
-static unsigned char tstate = 2; // A/B Button turbo pulse width counter 0 => lo, !0 => hi, in range [0, tpulse]
+static unsigned char tstate[4] = { 2, 2, 2, 2 }; // A/B Button turbo pulse width counter 0 => lo, !0 => hi, in range [0, tpulse]
 static int cur_x = 0; // Absolute x coordinate of zapper/arkanoid in pixels
 static int cur_y = 0; // Absolute y coordinate of zapper          in pixels
 static unsigned char prevL = false; // => L Button is held; controls famicon disc drive
 static unsigned char prevR = false; // => R Button is held; controls famicon disc drive
-static const int tracked_input_state_size_bytes = 5; // Send the 5 previous fields as unsigned char
+static const int tracked_input_state_size_bytes = 8; // Send the 8 previous fields as unsigned char
 static size_t state_size = 0;
 
 static enum {
@@ -638,9 +638,9 @@ static bool NST_CALLBACK gamepad_callback(Api::Base::UserData data, Core::Input:
    for (unsigned bind = 0; bind < sizeof(bindmap_default) / sizeof(bindmap[0]); bind++)
       buttons |= (ret & (1 << bindmap[bind].retro)) ? bindmap[bind].nes : 0;
    if (ret & (1 << bindmap[2].retro))
-      tstate ? buttons &= ~Core::Input::Controllers::Pad::A : buttons |= Core::Input::Controllers::Pad::A;
+      tstate[port] ? buttons &= ~Core::Input::Controllers::Pad::A : buttons |= Core::Input::Controllers::Pad::A;
    if (ret & (1 << bindmap[3].retro))
-      tstate ? buttons &= ~Core::Input::Controllers::Pad::B : buttons |= Core::Input::Controllers::Pad::B;
+      tstate[port] ? buttons &= ~Core::Input::Controllers::Pad::B : buttons |= Core::Input::Controllers::Pad::B;
 
    pad.buttons = buttons;
    buttons = 0;
@@ -651,7 +651,7 @@ static bool NST_CALLBACK gamepad_callback(Api::Base::UserData data, Core::Input:
       pressed_l3       = ret & (1 << RETRO_DEVICE_ID_JOYPAD_L3);
    }
 
-   if (tstate) tstate--; else tstate = tpulse;
+   if (tstate[port]) tstate[port]--; else tstate[port] = tpulse;
 
    if (pressed_l3)
       buttons = pad.mic | 0x04;
@@ -1754,7 +1754,10 @@ bool retro_serialize(void *data, size_t size)
 
    unsigned char *tracked_input_state_ptr = reinterpret_cast<unsigned char*>(data) + state.size();
 
-   *tracked_input_state_ptr++ = tstate;
+   *tracked_input_state_ptr++ = tstate[0];
+   *tracked_input_state_ptr++ = tstate[1];
+   *tracked_input_state_ptr++ = tstate[2];
+   *tracked_input_state_ptr++ = tstate[3];
    *tracked_input_state_ptr++ = (unsigned char) cur_x;
    *tracked_input_state_ptr++ = (unsigned char) cur_y;
    *tracked_input_state_ptr++ = prevL;
@@ -1776,7 +1779,10 @@ bool retro_unserialize(const void *data, size_t size)
    if (size < retro_serialize_size()) {
       unsigned char const *tracked_input_state_ptr =
          reinterpret_cast<unsigned char const*>(data) + nestopia_savestate_size;
-      tstate = *tracked_input_state_ptr++;
+      tstate[0] = *tracked_input_state_ptr++;
+      tstate[1] = *tracked_input_state_ptr++;
+      tstate[2] = *tracked_input_state_ptr++;
+      tstate[3] = *tracked_input_state_ptr++;
       cur_x  = (int) *tracked_input_state_ptr++;
       cur_y  = (int) *tracked_input_state_ptr++;
       prevL  = *tracked_input_state_ptr++;

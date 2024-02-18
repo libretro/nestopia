@@ -67,7 +67,15 @@ static int overscan_v_top, overscan_v_bottom;
 static int overscan_h_left, overscan_h_right;
 static bool libretro_supports_option_categories = false;
 static unsigned aspect_ratio_mode;
-static unsigned tpulse;
+static unsigned tpulse; // A/B Button turbo pulse width in frames
+
+static unsigned char tstate = 2; // A/B Button turbo pulse width counter 0 => lo, !0 => hi, in range [0, tpulse]
+static int cur_x = 0; // Absolute x coordinate of zapper/arkanoid in pixels
+static int cur_y = 0; // Absolute y coordinate of zapper          in pixels
+static unsigned char prevL = false; // => L Button is held; controls famicon disc drive
+static unsigned char prevR = false; // => R Button is held; controls famicon disc drive
+static const int tracked_input_state_size_bytes = 5; // Send the 5 previous fields as unsigned char
+static size_t state_size = 0;
 
 static enum {
    SHOW_CROSSHAIR_DISABLED,
@@ -594,7 +602,7 @@ static bool NST_CALLBACK gamepad_callback(Api::Base::UserData data, Core::Input:
 {
    input_poll_cb();
 
-   static unsigned tstate = 2;
+   tstate = 2;
    bool pressed_l3        = false;
 
    uint buttons = 0;
@@ -640,7 +648,7 @@ static bool NST_CALLBACK arkanoid_callback(Api::Base::UserData data, Core::Input
    int min_x = overscan_h_left;
    int max_x = 255 - overscan_h_right;
 
-   static int cur_x = min_x;
+   cur_x = min_x;
    unsigned int button = 0;
 
    switch (arkanoid_device)
@@ -701,8 +709,8 @@ static bool NST_CALLBACK zapper_callback(Api::Base::UserData data, Core::Input::
    int min_y = overscan_v_top;
    int max_y = 239 - overscan_v_bottom;
 
-   static int cur_x = min_x;
-   static int cur_y = min_y;
+   cur_x = min_x;
+   cur_y = min_y;
    zapper.fire = 0;
 
    if (show_crosshair)
@@ -809,7 +817,7 @@ static void poll_fds_buttons()
       }
 
       bool curL         = pressed_l;
-      static bool prevL = false;
+      bool prevL = false;
 
       if (curL && !prevL)
       {
@@ -821,7 +829,7 @@ static void poll_fds_buttons()
       prevL = curL;
 
       bool curR         = pressed_r;
-      static bool prevR = false;
+      bool prevR = false;
 
       if (curR && !prevR && (fds->GetNumDisks() > 1))
       {
@@ -1677,6 +1685,7 @@ void retro_unload_game(void)
 
    sram = 0;
    sram_size = 0;
+   state_size = 0;
 
 #ifdef _3DS
    linearFree(video_buffer);
@@ -1698,10 +1707,14 @@ bool retro_load_game_special(unsigned, const struct retro_game_info *, size_t)
 
 size_t retro_serialize_size(void)
 {
-   std::stringstream ss;
-   if (machine->SaveState(ss, Api::Machine::NO_COMPRESSION))
-      return 0;
-   return ss.str().size();
+   if (!state_size) {
+      std::stringstream ss;
+      if (machine->SaveState(ss, Api::Machine::NO_COMPRESSION))
+         return 0;
+      state_size = ss.str().size() + tracked_input_state_size_bytes;
+   }
+
+   return state_size;
 }
 
 bool retro_serialize(void *data, size_t size)
@@ -1711,17 +1724,42 @@ bool retro_serialize(void *data, size_t size)
       return false;
 
    std::string state = ss.str();
-   if (state.size() > size)
+   if (state.size() + tracked_input_state_size_bytes > size)
       return false;
 
    std::copy(state.begin(), state.end(), reinterpret_cast<char*>(data));
+
+   unsigned char *tracked_input_state_ptr = reinterpret_cast<unsigned char*>(data) + state.size();
+
+   *tracked_input_state_ptr++ = tstate;
+   *tracked_input_state_ptr++ = (unsigned char) cur_x;
+   *tracked_input_state_ptr++ = (unsigned char) cur_y;
+   *tracked_input_state_ptr++ = prevL;
+   *tracked_input_state_ptr++ = prevR;
+
    return true;
 }
 
 bool retro_unserialize(const void *data, size_t size)
 {
+   // Preserve ability to load states not containing libretro-specific bits
+   size_t nestopia_savestate_size = size < retro_serialize_size() ?
+      size : size - tracked_input_state_size_bytes;
+
    std::stringstream ss(std::string(reinterpret_cast<const char*>(data),
-            reinterpret_cast<const char*>(data) + size));
+      reinterpret_cast<const char*>(data) + nestopia_savestate_size));
+
+   // Only load libretro-specific bits if they exist
+   if (size < retro_serialize_size()) {
+      unsigned char const *tracked_input_state_ptr =
+         reinterpret_cast<unsigned char const*>(data) + nestopia_savestate_size;
+      tstate = *tracked_input_state_ptr++;
+      cur_x  = (int) *tracked_input_state_ptr++;
+      cur_y  = (int) *tracked_input_state_ptr++;
+      prevL  = *tracked_input_state_ptr++;
+      prevR  = *tracked_input_state_ptr++;
+   }
+
    return !machine->LoadState(ss);
 }
 

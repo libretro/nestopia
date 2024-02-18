@@ -622,7 +622,6 @@ static bool NST_CALLBACK gamepad_callback(Api::Base::UserData data, Core::Input:
 {
    input_poll_cb();
 
-   tstate = 2;
    bool pressed_l3        = false;
 
    uint buttons = 0;

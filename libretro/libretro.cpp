@@ -22,7 +22,7 @@
 
 #include "nstdatabase.hpp"
 
-#define NST_VERSION "1.52.0"
+#define NST_VERSION "1.52.1"
 
 #define MIN(a,b)      ((a)<(b)?(a):(b))
 #define MAX(a,b)      ((a)>(b)?(a):(b))

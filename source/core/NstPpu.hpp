@@ -561,7 +561,6 @@ namespace Nes
 			{
 				overclocked = overclock2x;
 			}
-
 		};
 	}
 }

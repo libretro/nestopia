@@ -278,6 +278,7 @@ static void load_wav(const char* sampgame, Api::User::File& file)
    char *dataptr;
 
    sprintf(samp_path, "%s%c%s%c%02d.wav", samp_dir, slash, sampgame, slash, file.GetId());
+   printf("samp_path: %s\n", samp_path);
 
    std::ifstream samp_file(samp_path, std::ifstream::in|std::ifstream::binary);
 

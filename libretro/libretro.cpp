@@ -22,12 +22,12 @@
 
 #include "nstdatabase.hpp"
 
-#define NST_VERSION "1.52.0"
+#define NST_VERSION "1.52.1"
 
 #define MIN(a,b)      ((a)<(b)?(a):(b))
 #define MAX(a,b)      ((a)>(b)?(a):(b))
-#define NES_NTSC_PAR ((Api::Video::Output::WIDTH - (overscan_h ? 16 : 0)) * (8.0 / 7.0)) / (Api::Video::Output::HEIGHT - (overscan_v ? 16 : 0))
-#define NES_PAL_PAR ((Api::Video::Output::WIDTH - (overscan_h ? 16 : 0)) * (2950000.0 / 2128137.0)) / (Api::Video::Output::HEIGHT - (overscan_v ? 16 : 0))
+#define NES_NTSC_PAR ((Api::Video::Output::WIDTH - (overscan_h_left + overscan_h_right)) * (8.0 / 7.0)) / (Api::Video::Output::HEIGHT - (overscan_v_top + overscan_v_bottom))
+#define NES_PAL_PAR ((Api::Video::Output::WIDTH - (overscan_h_left + overscan_h_right)) * (2950000.0 / 2128137.0)) / (Api::Video::Output::HEIGHT - (overscan_v_top + overscan_v_bottom))
 #define NES_4_3_DAR (4.0 / 3.0);
 #define SAMPLERATE 48000
 
@@ -63,11 +63,19 @@ static char *g_save_dir;
 static char samp_dir[256];
 static unsigned blargg_ntsc;
 static bool fds_auto_insert;
-static bool overscan_v;
-static bool overscan_h;
+static int overscan_v_top, overscan_v_bottom;
+static int overscan_h_left, overscan_h_right;
 static bool libretro_supports_option_categories = false;
 static unsigned aspect_ratio_mode;
-static unsigned tpulse;
+static unsigned tpulse; // A/B Button turbo pulse width in frames
+
+static unsigned char tstate[4] = { 2, 2, 2, 2 }; // A/B Button turbo pulse width counter 0 => lo, !0 => hi, in range [0, tpulse]
+static int cur_x = 0; // Absolute x coordinate of zapper/arkanoid in pixels
+static int cur_y = 0; // Absolute y coordinate of zapper          in pixels
+static unsigned char prevL = false; // => L Button is held; controls famicon disc drive
+static unsigned char prevR = false; // => R Button is held; controls famicon disc drive
+static const int tracked_input_state_size_bytes = 8; // Send the 8 previous fields as unsigned char
+static size_t state_size = 0;
 
 static enum {
    SHOW_CROSSHAIR_DISABLED,
@@ -84,7 +92,6 @@ size_t pitch;
 static Api::Video::Output *video;
 static Api::Sound::Output *audio;
 static Api::Input::Controllers *input;
-static unsigned input_type[4];
 static Api::Machine::FavoredSystem favsystem;
 
 static void *sram;
@@ -111,6 +118,26 @@ static const byte cxa2025as_palette[64][3] =
   {0xFE,0xBC,0xFB}, {0xFE,0xBD,0xD0}, {0xFE,0xC5,0xA9}, {0xFE,0xD1,0x8E},
   {0xE9,0xDE,0x86}, {0xC7,0xE9,0x92}, {0xA8,0xEE,0xB0}, {0x95,0xEC,0xD9},
   {0x91,0xE4,0xFE}, {0xAC,0xAC,0xAC}, {0x00,0x00,0x00}, {0x00,0x00,0x00}
+};
+
+static const byte royaltea_palette[64][3] =
+{
+   {0x5A,0x61,0x65}, {0x00,0x23,0xA8}, {0x0F,0x17,0xB0}, {0x28,0x12,0x9F},
+   {0x55,0x0B,0x61}, {0x6B,0x0A,0x11}, {0x6E,0x0D,0x00}, {0x5E,0x19,0x00},
+   {0x3C,0x24,0x02}, {0x00,0x31,0x04}, {0x00,0x35,0x08}, {0x00,0x34,0x1F},
+   {0x00,0x2C,0x55}, {0x00,0x00,0x00}, {0x00,0x00,0x00}, {0x00,0x00,0x00},
+   {0xA7,0xB5,0xBC}, {0x00,0x59,0xFF}, {0x2A,0x44,0xFF}, {0x52,0x3C,0xF1},
+   {0x9F,0x34,0xBA}, {0xB3,0x28,0x46}, {0xBB,0x2D,0x09}, {0x9E,0x41,0x00},
+   {0x86,0x5A,0x00}, {0x24,0x6D,0x02}, {0x00,0x73,0x12}, {0x00,0x71,0x56},
+   {0x00,0x66,0xA6}, {0x00,0x00,0x00}, {0x00,0x00,0x00}, {0x00,0x00,0x00},
+   {0xFF,0xFF,0xFF}, {0x4B,0x9F,0xFF}, {0x5A,0x91,0xFF}, {0x86,0x7E,0xFF},
+   {0xD9,0x7D,0xFF}, {0xFF,0x95,0xCF}, {0xFF,0x8E,0x76}, {0xF7,0xA2,0x47},
+   {0xEF,0xB4,0x12}, {0x8C,0xC5,0x1C}, {0x48,0xD0,0x4A}, {0x10,0xD1,0x97},
+   {0x00,0xC9,0xF0}, {0x43,0x48,0x4B}, {0x00,0x00,0x00}, {0x00,0x00,0x00},
+   {0xFF,0xFF,0xFF}, {0xB1,0xD9,0xFF}, {0xB1,0xCF,0xFF}, {0xBC,0xC8,0xFF},
+   {0xE3,0xC8,0xFF}, {0xFF,0xD3,0xF7}, {0xFF,0xD5,0xCB}, {0xFF,0xDE,0xB9},
+   {0xFF,0xE5,0xAD}, {0xDB,0xF6,0xAF}, {0xB7,0xFB,0xC4}, {0x9C,0xFB,0xE6},
+   {0x96,0xF7,0xFF}, {0xB1,0xC0,0xC7}, {0x00,0x00,0x00}, {0x00,0x00,0x00}
 };
 
 static const byte pal_palette[64][3] =
@@ -251,6 +278,7 @@ static void load_wav(const char* sampgame, Api::User::File& file)
    char *dataptr;
 
    sprintf(samp_path, "%s%c%s%c%02d.wav", samp_dir, slash, sampgame, slash, file.GetId());
+   printf("samp_path: %s\n", samp_path);
 
    std::ifstream samp_file(samp_path, std::ifstream::in|std::ifstream::binary);
 
@@ -381,10 +409,38 @@ unsigned retro_api_version(void)
 
 void retro_set_controller_port_device(unsigned port, unsigned device)
 {
-   if (port >= 4)
-      return;
-
-   input_type[port] = device;
+   switch (device)
+   {
+      case RETRO_DEVICE_AUTO:
+         Api::Input(emulator).AutoSelectController(port);
+         break;
+      case RETRO_DEVICE_NONE:
+         Api::Input(emulator).ConnectController(port, Api::Input::UNCONNECTED);
+         break;
+      case RETRO_DEVICE_GAMEPAD:
+         switch (port)
+         {
+            case 0:
+               Api::Input(emulator).ConnectController(port, Api::Input::PAD1);
+               break;
+            case 1:
+               Api::Input(emulator).ConnectController(port, Api::Input::PAD2);
+               break;
+            case 2:
+               Api::Input(emulator).ConnectController(port, Api::Input::PAD3);
+               break;
+            case 3:
+               Api::Input(emulator).ConnectController(port, Api::Input::PAD4);
+               break;
+         }
+         break;
+      case RETRO_DEVICE_ARKANOID:
+         Api::Input(emulator).ConnectController(port, Api::Input::PADDLE);
+         break;
+      case RETRO_DEVICE_ZAPPER:
+         Api::Input(emulator).ConnectController(port, Api::Input::ZAPPER);
+         break;
+   }
 }
 
 void retro_get_system_info(struct retro_system_info *info)
@@ -431,8 +487,8 @@ void retro_get_system_av_info(struct retro_system_av_info *info)
 
    // It's better if the size is based on NTSC_WIDTH if the filter is on
    const retro_game_geometry geom = {
-      Api::Video::Output::WIDTH - (overscan_h ? 16 : 0),
-      Api::Video::Output::HEIGHT - (overscan_v ? 16 : 0),
+      Api::Video::Output::WIDTH - (overscan_h_left + overscan_h_right),
+      Api::Video::Output::HEIGHT - (overscan_v_top + overscan_v_bottom),
       Api::Video::Output::NTSC_WIDTH,
       Api::Video::Output::HEIGHT,
       get_aspect_ratio(),
@@ -563,223 +619,245 @@ static keymap bindmap_shifted[] = {
 
 static keymap *bindmap = bindmap_default;
 
-static void update_input()
+static bool NST_CALLBACK gamepad_callback(Api::Base::UserData data, Core::Input::Controllers::Pad& pad, unsigned int port)
 {
    input_poll_cb();
-   input->pad[1].mic = 0;
-   input->vsSystem.insertCoin = 0;
-   if (show_crosshair)
-      show_crosshair = SHOW_CROSSHAIR_OFF;
 
-   int min_x = overscan_h ? 8 : 0;
-   int max_x = overscan_h ? 247 : 255; 
-   int min_y = overscan_v ? 8 : 0;
-   int max_y = overscan_v ? 231 : 239;
+   bool pressed_l3        = false;
 
-   static int cur_x = min_x;
-   static int cur_y = min_y;
+   uint buttons = 0;
+   int16_t ret = 0;
 
-   for (unsigned p = 0; p < 4; p++)
+   if (libretro_supports_bitmasks)
+      ret = input_state_cb(port, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_MASK);
+   else
    {
-      switch (input_type[p])
-      {
-         case  RETRO_DEVICE_AUTO:
-            Api::Input(emulator).AutoSelectController(p);
-            break;
-         case RETRO_DEVICE_NONE:
-            Api::Input(emulator).ConnectController(p, Api::Input::UNCONNECTED);
-            break;
-         case RETRO_DEVICE_GAMEPAD:
-            Api::Input(emulator).ConnectController(p, (Api::Input::Type) (p + 1));
-            break;
-         case RETRO_DEVICE_ARKANOID:
-            Api::Input(emulator).ConnectController(p, Api::Input::PADDLE);
-            break;
-         case RETRO_DEVICE_ZAPPER:
-            Api::Input(emulator).ConnectController(p, Api::Input::ZAPPER);
-            break;
-      }
+      for (unsigned i = 0; i < (RETRO_DEVICE_ID_JOYPAD_R3 + 1); i++)
+         ret |= input_state_cb(port, RETRO_DEVICE_JOYPAD, 0, i) ? (1 << i) : 0;
+   }
 
-      Api::Input::Type connected_controller = Api::Input(emulator).GetConnectedController(p);
-      if (connected_controller == p + 1)
-      {
-         input->pad[p].buttons = 0;
-         
-         static unsigned tstate = 2;
-         bool pressed_l3        = false;
-         bool pressed_l2        = false;
-         bool pressed_r2        = false;
-         bool pressed_l         = false;
-         bool pressed_r         = false;
+   for (unsigned bind = 0; bind < sizeof(bindmap_default) / sizeof(bindmap[0]); bind++)
+      buttons |= (ret & (1 << bindmap[bind].retro)) ? bindmap[bind].nes : 0;
+   if (ret & (1 << bindmap[2].retro))
+      tstate[port] ? buttons &= ~Core::Input::Controllers::Pad::A : buttons |= Core::Input::Controllers::Pad::A;
+   if (ret & (1 << bindmap[3].retro))
+      tstate[port] ? buttons &= ~Core::Input::Controllers::Pad::B : buttons |= Core::Input::Controllers::Pad::B;
 
-         int16_t ret;
+   pad.buttons = buttons;
+   buttons = 0;
 
-         if (libretro_supports_bitmasks)
-            ret = input_state_cb(p, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_MASK);
+   /* Player 0 needs some extra checks */
+   if (port == 0)
+   {
+      pressed_l3       = ret & (1 << RETRO_DEVICE_ID_JOYPAD_L3);
+   }
+
+   if (tstate[port]) tstate[port]--; else tstate[port] = tpulse;
+
+   if (pressed_l3)
+      buttons = pad.mic | 0x04;
+   pad.mic = buttons;
+
+   return true;
+}
+
+static bool NST_CALLBACK arkanoid_callback(Api::Base::UserData data, Core::Input::Controllers::Paddle& paddle)
+{
+   input_poll_cb();
+
+   int min_x = overscan_h_left;
+   int max_x = 255 - overscan_h_right;
+
+   cur_x = min_x;
+   unsigned int button = 0;
+
+   switch (arkanoid_device)
+   {
+      case ARKANOID_DEVICE_MOUSE:
+         cur_x += input_state_cb(1, RETRO_DEVICE_MOUSE, 0, RETRO_DEVICE_ID_MOUSE_X);
+         button = input_state_cb(1, RETRO_DEVICE_MOUSE, 0, RETRO_DEVICE_ID_MOUSE_LEFT);
+         break;
+      case ARKANOID_DEVICE_POINTER:
+         cur_x = input_state_cb(1, RETRO_DEVICE_POINTER, 0, RETRO_DEVICE_ID_POINTER_X);
+         cur_x = (cur_x + 0x7FFF) * max_x / (0x7FFF * 2);
+         button = input_state_cb(1, RETRO_DEVICE_POINTER, 0, RETRO_DEVICE_ID_POINTER_PRESSED);
+         break;
+   }
+
+   if (cur_x < min_x)
+      cur_x = min_x;
+   else if (cur_x > max_x)
+      cur_x = max_x;
+   paddle.x = cur_x;
+   paddle.button = button;
+
+   return true;
+}
+
+static bool NST_CALLBACK vssystem_callback(Api::Base::UserData data, Core::Input::Controllers::VsSystem& vsSystem)
+{
+   input_poll_cb();
+
+   uint buttons = 0;
+   int16_t ret = 0;
+
+   if (libretro_supports_bitmasks)
+      ret = input_state_cb(0, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_MASK);
+   else
+   {
+      for (unsigned i = RETRO_DEVICE_ID_JOYPAD_L2; i < (RETRO_DEVICE_ID_JOYPAD_R2 + 1); i++)
+         ret |= input_state_cb(0, RETRO_DEVICE_JOYPAD, 0, i) ? (1 << i) : 0;
+   }
+
+   if (ret & (1 << RETRO_DEVICE_ID_JOYPAD_L2))
+      buttons |= Core::Input::Controllers::VsSystem::COIN_1;
+
+   if (ret & (1 << RETRO_DEVICE_ID_JOYPAD_R2))
+      buttons |= Core::Input::Controllers::VsSystem::COIN_2;
+
+   vsSystem.insertCoin = buttons;
+
+   return true;
+}
+
+static bool NST_CALLBACK zapper_callback(Api::Base::UserData data, Core::Input::Controllers::Zapper& zapper)
+{
+   input_poll_cb();
+
+   int min_x = overscan_h_left;
+   int max_x = 255 - overscan_h_right;
+   int min_y = overscan_v_top;
+   int max_y = 239 - overscan_v_bottom;
+
+   cur_x = min_x;
+   cur_y = min_y;
+   zapper.fire = 0;
+
+   if (show_crosshair)
+      show_crosshair = SHOW_CROSSHAIR_ON;
+
+   switch (zapper_device)
+   {
+      case ZAPPER_DEVICE_LIGHTGUN:
+         if (!input_state_cb(1, RETRO_DEVICE_LIGHTGUN, 0, RETRO_DEVICE_ID_LIGHTGUN_IS_OFFSCREEN))
+         {
+            cur_x = input_state_cb(1, RETRO_DEVICE_LIGHTGUN, 0, RETRO_DEVICE_ID_LIGHTGUN_SCREEN_X);
+            cur_y = input_state_cb(1, RETRO_DEVICE_LIGHTGUN, 0, RETRO_DEVICE_ID_LIGHTGUN_SCREEN_Y);
+
+            cur_x = cur_x != 0 ? (cur_x + 0x7FFF) * max_x / (0x7FFF * 2) : crossx;
+            cur_y = cur_y != 0 ? (cur_y + 0x7FFF) * max_y / (0x7FFF * 2) : crossy;
+         }
          else
          {
-            ret = 0;
-            for (unsigned i = 0; i < (RETRO_DEVICE_ID_JOYPAD_R3 + 1); i++)
-               ret |= input_state_cb(p, RETRO_DEVICE_JOYPAD, 0, i) ? (1 << i) : 0;
+            cur_x = min_x;
+            cur_y = min_y;
          }
 
-         for (unsigned bind = 0; bind < sizeof(bindmap_default) / sizeof(bindmap[0]); bind++)
-            input->pad[p].buttons |= (ret & (1 << bindmap[bind].retro)) ? bindmap[bind].nes : 0;
-         if (ret & (1 << bindmap[2].retro))
-            tstate ? input->pad[p].buttons &= ~Core::Input::Controllers::Pad::A : input->pad[p].buttons |= Core::Input::Controllers::Pad::A;
-         if (ret & (1 << bindmap[3].retro))
-            tstate ? input->pad[p].buttons &= ~Core::Input::Controllers::Pad::B : input->pad[p].buttons |= Core::Input::Controllers::Pad::B;
-
-         /* Player 0 needs some extra checks */
-         if (p == 0)
-         {
-            pressed_l3       = ret & (1 << RETRO_DEVICE_ID_JOYPAD_L3);
-            pressed_l2       = ret & (1 << RETRO_DEVICE_ID_JOYPAD_L2);
-            pressed_r2       = ret & (1 << RETRO_DEVICE_ID_JOYPAD_R2);
+         if (input_state_cb(1, RETRO_DEVICE_LIGHTGUN, 0, RETRO_DEVICE_ID_LIGHTGUN_TRIGGER)) {
+            zapper.x = cur_x;
+            zapper.y = cur_y;
+            zapper.fire = 1;
          }
 
-         pressed_l           = ret & (1 << RETRO_DEVICE_ID_JOYPAD_L);
-         pressed_r           = ret & (1 << RETRO_DEVICE_ID_JOYPAD_R);
-      
-         if (tstate) tstate--; else tstate = tpulse;
-         
-         if (pressed_l3)
-            input->pad[1].mic |= 0x04;
-         
-         if (pressed_l2)
-            input->vsSystem.insertCoin |= Core::Input::Controllers::VsSystem::COIN_1;
-            
-         if (pressed_r2)
-            input->vsSystem.insertCoin |= Core::Input::Controllers::VsSystem::COIN_2;
-            
-         if (machine->Is(Nes::Api::Machine::DISK))
-         {
-            bool curL         = pressed_l;
-            static bool prevL = false;
-
-            if (curL && !prevL)
-            {
-               if (!fds->IsAnyDiskInserted())
-                  fds->InsertDisk(0, 0);
-               else if (fds->CanChangeDiskSide())
-                  fds->ChangeSide();
-            }
-            prevL = curL;
-            
-            bool curR         = pressed_r;
-            static bool prevR = false;
-
-            if (curR && !prevR && (fds->GetNumDisks() > 1))
-            {
-               int currdisk = fds->GetCurrentDisk();
-               fds->EjectDisk();
-               fds->InsertDisk(!currdisk, 0);
-            }
-            prevR = curR;
+         if (input_state_cb(1, RETRO_DEVICE_LIGHTGUN, 0, RETRO_DEVICE_ID_LIGHTGUN_RELOAD)) {
+            zapper.x = ~1U;
+            zapper.fire = 1;
          }
-      }
-      else if (connected_controller == Api::Input::PADDLE)
-      {
-         switch (arkanoid_device)
-         {
-            case ARKANOID_DEVICE_MOUSE:
-               cur_x += input_state_cb(p, RETRO_DEVICE_MOUSE, 0, RETRO_DEVICE_ID_MOUSE_X); 
-               input->paddle.button = input_state_cb(p, RETRO_DEVICE_MOUSE, 0, RETRO_DEVICE_ID_MOUSE_LEFT);
-               break;
-            case ARKANOID_DEVICE_POINTER:
-               cur_x = input_state_cb(p, RETRO_DEVICE_POINTER, 0, RETRO_DEVICE_ID_POINTER_X);
-               cur_x = (cur_x + 0x7FFF) * max_x / (0x7FFF * 2);
-               input->paddle.button = input_state_cb(p, RETRO_DEVICE_POINTER, 0, RETRO_DEVICE_ID_POINTER_PRESSED);
-               break;
-         }
+         break;
+      case ZAPPER_DEVICE_MOUSE:
+         cur_x += input_state_cb(1, RETRO_DEVICE_MOUSE, 0, RETRO_DEVICE_ID_MOUSE_X);
+         cur_y += input_state_cb(1, RETRO_DEVICE_MOUSE, 0, RETRO_DEVICE_ID_MOUSE_Y);
 
          if (cur_x < min_x)
             cur_x = min_x;
          else if (cur_x > max_x)
             cur_x = max_x;
-         input->paddle.x = cur_x;
-      }
-      else if (connected_controller == Api::Input::ZAPPER)
-      {
-         input->zapper.fire = 0;
-         if (show_crosshair)
-            show_crosshair = SHOW_CROSSHAIR_ON;
 
-         switch (zapper_device)
+         if (cur_y < min_y)
+            cur_y = min_y;
+         else if (cur_y > max_y)
+            cur_y = max_y;
+
+         if (input_state_cb(1, RETRO_DEVICE_MOUSE, 0, RETRO_DEVICE_ID_MOUSE_LEFT))
          {
-            case ZAPPER_DEVICE_LIGHTGUN:
-               if (!input_state_cb(p, RETRO_DEVICE_LIGHTGUN, 0, RETRO_DEVICE_ID_LIGHTGUN_IS_OFFSCREEN))
-               {
-                  cur_x = input_state_cb(p, RETRO_DEVICE_LIGHTGUN, 0, RETRO_DEVICE_ID_LIGHTGUN_SCREEN_X);
-                  cur_y = input_state_cb(p, RETRO_DEVICE_LIGHTGUN, 0, RETRO_DEVICE_ID_LIGHTGUN_SCREEN_Y);
-
-                  cur_x = (cur_x + 0x7FFF) * max_x / (0x7FFF * 2);
-                  cur_y = (cur_y + 0x7FFF) * max_y / (0x7FFF * 2);
-               }
-               else
-               {
-                  cur_x = min_x;
-                  cur_y = min_y;
-               }
-
-               if (input_state_cb(p, RETRO_DEVICE_LIGHTGUN, 0, RETRO_DEVICE_ID_LIGHTGUN_TRIGGER)) {
-                  input->zapper.x = cur_x;
-                  input->zapper.y = cur_y;
-                  input->zapper.fire = 1;
-               }
-
-               if (input_state_cb(p, RETRO_DEVICE_LIGHTGUN, 0, RETRO_DEVICE_ID_LIGHTGUN_RELOAD)) {
-                  input->zapper.x = ~1U;
-                  input->zapper.fire = 1;
-               }
-               break;
-            case ZAPPER_DEVICE_MOUSE:
-               cur_x += input_state_cb(p, RETRO_DEVICE_MOUSE, 0, RETRO_DEVICE_ID_MOUSE_X);
-               cur_y += input_state_cb(p, RETRO_DEVICE_MOUSE, 0, RETRO_DEVICE_ID_MOUSE_Y);
-
-               if (cur_x < min_x)
-                  cur_x = min_x;
-               else if (cur_x > max_x)
-                  cur_x = max_x;
-
-               if (cur_y < min_y)
-                  cur_y = min_y;
-               else if (cur_y > max_y)
-                  cur_y = max_y;
-
-               if (input_state_cb(p, RETRO_DEVICE_MOUSE, 0, RETRO_DEVICE_ID_MOUSE_LEFT))
-               {
-                  input->zapper.x = cur_x;
-                  input->zapper.y = cur_y;
-                  input->zapper.fire = 1;
-               }
-               break;
-            case ZAPPER_DEVICE_POINTER:
-               cur_x = input_state_cb(p, RETRO_DEVICE_POINTER, 0, RETRO_DEVICE_ID_POINTER_X);
-               cur_y = input_state_cb(p, RETRO_DEVICE_POINTER, 0, RETRO_DEVICE_ID_POINTER_Y);
-
-               cur_x = (cur_x + 0x7FFF) * max_x / (0x7FFF * 2);
-               cur_y = (cur_y + 0x7FFF) * max_y / (0x7FFF * 2);
-
-               if (input_state_cb(p, RETRO_DEVICE_POINTER, 0, RETRO_DEVICE_ID_POINTER_PRESSED))
-               {
-                  input->zapper.x = cur_x;
-                  input->zapper.y = cur_y;
-                  input->zapper.fire = 1;
-               }
-               break;
-            default:
-               break;
+            zapper.x = cur_x;
+            zapper.y = cur_y;
+            zapper.fire = 1;
          }
+         break;
+      case ZAPPER_DEVICE_POINTER:
+         cur_x = input_state_cb(1, RETRO_DEVICE_POINTER, 0, RETRO_DEVICE_ID_POINTER_X);
+         cur_y = input_state_cb(1, RETRO_DEVICE_POINTER, 0, RETRO_DEVICE_ID_POINTER_Y);
 
-         if (cur_x > max_x) { crossx = max_x; }
-         else if (cur_x < min_x) { crossx = min_x; }
-         else { crossx = cur_x; }
+         cur_x = cur_x != 0 ? (cur_x + 0x7FFF) * max_x / (0x7FFF * 2) : crossx;
+         cur_y = cur_y != 0 ? (cur_y + 0x7FFF) * max_y / (0x7FFF * 2) : crossy;
 
-         if (cur_y > max_y) { crossy = max_y; }
-         else if (cur_y < min_y) { crossy = min_y; }
-         else { crossy = cur_y; }
+         if (input_state_cb(1, RETRO_DEVICE_POINTER, 0, RETRO_DEVICE_ID_POINTER_PRESSED))
+         {
+            zapper.x = cur_x;
+            zapper.y = cur_y;
+            zapper.fire = 1;
+         }
+         break;
+      default:
+         break;
+   }
+
+   if (cur_x > max_x) { crossx = max_x; }
+   else if (cur_x < min_x) { crossx = min_x; }
+   else { crossx = cur_x; }
+
+   if (cur_y > max_y) { crossy = max_y; }
+   else if (cur_y < min_y) { crossy = min_y; }
+   else { crossy = cur_y; }
+
+   return true;
+}
+
+static void poll_fds_buttons()
+{
+   if (machine->Is(Nes::Api::Machine::DISK))
+   {
+      input_poll_cb();
+
+      bool pressed_l         = false;
+      bool pressed_r         = false;
+
+      int16_t ret = 0;
+      if (libretro_supports_bitmasks)
+      {
+         ret = input_state_cb(0, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_MASK);
+         pressed_l           = ret & (1 << RETRO_DEVICE_ID_JOYPAD_L);
+         pressed_r           = ret & (1 << RETRO_DEVICE_ID_JOYPAD_R);
       }
+      else
+      {
+         pressed_l           = input_state_cb(0, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_L);
+         pressed_r           = input_state_cb(0, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_R);
+      }
+
+      bool curL         = pressed_l;
+      bool prevL = false;
+
+      if (curL && !prevL)
+      {
+         if (!fds->IsAnyDiskInserted())
+            fds->InsertDisk(0, 0);
+         else if (fds->CanChangeDiskSide())
+            fds->ChangeSide();
+      }
+      prevL = curL;
+
+      bool curR         = pressed_r;
+      bool prevR = false;
+
+      if (curR && !prevR && (fds->GetNumDisks() > 1))
+      {
+         int currdisk = fds->GetCurrentDisk();
+         fds->EjectDisk();
+         fds->InsertDisk(!currdisk, 0);
+      }
+      prevR = curR;
    }
 }
 
@@ -1021,6 +1099,10 @@ static void check_variables(void)
          video.GetPalette().SetMode(Api::Video::Palette::MODE_CUSTOM);
          video.GetPalette().SetCustom(cxa2025as_palette, Api::Video::Palette::STD_PALETTE);
       }
+      else if (strcmp(var.value, "royaltea") == 0) {
+         video.GetPalette().SetMode(Api::Video::Palette::MODE_CUSTOM);
+         video.GetPalette().SetCustom(royaltea_palette, Api::Video::Palette::STD_PALETTE);
+      }
       else if (strcmp(var.value, "pal") == 0) {
          video.GetPalette().SetMode(Api::Video::Palette::MODE_CUSTOM);
          video.GetPalette().SetCustom(pal_palette, Api::Video::Palette::STD_PALETTE);
@@ -1066,15 +1148,29 @@ static void check_variables(void)
       }
    }
    
-   var.key = "nestopia_overscan_v";
+   var.key = "nestopia_overscan_v_top";
 
-   if (environ_cb(RETRO_ENVIRONMENT_GET_VARIABLE, &var))
-      overscan_v = (strcmp(var.value, "enabled") == 0);
-   
-   var.key = "nestopia_overscan_h";
+   if (environ_cb(RETRO_ENVIRONMENT_GET_VARIABLE, &var)) {
+      overscan_v_top = atoi(var.value);
+   }
 
-   if (environ_cb(RETRO_ENVIRONMENT_GET_VARIABLE, &var))
-      overscan_h = (strcmp(var.value, "enabled") == 0);
+   var.key = "nestopia_overscan_v_bottom";
+
+   if (environ_cb(RETRO_ENVIRONMENT_GET_VARIABLE, &var)) {
+      overscan_v_bottom = atoi(var.value);
+   }
+
+   var.key = "nestopia_overscan_h_left";
+
+   if (environ_cb(RETRO_ENVIRONMENT_GET_VARIABLE, &var)) {
+      overscan_h_left = atoi(var.value);
+   }
+
+   var.key = "nestopia_overscan_h_right";
+
+   if (environ_cb(RETRO_ENVIRONMENT_GET_VARIABLE, &var)) {
+      overscan_h_right = atoi(var.value);
+   }
 
    var.key = "nestopia_aspect";
 
@@ -1096,18 +1192,12 @@ static void check_variables(void)
    if (environ_cb(RETRO_ENVIRONMENT_GET_VARIABLE, &var) && var.value)
    { 
 	   if (!strcmp(var.value, "auto")) {
-		   Api::Input(emulator).AutoSelectController(2);
-		   Api::Input(emulator).AutoSelectController(3);
 		   Api::Input(emulator).AutoSelectAdapter();
 	   }
 	   else if (!strcmp(var.value, "ntsc")) {
-		   Api::Input(emulator).ConnectController(2, Api::Input::PAD3);
-	       Api::Input(emulator).ConnectController(3, Api::Input::PAD4);
 		   Api::Input(emulator).ConnectAdapter(Api::Input::ADAPTER_NES);
 		}
 	   else if (!strcmp(var.value, "famicom")) {
-		   Api::Input(emulator).ConnectController(2, Api::Input::PAD3);
-		   Api::Input(emulator).ConnectController(3, Api::Input::PAD4);
 		   Api::Input(emulator).ConnectAdapter(Api::Input::ADAPTER_FAMICOM);
 		}
    }
@@ -1270,7 +1360,7 @@ static void check_variables(void)
 
 void retro_run(void)
 {
-   update_input();
+   poll_fds_buttons();
    emulator.Execute(video, audio, input);
 
    if (show_crosshair == SHOW_CROSSHAIR_ON)
@@ -1287,12 +1377,12 @@ void retro_run(void)
       video = new Api::Video::Output(video_buffer, video_width * sizeof(uint32_t));
    }
 
-   int dif = blargg_ntsc ? 18 : 8;
+   int dif = blargg_ntsc ? 9 : 4;
 
    // Absolute mess of inline if statements...
-   video_cb(video_buffer + (overscan_v ? ((overscan_h ? dif : 0) + (blargg_ntsc ? Api::Video::Output::NTSC_WIDTH : Api::Video::Output::WIDTH) * 8) : (overscan_h ? dif : 0) + 0),
-         video_width - (overscan_h ? 2 * dif : 0),
-         Api::Video::Output::HEIGHT - (overscan_v ? 16 : 0),
+   video_cb(video_buffer + ((blargg_ntsc ? Api::Video::Output::NTSC_WIDTH : Api::Video::Output::WIDTH) * overscan_v_top) + ((overscan_h_left * dif) / 4) + 0,
+         video_width - (((overscan_h_left + overscan_h_right) * dif) / 4),
+         Api::Video::Output::HEIGHT - (overscan_v_top + overscan_v_bottom),
          pitch);
 
    // Use audio buffer untouched for stereo, duplicate samples for mono
@@ -1563,6 +1653,12 @@ bool retro_load_game(const struct retro_game_info *info)
    isound.SetSampleRate(SAMPLERATE);
    isound.SetSpeaker(Api::Sound::SPEAKER_MONO);
 
+   Api::Input(emulator).AutoSelectControllers();
+   Api::Input::Controllers::Pad::callback.Set(&gamepad_callback, NULL);
+   Api::Input::Controllers::Paddle::callback.Set(&arkanoid_callback, NULL);
+   Api::Input::Controllers::VsSystem::callback.Set(&vssystem_callback, NULL);
+   Api::Input::Controllers::Zapper::callback.Set(&zapper_callback, NULL);
+
    machine->Power(true);
 
    check_variables();
@@ -1580,6 +1676,11 @@ bool retro_load_game(const struct retro_game_info *info)
 
 void retro_unload_game(void)
 {
+   Api::Input::Controllers::Pad::callback.Unset();
+   Api::Input::Controllers::Paddle::callback.Unset();
+   Api::Input::Controllers::VsSystem::callback.Unset();
+   Api::Input::Controllers::Zapper::callback.Unset();
+
    if (machine)
    {
       machine->Unload();
@@ -1608,6 +1709,7 @@ void retro_unload_game(void)
 
    sram = 0;
    sram_size = 0;
+   state_size = 0;
 
 #ifdef _3DS
    linearFree(video_buffer);
@@ -1629,10 +1731,14 @@ bool retro_load_game_special(unsigned, const struct retro_game_info *, size_t)
 
 size_t retro_serialize_size(void)
 {
-   std::stringstream ss;
-   if (machine->SaveState(ss, Api::Machine::NO_COMPRESSION))
-      return 0;
-   return ss.str().size();
+   if (!state_size) {
+      std::stringstream ss;
+      if (machine->SaveState(ss, Api::Machine::NO_COMPRESSION))
+         return 0;
+      state_size = ss.str().size() + tracked_input_state_size_bytes;
+   }
+
+   return state_size;
 }
 
 bool retro_serialize(void *data, size_t size)
@@ -1642,17 +1748,48 @@ bool retro_serialize(void *data, size_t size)
       return false;
 
    std::string state = ss.str();
-   if (state.size() > size)
+   if (state.size() + tracked_input_state_size_bytes > size)
       return false;
 
    std::copy(state.begin(), state.end(), reinterpret_cast<char*>(data));
+
+   unsigned char *tracked_input_state_ptr = reinterpret_cast<unsigned char*>(data) + state.size();
+
+   *tracked_input_state_ptr++ = tstate[0];
+   *tracked_input_state_ptr++ = tstate[1];
+   *tracked_input_state_ptr++ = tstate[2];
+   *tracked_input_state_ptr++ = tstate[3];
+   *tracked_input_state_ptr++ = (unsigned char) cur_x;
+   *tracked_input_state_ptr++ = (unsigned char) cur_y;
+   *tracked_input_state_ptr++ = prevL;
+   *tracked_input_state_ptr++ = prevR;
+
    return true;
 }
 
 bool retro_unserialize(const void *data, size_t size)
 {
+   // Preserve ability to load states not containing libretro-specific bits
+   size_t nestopia_savestate_size = size < retro_serialize_size() ?
+      size : size - tracked_input_state_size_bytes;
+
    std::stringstream ss(std::string(reinterpret_cast<const char*>(data),
-            reinterpret_cast<const char*>(data) + size));
+      reinterpret_cast<const char*>(data) + nestopia_savestate_size));
+
+   // Only load libretro-specific bits if they exist
+   if (size < retro_serialize_size()) {
+      unsigned char const *tracked_input_state_ptr =
+         reinterpret_cast<unsigned char const*>(data) + nestopia_savestate_size;
+      tstate[0] = *tracked_input_state_ptr++;
+      tstate[1] = *tracked_input_state_ptr++;
+      tstate[2] = *tracked_input_state_ptr++;
+      tstate[3] = *tracked_input_state_ptr++;
+      cur_x  = (int) *tracked_input_state_ptr++;
+      cur_y  = (int) *tracked_input_state_ptr++;
+      prevL  = *tracked_input_state_ptr++;
+      prevR  = *tracked_input_state_ptr++;
+   }
+
    return !machine->LoadState(ss);
 }
 

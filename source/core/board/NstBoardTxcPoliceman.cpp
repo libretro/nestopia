@@ -52,9 +52,9 @@ namespace Nes
 				NES_POKE_AD(Policeman,8400)
 				{
 					ppu.Update();
-					data = GetBusData(address,data);
+					//data = GetBusData(address,data); // Unnecessary
 					prg.SwapBank<SIZE_32K,0x0000>( data >> 4 );
-					chr.SwapBank<SIZE_8K,0x0000>( data );
+					chr.SwapBank<SIZE_8K,0x0000>( data & 0x0F );
 				}
 			}
 		}

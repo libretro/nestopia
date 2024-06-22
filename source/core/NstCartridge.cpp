@@ -91,8 +91,9 @@ namespace Nes
 
 					case 0x0000:
 						// Check for VC/NES Remix container for cartridge-based games
-						if (((Stream::In(&context.stream).Peek64() >> 32) & 0xFF) == 0x60)
-						{
+						// Just load the game for now, until more is known about the container format.
+						//if (((Stream::In(&context.stream).Peek64() >> 32) & 0xFF) & 0x60)
+						//{
 							Ines::Load
 							(
 								context.stream,
@@ -106,7 +107,7 @@ namespace Nes
 								profileEx,
 								context.database
 							);
-						}
+						//}
 						break;
 
 					default:

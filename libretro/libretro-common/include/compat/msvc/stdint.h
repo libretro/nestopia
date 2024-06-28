@@ -1,5 +1,5 @@
 /* ISO C9x  compliant stdint.h for Microsoft Visual Studio
- * Based on ISO/IEC 9899:TC2 Committee draft (May 6, 2005) WG14/N1124 
+ * Based on ISO/IEC 9899:TC2 Committee draft (May 6, 2005) WG14/N1124
  *
  * Copyright (c) 2006-2008 Alexander Chemeris
  *
@@ -22,7 +22,7 @@
  * EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
  * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
  * PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS;
- * OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, 
+ * OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR
  * OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
  * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
@@ -67,7 +67,6 @@ extern "C" {
 #  endif
 #endif
 
-
 /* 7.18.1 Integer types. */
 
 /* 7.18.1.1 Exact-width integer types. */
@@ -93,7 +92,6 @@ extern "C" {
 #endif
 typedef signed __int64       int64_t;
 typedef unsigned __int64     uint64_t;
-
 
 /* 7.18.1.2 Minimum-width integer types. */
 typedef int8_t    int_least8_t;
@@ -255,4 +253,3 @@ typedef uint64_t  uintmax_t;
 #endif
 
 #endif
-

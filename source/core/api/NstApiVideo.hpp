@@ -39,6 +39,11 @@
 #pragma warning( disable : 4512 )
 #endif
 
+#define NST_NO_SCALEX 1
+#define NST_NO_HQ2X 1
+#define NST_NO_2XSAI 1
+#define NST_NO_XBR 1
+
 namespace Nes
 {
 	namespace Core

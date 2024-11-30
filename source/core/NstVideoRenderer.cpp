@@ -22,18 +22,12 @@
 //
 ////////////////////////////////////////////////////////////////////////////////////////
 
-#define NST_NO_SCALEX 1
-#define NST_NO_HQ2X 1
-#define NST_NO_2XSAI 1
-#define NST_NO_XBR 1
-
 #include <cstring>
 #include <cmath>
 #include <new>
 #include "NstCore.hpp"
 #include "NstAssert.hpp"
 #include "NstFpuPrecision.hpp"
-#include "api/NstApiVideo.hpp"
 #include "NstVideoRenderer.hpp"
 #include "NstVideoFilterNone.hpp"
 

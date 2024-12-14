@@ -837,7 +837,7 @@ static void poll_fds_buttons()
       }
 
       bool curL         = pressed_l;
-      bool prevL = false;
+      static bool prevL = false;
 
       if (curL && !prevL)
       {
@@ -849,7 +849,7 @@ static void poll_fds_buttons()
       prevL = curL;
 
       bool curR         = pressed_r;
-      bool prevR = false;
+      static bool prevR = false;
 
       if (curR && !prevR && (fds->GetNumDisks() > 1))
       {

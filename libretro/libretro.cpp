@@ -83,6 +83,7 @@ static enum {
    SHOW_CROSSHAIR_ON,
 } show_crosshair;
 
+static unsigned libretro_msg_interface_version = 0;
 static bool libretro_supports_bitmasks = false;
 static bool show_advanced_av_settings = true;
 
@@ -305,6 +306,56 @@ static void load_wav(const char* sampgame, Api::User::File& file)
    }
 }
 
+static void display_msg(enum retro_log_level level, unsigned duration, const char *str)
+{
+   if (!environ_cb)
+      return;
+
+   if (libretro_msg_interface_version >= 1)
+   {
+      struct retro_message_ext msg;
+      unsigned priority;
+
+      switch (level)
+      {
+         case RETRO_LOG_ERROR:
+            priority = 5;
+            break;
+         case RETRO_LOG_WARN:
+            priority = 4;
+            break;
+         case RETRO_LOG_INFO:
+            priority = 3;
+            break;
+         case RETRO_LOG_DEBUG:
+         default:
+            priority = 1;
+            break;
+      }
+
+      msg.msg      = str;
+      msg.duration = duration;
+      msg.priority = priority;
+      msg.level    = level;
+      msg.target   = RETRO_MESSAGE_TARGET_OSD;
+      msg.type     = RETRO_MESSAGE_TYPE_NOTIFICATION_ALT;
+      msg.progress = -1;
+
+      environ_cb(RETRO_ENVIRONMENT_SET_MESSAGE_EXT, &msg);
+   }
+   else
+   {
+      float fps       = is_pal ? 50 : 60;
+      unsigned frames = (unsigned)(((float)duration * fps / 1000.0f) + 0.5f);
+      struct retro_message msg;
+
+      msg.msg    = str;
+      msg.frames = frames;
+
+      environ_cb(RETRO_ENVIRONMENT_SET_MESSAGE, &msg);
+   }
+}
+
 static void NST_CALLBACK file_io_callback(void*, Api::User::File &file)
 {
    const void *addr;
@@ -393,6 +444,9 @@ void retro_init(void)
 
    if (environ_cb(RETRO_ENVIRONMENT_GET_INPUT_BITMASKS, NULL))
       libretro_supports_bitmasks = true;
+
+   environ_cb(RETRO_ENVIRONMENT_GET_MESSAGE_INTERFACE_VERSION,
+      &libretro_msg_interface_version);
 
    check_system_specs();
 }
@@ -841,10 +895,17 @@ static void poll_fds_buttons()
 
       if (curL && !prevL)
       {
-         if (!fds->IsAnyDiskInserted())
+         if (!fds->IsAnyDiskInserted()) {
             fds->InsertDisk(0, 0);
-         else if (fds->CanChangeDiskSide())
+            display_msg(RETRO_LOG_INFO, 2000, "Disk Inserted");
+         }
+         else if (fds->CanChangeDiskSide()) {
             fds->ChangeSide();
+            std::string msg = std::string("Switched to Disk ") +
+                (fds->GetCurrentDisk() == 0 ? "1" : "2") +
+                " Side " + (fds->GetCurrentDiskSide() == 0 ? "A" : "B");
+            display_msg(RETRO_LOG_INFO, 2000, msg.c_str());
+         }
       }
       prevL = curL;
 
@@ -856,6 +917,15 @@ static void poll_fds_buttons()
          int currdisk = fds->GetCurrentDisk();
          fds->EjectDisk();
          fds->InsertDisk(!currdisk, 0);
+
+         std::string msg = std::string("Disk ") + (fds->GetCurrentDisk() ? "2" : "1");
+
+         if (fds->IsAnyDiskInserted())
+            msg += " Inserted";
+         else
+            msg += " Ejected";
+
+         display_msg(RETRO_LOG_INFO, 2000, msg.c_str());
       }
       prevR = curR;
    }

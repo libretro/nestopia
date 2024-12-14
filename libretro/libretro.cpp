@@ -284,25 +284,25 @@ static void load_wav(const char* sampgame, Api::User::File& file)
    std::ifstream samp_file(samp_path, std::ifstream::in|std::ifstream::binary);
 
    if (samp_file) {
-	   samp_file.seekg(0, samp_file.end);
-	   length = samp_file.tellg();
-	   samp_file.seekg(0, samp_file.beg);
-	   wavfile = (char*)malloc(length * sizeof(char));
-	   samp_file.read(wavfile, length);
+       samp_file.seekg(0, samp_file.end);
+       length = samp_file.tellg();
+       samp_file.seekg(0, samp_file.beg);
+       wavfile = (char*)malloc(length * sizeof(char));
+       samp_file.read(wavfile, length);
 
-	   // Check to see if it has a valid header
-	   if (memcmp(&wavfile[0x00], "RIFF", 4) != 0) { return; }
-	   if (memcmp(&wavfile[0x08], "WAVE", 4) != 0) { return; }
-	   if (memcmp(&wavfile[0x0c], &fmt, 4) != 0) { return; }
-	   if (memcmp(&wavfile[0x24], &subchunk2id, 4) != 0) { return; }
+       // Check to see if it has a valid header
+       if (memcmp(&wavfile[0x00], "RIFF", 4) != 0) { return; }
+       if (memcmp(&wavfile[0x08], "WAVE", 4) != 0) { return; }
+       if (memcmp(&wavfile[0x0c], &fmt, 4) != 0) { return; }
+       if (memcmp(&wavfile[0x24], &subchunk2id, 4) != 0) { return; }
 
-	   // Load the sample into the emulator
-	   dataptr = &wavfile[0x2c];
-	   blockalign = wavfile[0x21] << 8 | wavfile[0x20];
-	   numchannels = wavfile[0x17] << 8 | wavfile[0x16];
-	   bitspersample = wavfile[0x23] << 8 | wavfile[0x22];
-	   file.SetSampleContent(dataptr, (length - 44) / blockalign, 0, bitspersample, 44100);
-	   free(wavfile);
+       // Load the sample into the emulator
+       dataptr = &wavfile[0x2c];
+       blockalign = wavfile[0x21] << 8 | wavfile[0x20];
+       numchannels = wavfile[0x17] << 8 | wavfile[0x16];
+       bitspersample = wavfile[0x23] << 8 | wavfile[0x22];
+       file.SetSampleContent(dataptr, (length - 44) / blockalign, 0, bitspersample, 44100);
+       free(wavfile);
    }
 }
 
@@ -1261,15 +1261,15 @@ static void check_variables(void)
    var.key = "nestopia_select_adapter";
    if (environ_cb(RETRO_ENVIRONMENT_GET_VARIABLE, &var) && var.value)
    { 
-	   if (!strcmp(var.value, "auto")) {
-		   Api::Input(emulator).AutoSelectAdapter();
-	   }
-	   else if (!strcmp(var.value, "ntsc")) {
-		   Api::Input(emulator).ConnectAdapter(Api::Input::ADAPTER_NES);
-		}
-	   else if (!strcmp(var.value, "famicom")) {
-		   Api::Input(emulator).ConnectAdapter(Api::Input::ADAPTER_FAMICOM);
-		}
+       if (!strcmp(var.value, "auto")) {
+           Api::Input(emulator).AutoSelectAdapter();
+       }
+       else if (!strcmp(var.value, "ntsc")) {
+           Api::Input(emulator).ConnectAdapter(Api::Input::ADAPTER_NES);
+        }
+       else if (!strcmp(var.value, "famicom")) {
+           Api::Input(emulator).ConnectAdapter(Api::Input::ADAPTER_FAMICOM);
+        }
    }
 
    var.key = "nestopia_turbo_pulse";

@@ -673,6 +673,22 @@ static keymap bindmap_shifted[] = {
 
 static keymap *bindmap = bindmap_default;
 
+static void NST_CALLBACK nst_cb_event(void *userdata, Api::User::Event event, const void *data) {
+   // Handle special events
+   switch (event) {
+      case Api::User::EVENT_CPU_JAM:
+         log_cb(RETRO_LOG_WARN, "Cpu: Jammed.");
+         break;
+      case Api::User::EVENT_CPU_UNOFFICIAL_OPCODE:
+         log_cb(RETRO_LOG_DEBUG, "Cpu: Unofficial Opcode %s\n", (const char*)data);
+         break;
+      case Api::User::EVENT_DISPLAY_TIMER:
+         display_msg(RETRO_LOG_INFO, 1000, (const char*)data);
+         break;
+      default: break;
+   }
+}
+
 static bool NST_CALLBACK gamepad_callback(Api::Base::UserData data, Core::Input::Controllers::Pad& pad, unsigned int port)
 {
    input_poll_cb();
@@ -1728,6 +1744,8 @@ bool retro_load_game(const struct retro_game_info *info)
    Api::Input::Controllers::Paddle::callback.Set(&arkanoid_callback, NULL);
    Api::Input::Controllers::VsSystem::callback.Set(&vssystem_callback, NULL);
    Api::Input::Controllers::Zapper::callback.Set(&zapper_callback, NULL);
+
+   Api::User::eventCallback.Set(nst_cb_event, 0);
 
    machine->Power(true);
 

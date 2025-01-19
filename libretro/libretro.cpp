@@ -738,7 +738,6 @@ static bool NST_CALLBACK arkanoid_callback(Api::Base::UserData data, Core::Input
    int min_x = overscan_h_left;
    int max_x = 255 - overscan_h_right;
 
-   cur_x = min_x;
    unsigned int button = 0;
 
    switch (arkanoid_device)
@@ -799,8 +798,6 @@ static bool NST_CALLBACK zapper_callback(Api::Base::UserData data, Core::Input::
    int min_y = overscan_v_top;
    int max_y = 239 - overscan_v_bottom;
 
-   cur_x = min_x;
-   cur_y = min_y;
    zapper.fire = 0;
 
    if (show_crosshair)

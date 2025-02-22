@@ -613,6 +613,20 @@ struct retro_core_option_v2_definition option_defs_us[] = {
       "mouse"
    },
    {
+      "nestopia_arkanoid_paddle_range",
+      "Arkanoid Paddle Range",
+      NULL,
+      "Set the range for the Arkanoid paddle.",
+      NULL,
+      "input",
+      {
+         { "combined", "Combined range of both controllers (32-166)"},
+         { "arkanoidI", "Arkanoid I controller range (46-166)"},
+         { "arkanoidII", "Arkanoid II controller range (32-153)"}
+      },
+      "combined"
+   },
+   {
       "nestopia_zapper_device",
       "Zapper device",
       NULL,

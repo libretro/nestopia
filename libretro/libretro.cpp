@@ -63,6 +63,8 @@ static char *g_save_dir;
 static char samp_dir[256];
 static unsigned blargg_ntsc;
 static bool fds_auto_insert;
+static int arkanoid_paddle_min = 0;
+static int arkanoid_paddle_max = 255;
 static int overscan_v_top, overscan_v_bottom;
 static int overscan_h_left, overscan_h_right;
 static bool libretro_supports_option_categories = false;
@@ -743,6 +745,8 @@ static bool NST_CALLBACK arkanoid_callback(Api::Base::UserData data, Core::Input
    switch (arkanoid_device)
    {
       case ARKANOID_DEVICE_MOUSE:
+         min_x = arkanoid_paddle_min;
+         max_x = arkanoid_paddle_max;
          cur_x += input_state_cb(1, RETRO_DEVICE_MOUSE, 0, RETRO_DEVICE_ID_MOUSE_X);
          button = input_state_cb(1, RETRO_DEVICE_MOUSE, 0, RETRO_DEVICE_ID_MOUSE_LEFT);
          break;
@@ -1231,6 +1235,24 @@ static void check_variables(void)
       }
    }
    
+   // https://www.nesdev.org/wiki/Arkanoid_controller
+   // There are two different Arkanoid (or Vaus) controllers.
+   // And each controller has a slightly different range of values.
+   var.key = "nestopia_arkanoid_paddle_range";
+   if (environ_cb(RETRO_ENVIRONMENT_GET_VARIABLE, &var)) {
+      // Default full range that will work for both arkanoidI and arkanoidII
+      arkanoid_paddle_min = 32;
+      arkanoid_paddle_max = 166;   
+      if (strcmp(var.value, "arkanoidI") == 0) {
+         arkanoid_paddle_min = 46;
+         arkanoid_paddle_max = 166;   
+      }
+      else if (strcmp(var.value, "arkanoidII") == 0) {
+         arkanoid_paddle_min = 32;
+         arkanoid_paddle_max = 153;   
+      }
+   }
+
    var.key = "nestopia_overscan_v_top";
 
    if (environ_cb(RETRO_ENVIRONMENT_GET_VARIABLE, &var)) {

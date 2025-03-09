@@ -93,7 +93,7 @@ namespace Nes
 									State::Loader::Data<2> data( state );
 
 									irq.unit.enabled = data[0] & 0x1;
-									irq.unit.count = data[2];
+									irq.unit.count = data[1];
 									break;
 								}
 							}
@@ -110,8 +110,8 @@ namespace Nes
 
 					const byte data[2] =
 					{
-						irq.unit.enabled ? 0x1 : 0x0,
-						irq.unit.count & 0xFF
+						static_cast<byte>(irq.unit.enabled ? 0x1 : 0x0),
+						static_cast<byte>(irq.unit.count & 0xFF)
 					};
 
 					state.Begin( AsciiId<'I','R','Q'>::V ).Write( data ).End();

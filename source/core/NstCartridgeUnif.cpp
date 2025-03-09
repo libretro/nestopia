@@ -272,6 +272,7 @@ namespace Nes
 									break;
 								}
 							}
+							// fallthrough
 
 							default:
 
@@ -385,6 +386,7 @@ namespace Nes
 							profile.system.type = Profile::System::NES_NTSC;
 							break;
 						}
+						// fallthrough
 
 					case Context::SYSTEM_PAL:
 
@@ -738,10 +740,10 @@ namespace Nes
 		{
 			const byte bytes[] =
 			{
-				id >>  0 & 0xFF,
-				id >>  8 & 0xFF,
-				id >> 16 & 0xFF,
-				id >> 24 & 0xFF,
+				static_cast<byte>(id >>  0 & 0xFF),
+				static_cast<byte>(id >>  8 & 0xFF),
+				static_cast<byte>(id >> 16 & 0xFF),
+				static_cast<byte>(id >> 24 & 0xFF),
 				0
 			};
 

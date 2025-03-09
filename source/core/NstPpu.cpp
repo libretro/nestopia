@@ -102,11 +102,12 @@ namespace Nes
 		Ppu::Ppu(Cpu& c)
 		:
 		cpu    (c),
-		output (screen.pixels),
+		output (NULL),
 		model  (PPU_RP2C02),
 		rgbMap (NULL),
 		yuvMap (NULL)
 		{
+			output = Output(screen.pixels);
 			cycles.one = PPU_RP2C02_CC;
 			overclocked = false;
 			PowerOff();
@@ -313,17 +314,17 @@ namespace Nes
 			{
 				const byte data[11] =
 				{
-					regs.ctrl[0],
-					regs.ctrl[1],
-					regs.status,
-					scroll.address & 0xFF,
-					scroll.address >> 8,
-					scroll.latch & 0xFF,
-					scroll.latch >> 8,
-					scroll.xFine | scroll.toggle << 3,
-					regs.oam,
-					io.buffer,
-					io.latch
+					static_cast<byte>(regs.ctrl[0]),
+					static_cast<byte>(regs.ctrl[1]),
+					static_cast<byte>(regs.status),
+					static_cast<byte>(scroll.address & 0xFF),
+					static_cast<byte>(scroll.address >> 8),
+					static_cast<byte>(scroll.latch & 0xFF),
+					static_cast<byte>(scroll.latch >> 8),
+					static_cast<byte>(scroll.xFine | scroll.toggle << 3),
+					static_cast<byte>(regs.oam),
+					static_cast<byte>(io.buffer),
+					static_cast<byte>(io.latch)
 				};
 
 				state.Begin( AsciiId<'R','E','G'>::V ).Write( data ).End();
@@ -499,6 +500,7 @@ namespace Nes
 				case PPU_RP2C02:
 
 					regs.frame ^= Regs::FRAME_ODD;
+					// fallthrough
 
 				default:
 
@@ -1068,7 +1070,7 @@ namespace Nes
 
 			if ((address & 0x3F00) == 0x3F00) // Palette
 			{
-				io.latch = (io.latch & 0xC0) | palette.ram[address & 0x1F] & Coloring();
+				io.latch = (io.latch & 0xC0) | (palette.ram[address & 0x1F] & Coloring());
 				mask = 0x3F;
 			}
 			else // Non-Palette
@@ -1202,7 +1204,7 @@ namespace Nes
 			else switch (address & Y_TILE)
 			{
 				default:         address = (address & (Y_FINE ^ 0x7FFFU)) + (1U << 5); break;
-				case (29U << 5): address ^= NAME_HIGH;
+				case (29U << 5): address ^= NAME_HIGH; // fallthrough
 				case (31U << 5): address &= (Y_FINE|Y_TILE) ^ 0x7FFFU; break;
 			}
 		}
@@ -1868,6 +1870,7 @@ namespace Nes
 
 						if (cycles.count <= 338)
 							break;
+						// fallthrough
 
 					case 338:
 
@@ -1890,6 +1893,7 @@ namespace Nes
 							if (cycles.count <= HCLOCK_VBLANK_0)
 								break;
 						}
+						// fallthrough
 
 					case HCLOCK_VBLANK_0:
 						goto VBlank0;
@@ -1945,6 +1949,7 @@ namespace Nes
 
 						if (cycles.count <= cycles.hClock)
 							break;
+						// fallthrough
 
 					case 1:
 					case 9:
@@ -1985,6 +1990,7 @@ namespace Nes
 
 						if (cycles.count <= cycles.hClock)
 							break;
+						// fallthrough
 
 					case 2:
 					case 10:
@@ -2025,6 +2031,7 @@ namespace Nes
 
 						if (cycles.count <= cycles.hClock)
 							break;
+						// fallthrough
 
 					case 3:
 					case 11:
@@ -2070,6 +2077,7 @@ namespace Nes
 
 						if (cycles.count <= cycles.hClock)
 							break;
+						// fallthrough
 
 					case 4:
 					case 12:
@@ -2110,6 +2118,7 @@ namespace Nes
 
 						if (cycles.count <= cycles.hClock)
 							break;
+						// fallthrough
 
 					case 5:
 					case 13:
@@ -2150,6 +2159,7 @@ namespace Nes
 
 						if (cycles.count <= cycles.hClock)
 							break;
+						// fallthrough
 
 					case 6:
 					case 14:
@@ -2193,6 +2203,7 @@ namespace Nes
 
 						if (cycles.hClock == 255)
 							goto HActive255;
+						// fallthrough
 
 					case 7:
 					case 15:
@@ -2237,6 +2248,7 @@ namespace Nes
 
 						if (cycles.hClock != 64)
 							goto HActive;
+						// fallthrough
 
 					case 64:
 
@@ -2255,6 +2267,7 @@ namespace Nes
 
 						if (cycles.count <= 256)
 							break;
+						// fallthrough
 
 					case 256:
 
@@ -2264,6 +2277,7 @@ namespace Nes
 
 						if (cycles.count <= 257)
 							break;
+						// fallthrough
 
 					case 257:
 
@@ -2276,6 +2290,7 @@ namespace Nes
 
 						if (cycles.count <= 258)
 							break;
+						// fallthrough
 
 					case 258:
 					case 266:
@@ -2292,6 +2307,7 @@ namespace Nes
 
 						if (cycles.count <= cycles.hClock)
 							break;
+						// fallthrough
 
 					case 260:
 					case 268:
@@ -2311,6 +2327,7 @@ namespace Nes
 						if (cycles.count <= ++cycles.hClock)
 							break;
 					}
+					// fallthrough
 
 					case 261:
 					case 269:
@@ -2326,6 +2343,7 @@ namespace Nes
 
 						if (cycles.count <= ++cycles.hClock)
 							break;
+						// fallthrough
 
 					case 262:
 					case 270:
@@ -2340,6 +2358,7 @@ namespace Nes
 
 						if (cycles.count <= ++cycles.hClock)
 							break;
+						// fallthrough
 
 					case 263:
 					case 271:
@@ -2361,6 +2380,7 @@ namespace Nes
 						if (cycles.hClock == 320)
 							goto HBlankBg;
 					}
+					// fallthrough
 
 					case 264:
 					case 272:
@@ -2377,6 +2397,7 @@ namespace Nes
 							break;
 
 						goto HBlankSp;
+						// fallthrough
 
 					case 320:
 					HBlankBg:
@@ -2398,6 +2419,7 @@ namespace Nes
 
 						if (cycles.count <= 321)
 							break;
+						// fallthrough
 
 					case 321:
 
@@ -2406,6 +2428,7 @@ namespace Nes
 
 						if (cycles.count <= 322)
 							break;
+						// fallthrough
 
 					case 322:
 
@@ -2414,6 +2437,7 @@ namespace Nes
 
 						if (cycles.count <= 323)
 							break;
+						// fallthrough
 
 					case 323:
 
@@ -2423,6 +2447,7 @@ namespace Nes
 
 						if (cycles.count <= 324)
 							break;
+						// fallthrough
 
 					case 324:
 
@@ -2431,6 +2456,7 @@ namespace Nes
 
 						if (cycles.count <= 325)
 							break;
+						// fallthrough
 
 					case 325:
 
@@ -2439,6 +2465,7 @@ namespace Nes
 
 						if (cycles.count <= 326)
 							break;
+						// fallthrough
 
 					case 326:
 
@@ -2447,6 +2474,7 @@ namespace Nes
 
 						if (cycles.count <= 327)
 							break;
+						// fallthrough
 
 					case 327:
 
@@ -2455,6 +2483,7 @@ namespace Nes
 
 						if (cycles.count <= 328)
 							break;
+						// fallthrough
 
 					case 328:
 
@@ -2464,6 +2493,7 @@ namespace Nes
 
 						if (cycles.count <= 329)
 							break;
+						// fallthrough
 
 					case 329:
 
@@ -2472,6 +2502,7 @@ namespace Nes
 
 						if (cycles.count <= 330)
 							break;
+						// fallthrough
 
 					case 330:
 
@@ -2480,6 +2511,7 @@ namespace Nes
 
 						if (cycles.count <= 331)
 							break;
+						// fallthrough
 
 					case 331:
 
@@ -2489,6 +2521,7 @@ namespace Nes
 
 						if (cycles.count <= 332)
 							break;
+						// fallthrough
 
 					case 332:
 
@@ -2497,6 +2530,7 @@ namespace Nes
 
 						if (cycles.count <= 333)
 							break;
+						// fallthrough
 
 					case 333:
 
@@ -2505,6 +2539,7 @@ namespace Nes
 
 						if (cycles.count <= 334)
 							break;
+						// fallthrough
 
 					case 334:
 
@@ -2513,6 +2548,7 @@ namespace Nes
 
 						if (cycles.count <= 335)
 							break;
+						// fallthrough
 
 					case 335:
 
@@ -2521,6 +2557,7 @@ namespace Nes
 
 						if (cycles.count <= 336)
 							break;
+						// fallthrough
 
 					case 336:
 
@@ -2529,6 +2566,7 @@ namespace Nes
 
 						if (cycles.count <= 337)
 							break;
+						// fallthrough
 
 					case 337:
 
@@ -2552,6 +2590,7 @@ namespace Nes
 
 						if (cycles.count <= 338)
 							break;
+						// fallthrough
 
 					case 338:
 
@@ -2595,6 +2634,7 @@ namespace Nes
 									break;
 							}
 						}
+						// fallthrough
 
 					case HCLOCK_VBLANK_0:
 					VBlank0:
@@ -2604,6 +2644,7 @@ namespace Nes
 
 						if (cycles.count <= HCLOCK_VBLANK_1)
 							break;
+						// fallthrough
 
 					case HCLOCK_VBLANK_1:
 					VBlank1:
@@ -2614,6 +2655,7 @@ namespace Nes
 
 						if (cycles.count <= HCLOCK_VBLANK_2)
 							break;
+						// fallthrough
 
 					case HCLOCK_VBLANK_2:
 					VBlank2:
@@ -2636,6 +2678,7 @@ namespace Nes
 
 						regs.status = 0;
 						scanline = SCANLINE_HDUMMY;
+						// fallthrough
 
 					case HCLOCK_DUMMY+8:
 					case HCLOCK_DUMMY+16:
@@ -2675,6 +2718,7 @@ namespace Nes
 
 						if (cycles.count <= cycles.hClock)
 							break;
+						// fallthrough
 
 					case HCLOCK_DUMMY+2:
 					case HCLOCK_DUMMY+10:
@@ -2714,6 +2758,7 @@ namespace Nes
 
 						if (cycles.count <= cycles.hClock)
 							break;
+						// fallthrough
 
 					case HCLOCK_DUMMY+4:
 					case HCLOCK_DUMMY+12:
@@ -2753,6 +2798,7 @@ namespace Nes
 
 						if (cycles.count <= cycles.hClock)
 							break;
+						// fallthrough
 
 					case HCLOCK_DUMMY+6:
 					case HCLOCK_DUMMY+14:
@@ -2795,6 +2841,7 @@ namespace Nes
 
 						if (cycles.hClock != HCLOCK_DUMMY+256)
 							goto HDummyBg;
+						// fallthrough
 
 					case HCLOCK_DUMMY+256:
 					case HCLOCK_DUMMY+264:
@@ -2810,6 +2857,7 @@ namespace Nes
 
 						if (cycles.count <= cycles.hClock)
 							break;
+						// fallthrough
 
 					case HCLOCK_DUMMY+258:
 					case HCLOCK_DUMMY+266:
@@ -2825,6 +2873,7 @@ namespace Nes
 
 						if (cycles.count <= cycles.hClock)
 							break;
+						// fallthrough
 
 					case HCLOCK_DUMMY+260:
 					case HCLOCK_DUMMY+268:
@@ -2840,6 +2889,7 @@ namespace Nes
 
 						if (cycles.count <= cycles.hClock)
 							break;
+						// fallthrough
 
 					case HCLOCK_DUMMY+262:
 					case HCLOCK_DUMMY+270:
@@ -2873,6 +2923,7 @@ namespace Nes
 
 							goto HBlankBg;
 						}
+						// fallthrough
 
 					case HCLOCK_DUMMY+304:
 
@@ -3170,6 +3221,7 @@ namespace Nes
 						if (cycles.count <= 256)
 							break;
 					}
+					// fallthrough
 
 					case 256:
 
@@ -3177,6 +3229,7 @@ namespace Nes
 
 						if (cycles.count <= 257)
 							break;
+						// fallthrough
 
 					case 257:
 
@@ -3188,6 +3241,7 @@ namespace Nes
 
 						if (cycles.count <= 258)
 							break;
+						// fallthrough
 
 					case 258:
 					case 260:
@@ -3242,6 +3296,7 @@ namespace Nes
 							cycles.hClock = cycles.count + ((cycles.count & 0x7) == 3 || (cycles.count & 0x7) == 1);
 							break;
 						}
+						// fallthrough
 
 					case 320:
 					HBlankOff:
@@ -3258,6 +3313,7 @@ namespace Nes
 
 						if (cycles.count <= 321)
 							break;
+						// fallthrough
 
 					case 321:
 					case 322:
@@ -3281,6 +3337,7 @@ namespace Nes
 
 						if (cycles.count <= 338)
 							break;
+						// fallthrough
 
 					case 338:
 
@@ -3326,6 +3383,7 @@ namespace Nes
 									break;
 							}
 						}
+						// fallthrough
 
 					case HCLOCK_VBLANK_0:
 						goto VBlank0;
@@ -3358,6 +3416,7 @@ namespace Nes
 
 						regs.status = 0;
 						scanline = SCANLINE_HDUMMY;
+						// fallthrough
 
 					case HCLOCK_DUMMY+2:
 					case HCLOCK_DUMMY+4:
@@ -3525,6 +3584,7 @@ namespace Nes
 						if (cycles.count <= HCLOCK_DUMMY+318)
 							break;
 					}
+					// fallthrough
 
 					case HCLOCK_DUMMY+318:
 

@@ -251,9 +251,9 @@ namespace Nes
 
 					const byte data[3] =
 					{
-						irq.unit.count >> 15,
-						irq.unit.count >> 0 & 0xFF,
-						irq.unit.count >> 8 & 0x7F
+						static_cast<byte>(irq.unit.count >> 15),
+						static_cast<byte>(irq.unit.count >> 0 & 0xFF),
+						static_cast<byte>(irq.unit.count >> 8 & 0x7F)
 					};
 
 					state.Begin( AsciiId<'I','R','Q'>::V ).Write( data ).End();
@@ -414,6 +414,7 @@ namespace Nes
 							case 0x4:
 
 								channel.SetWaveLength( data );
+								// fallthrough
 
 							case 0x0:
 							case 0x2:

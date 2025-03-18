@@ -99,6 +99,7 @@ SOURCES_CXX += $(CORE_DIR)/source/core/board/NstBoardBmc22Games.cpp
 SOURCES_CXX += $(CORE_DIR)/source/core/board/NstBoardBmc31in1.cpp
 SOURCES_CXX += $(CORE_DIR)/source/core/board/NstBoardBmc35in1.cpp
 SOURCES_CXX += $(CORE_DIR)/source/core/board/NstBoardBmc36in1.cpp
+SOURCES_CXX += $(CORE_DIR)/source/core/board/NstBoardBmc60311c.cpp
 SOURCES_CXX += $(CORE_DIR)/source/core/board/NstBoardBmc64in1.cpp
 SOURCES_CXX += $(CORE_DIR)/source/core/board/NstBoardBmc72in1.cpp
 SOURCES_CXX += $(CORE_DIR)/source/core/board/NstBoardBmc76in1.cpp

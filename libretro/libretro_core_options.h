@@ -142,7 +142,8 @@ struct retro_core_option_v2_definition option_defs_us[] = {
       NULL,
       "video",
       {
-         { "cxa2025as",            "CXA2025AS" },
+         { "cxa2025as",            "CXA2025AS (US)" },
+         { "cxa2025as_jp",         "CXA2025AS (JP)" },
          { "royaltea",             "Royaltea" },
          { "consumer",             "Consumer" },
          { "canonical",            "Canonical" },
@@ -157,7 +158,7 @@ struct retro_core_option_v2_definition option_defs_us[] = {
          { "custom",               "Custom" },
          { NULL, NULL },
       },
-      "cxa2025as" /* TODO/FIXME - is this correct ? */
+      "cxa2025as"
    },
    {
       "nestopia_overscan_v_top",

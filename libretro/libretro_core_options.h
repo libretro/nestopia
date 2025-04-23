@@ -154,6 +154,8 @@ struct retro_core_option_v2_definition option_defs_us[] = {
          { "pvm-style-d93-fbx",    "PVM-style D93 FBX" },
          { "ntsc-hardware-fbx",    "NTSC hardware FBX" },
          { "nes-classic-fbx-fs",   "NES Classic FBx (fixed)" },
+         { "restored-wii-vc",      "Restored Wii VC" },
+         { "wii-vc",               "Wii Virtual Console" },
          { "raw",                  "Raw" },
          { "custom",               "Custom" },
          { NULL, NULL },

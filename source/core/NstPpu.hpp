@@ -424,8 +424,6 @@ namespace Nes
 			int scanline_sleep;
 			bool overclocked;
 
-		public:
-			Output output;
 		private:
 			PpuModel model;
 			Hook hActiveHook;
@@ -437,10 +435,11 @@ namespace Nes
 			NameTable nameTable;
 			const TileLut tileLut;
 			Video::Screen screen;
-
 			static const byte yuvMaps[4][0x40];
 
 		public:
+
+			Output output;
 
 			void Update()
 			{

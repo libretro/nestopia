@@ -30,8 +30,6 @@
 #define NES_PAL_PAR ((Api::Video::Output::WIDTH - (overscan_h_left + overscan_h_right)) * (2950000.0 / 2128137.0)) / (Api::Video::Output::HEIGHT - (overscan_v_top + overscan_v_bottom))
 #define NES_4_3_DAR (4.0 / 3.0);
 #define SAMPLERATE 48000
-#define FRAMERATE 60.098814
-#define FRAMERATE_PAL 50.006978
 
 #define RETRO_DEVICE_AUTO RETRO_DEVICE_JOYPAD
 #define RETRO_DEVICE_GAMEPAD RETRO_DEVICE_SUBCLASS(RETRO_DEVICE_JOYPAD, 0)
@@ -369,7 +367,7 @@ static void display_msg(enum retro_log_level level, unsigned duration, const cha
    }
    else
    {
-      float fps       = is_pal ? FRAMERATE_PAL : FRAMERATE;
+      float fps       = is_pal ? 50 : 60;
       unsigned frames = (unsigned)(((float)duration * fps / 1000.0f) + 0.5f);
       struct retro_message msg;
 
@@ -560,7 +558,7 @@ double get_aspect_ratio(void)
 
 void retro_get_system_av_info(struct retro_system_av_info *info)
 {
-   const retro_system_timing timing = { is_pal ? FRAMERATE_PAL : FRAMERATE, SAMPLERATE };
+   const retro_system_timing timing = { is_pal ? 50.0 : 60.0, SAMPLERATE };
    info->timing = timing;
 
    // It's better if the size is based on NTSC_WIDTH if the filter is on
@@ -1071,7 +1069,7 @@ static void check_variables(void)
       }
    }
    if (audio) delete audio;
-   audio = new Api::Sound::Output(audio_buffer, is_pal ? SAMPLERATE / FRAMERATE_PAL : SAMPLERATE / FRAMERATE);
+   audio = new Api::Sound::Output(audio_buffer, is_pal ? SAMPLERATE / 50 : SAMPLERATE / 60);
 
    var.key = "nestopia_genie_distortion";
 
@@ -1505,7 +1503,7 @@ void retro_run(void)
    if (show_crosshair == SHOW_CROSSHAIR_ON)
       draw_crosshair(crossx, crossy);
    
-   unsigned frames = is_pal ? SAMPLERATE / FRAMERATE_PAL : SAMPLERATE / FRAMERATE;
+   unsigned frames = is_pal ? SAMPLERATE / 50 : SAMPLERATE / 60;
    
    bool updated = false;
    if (environ_cb(RETRO_ENVIRONMENT_GET_VARIABLE_UPDATE, &updated) && updated)

@@ -1071,7 +1071,7 @@ static void check_variables(void)
       }
    }
    if (audio) delete audio;
-   audio = new Api::Sound::Output(audio_buffer, is_pal ? SAMPLERATE / 50 : SAMPLERATE / 60);
+   audio = new Api::Sound::Output(audio_buffer, is_pal ? SAMPLERATE / FRAMERATE_PAL : SAMPLERATE / FRAMERATE);
 
    var.key = "nestopia_genie_distortion";
 
@@ -1505,7 +1505,7 @@ void retro_run(void)
    if (show_crosshair == SHOW_CROSSHAIR_ON)
       draw_crosshair(crossx, crossy);
    
-   unsigned frames = is_pal ? SAMPLERATE / 50 : SAMPLERATE / 60;
+   unsigned frames = is_pal ? SAMPLERATE / FRAMERATE_PAL : SAMPLERATE / FRAMERATE;
    
    bool updated = false;
    if (environ_cb(RETRO_ENVIRONMENT_GET_VARIABLE_UPDATE, &updated) && updated)

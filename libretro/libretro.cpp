@@ -1497,7 +1497,6 @@ static void check_variables(void)
 
 static bool NST_CALLBACK nst_cb_videolock(void *udata, Api::Video::Output& video) {
     video.pixels = video_buffer;
-    video.pitch = Api::Video::Output::NTSC_WIDTH * sizeof(uint32_t);
 
     int dif = blargg_ntsc ? 9 : 4;
 

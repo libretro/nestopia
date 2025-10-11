@@ -1495,44 +1495,6 @@ static void check_variables(void)
   
 }
 
-static bool NST_CALLBACK nst_cb_videolock(void *udata, Api::Video::Output& video) {
-    video.pixels = video_buffer;
-
-    int dif = blargg_ntsc ? 9 : 4;
-
-    size_t vboffset = ((blargg_ntsc ? Api::Video::Output::NTSC_WIDTH : Api::Video::Output::WIDTH) * overscan_v_top) +
-        ((overscan_h_left * dif) / 4);
-
-    video_cb(video_buffer + vboffset,
-        video_width - (((overscan_h_left + overscan_h_right) * dif) / 4),
-        Api::Video::Output::HEIGHT - (overscan_v_top + overscan_v_bottom),
-        pitch);
-
-    return true;
-}
-
-static void NST_CALLBACK nst_cb_videounlock(void *udata, Api::Video::Output& video) {
-}
-
-static bool NST_CALLBACK nst_cb_soundlock(void* udata, Api::Sound::Output& sound) {
-    unsigned frames = is_pal ? SAMPLERATE / 50 : SAMPLERATE / 60;
-    // Use audio buffer untouched for stereo, duplicate samples for mono
-    if (Api::Sound(emulator).GetSpeaker() == Api::Sound::SPEAKER_MONO) {
-        for (unsigned i = 0; i < frames; i++) {
-            audio_stereo_buffer[i << 1] = audio_stereo_buffer[(i << 1) + 1] = audio_buffer[i];
-        }
-        audio_batch_cb(audio_stereo_buffer, frames);
-    }
-    else {
-        audio_batch_cb(audio_buffer, frames);
-    }
-
-    return true;
-}
-
-static void NST_CALLBACK nst_cb_soundunlock(void* udata, Api::Sound::Output& sound) {
-}
-
 void retro_run(void)
 {
    poll_fds_buttons();
@@ -1541,6 +1503,8 @@ void retro_run(void)
    if (show_crosshair == SHOW_CROSSHAIR_ON)
       draw_crosshair(crossx, crossy);
    
+   unsigned frames = is_pal ? SAMPLERATE / 50 : SAMPLERATE / 60;
+
    bool updated = false;
    if (environ_cb(RETRO_ENVIRONMENT_GET_VARIABLE_UPDATE, &updated) && updated)
    {
@@ -1549,6 +1513,27 @@ void retro_run(void)
       video = 0;
       video = new Api::Video::Output(video_buffer, video_width * sizeof(uint32_t));
    }
+
+   video->pixels = video_buffer;
+   int dif = blargg_ntsc ? 9 : 4;
+
+   size_t vboffset = ((blargg_ntsc ? Api::Video::Output::NTSC_WIDTH : Api::Video::Output::WIDTH) * overscan_v_top) +
+      ((overscan_h_left * dif) / 4);
+
+   video_cb(video_buffer + vboffset,
+      video_width - (((overscan_h_left + overscan_h_right) * dif) / 4),
+      Api::Video::Output::HEIGHT - (overscan_v_top + overscan_v_bottom),
+      pitch);
+
+   // Use audio buffer untouched for stereo, duplicate samples for mono
+   if (Api::Sound(emulator).GetSpeaker() == Api::Sound::SPEAKER_MONO) 
+   {
+      for (unsigned i = 0; i < frames; i++)
+         audio_stereo_buffer[i << 1] = audio_stereo_buffer[(i << 1) + 1] = audio_buffer[i];
+      audio_batch_cb(audio_stereo_buffer, frames);
+   }
+   else
+      audio_batch_cb(audio_buffer, frames);
 }
 
 static void extract_basename(char *buf, const char *path, size_t size)
@@ -1811,12 +1796,6 @@ bool retro_load_game(const struct retro_game_info *info)
    Api::Input::Controllers::Zapper::callback.Set(&zapper_callback, NULL);
 
    Api::User::eventCallback.Set(nst_cb_event, 0);
-
-   Api::Sound::Output::lockCallback.Set(nst_cb_soundlock, NULL);
-   Api::Sound::Output::unlockCallback.Set(nst_cb_soundunlock, NULL);
-
-   Api::Video::Output::lockCallback.Set(nst_cb_videolock, NULL);
-   Api::Video::Output::unlockCallback.Set(nst_cb_videounlock, NULL);
 
    machine->Power(true);
 

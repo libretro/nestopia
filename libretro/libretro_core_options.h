@@ -114,6 +114,21 @@ struct retro_core_option_v2_definition option_defs_us[] = {
       },
       "enabled"
    },
+   {
+      "nestopia_fds_savefile_format",
+      "FDS Savefile Format",
+      NULL,
+      "Define which format will be used by savefiles generated for FDS games. Based on the format chosen, FDS savefiles might be used interchangeably with other cores. It is recommended to use with caution, as improper handling may cause undesired overwrites, or deletion of the existing saves.",
+      NULL,
+      "system",
+      {
+         { "sav_ups", "SAV + UPS (Default)" },
+         { "sav_ips", "SAV + IPS" },
+         { "ips",     "IPS (Mesen)" },
+         { NULL, NULL },
+      },
+      "sav_ups"
+   },
 
 /* Video */
 

@@ -103,6 +103,16 @@ static bool is_pal;
 static byte custpal[64*3];
 static char slash;
 
+static enum {
+   FDS_SAVEFILE_SAV_UPS = 0,
+   FDS_SAVEFILE_SAV_IPS,
+   FDS_SAVEFILE_IPS,
+} fds_savefile_format;
+static bool fds_sav_extension;
+static bool fds_ips_extension;
+static bool fds_patch_format_ups;
+static bool fds_patch_format_ips;
+
 static const byte royaltea_palette[64][3] =
 {
    {0x5A,0x61,0x65}, {0x00,0x23,0xA8}, {0x0F,0x17,0xB0}, {0x28,0x12,0x9F},
@@ -421,9 +431,14 @@ static void NST_CALLBACK file_io_callback(void*, Api::User::File &file)
       case Api::User::File::LOAD_FDS:
          {
             char base[256];
-            sprintf(base, "%s%c%s.sav", g_save_dir, slash, g_basename);
+            char ext[8];
+            if (fds_sav_extension)
+               strcpy(ext, ".sav");
+            else if (fds_ips_extension)
+               strcpy(ext, ".ips");
+            sprintf(base, "%s%c%s%s", g_save_dir, slash, g_basename, ext);
             if (log_cb)
-               log_cb(RETRO_LOG_INFO, "Want to load FDS sav from: %s\n", base);
+               log_cb(RETRO_LOG_INFO, "Want to load FDS savefile using %s extension from: %s\n", ext, base);
             std::ifstream in_tmp(base,std::ifstream::in|std::ifstream::binary);
 
             if (!in_tmp.is_open())
@@ -435,13 +450,20 @@ static void NST_CALLBACK file_io_callback(void*, Api::User::File &file)
       case Api::User::File::SAVE_FDS:
          {
             char base[256];
-            sprintf(base, "%s%c%s.sav", g_save_dir, slash, g_basename);
+            char ext[8];
+            if (fds_sav_extension)
+               strcpy(ext, ".sav");
+            else if (fds_ips_extension)
+               strcpy(ext, ".ips");
+            sprintf(base, "%s%c%s%s", g_save_dir, slash, g_basename, ext);
             if (log_cb)
-               log_cb(RETRO_LOG_INFO, "Want to save FDS sav to: %s\n", base);
+               log_cb(RETRO_LOG_INFO, "Want to save FDS savefile using %s extension to: %s\n", ext, base);
             std::ofstream out_tmp(base,std::ifstream::out|std::ifstream::binary);
 
-            if (out_tmp.is_open())
+            if ((out_tmp.is_open()) && (fds_patch_format_ups))
                file.GetPatchContent(Api::User::File::PATCH_UPS, out_tmp);
+            else if ((out_tmp.is_open()) && (fds_patch_format_ips))
+               file.GetPatchContent(Api::User::File::PATCH_IPS, out_tmp);
          }
          break;
       default:
@@ -1117,7 +1139,28 @@ static void check_variables(void)
 
    if (environ_cb(RETRO_ENVIRONMENT_GET_VARIABLE, &var))
       fds_auto_insert = (strcmp(var.value, "enabled") == 0);
-   
+
+   var.key = "nestopia_fds_savefile_format";
+
+   if (environ_cb(RETRO_ENVIRONMENT_GET_VARIABLE, &var))
+   {
+      if (strcmp(var.value, "sav_ups") == 0)
+         fds_savefile_format = FDS_SAVEFILE_SAV_UPS;
+      else if (strcmp(var.value, "sav_ips") == 0)
+         fds_savefile_format = FDS_SAVEFILE_SAV_IPS;
+      else if (strcmp(var.value, "ips") == 0)
+         fds_savefile_format = FDS_SAVEFILE_IPS;
+
+      /* FDS savefile format checks are positioned here to allow changes at runtime.
+       * This makes it possible to convert any savefile currently in use to the preferred format.*/
+      fds_sav_extension = ((fds_savefile_format == FDS_SAVEFILE_SAV_UPS) ||
+                           (fds_savefile_format == FDS_SAVEFILE_SAV_IPS));
+      fds_ips_extension = (fds_savefile_format == FDS_SAVEFILE_IPS);
+      fds_patch_format_ups = (fds_savefile_format == FDS_SAVEFILE_SAV_UPS);
+      fds_patch_format_ips = ((fds_savefile_format == FDS_SAVEFILE_SAV_IPS) ||
+                              (fds_savefile_format == FDS_SAVEFILE_IPS));
+   }
+
    var.key = "nestopia_blargg_ntsc_filter";
 
    if (environ_cb(RETRO_ENVIRONMENT_GET_VARIABLE, &var))

@@ -430,16 +430,16 @@ static void NST_CALLBACK file_io_callback(void*, Api::User::File &file)
          break;
       case Api::User::File::LOAD_FDS:
          {
-            char base[256];
-            char ext[8];
+            std::string base;
+            std::string ext;
             if (fds_sav_extension)
-               strcpy(ext, ".sav");
+               ext = ".sav";
             else if (fds_ips_extension)
-               strcpy(ext, ".ips");
-            sprintf(base, "%s%c%s%s", g_save_dir, slash, g_basename, ext);
+               ext = ".ips";
+            base = std::string(g_save_dir) + slash + g_basename + ext;
             if (log_cb)
-               log_cb(RETRO_LOG_INFO, "Want to load FDS savefile using %s extension from: %s\n", ext, base);
-            std::ifstream in_tmp(base,std::ifstream::in|std::ifstream::binary);
+               log_cb(RETRO_LOG_INFO, "Want to load FDS savefile using %s extension from: %s\n", ext.c_str(), base.c_str());
+            std::ifstream in_tmp(base.c_str(),std::ifstream::in|std::ifstream::binary);
 
             if (!in_tmp.is_open())
                return;
@@ -449,16 +449,16 @@ static void NST_CALLBACK file_io_callback(void*, Api::User::File &file)
          break;
       case Api::User::File::SAVE_FDS:
          {
-            char base[256];
-            char ext[8];
+            std::string base;
+            std::string ext;
             if (fds_sav_extension)
-               strcpy(ext, ".sav");
+               ext = ".sav";
             else if (fds_ips_extension)
-               strcpy(ext, ".ips");
-            sprintf(base, "%s%c%s%s", g_save_dir, slash, g_basename, ext);
+               ext = ".ips";
+            base = std::string(g_save_dir) + slash + g_basename + ext;
             if (log_cb)
-               log_cb(RETRO_LOG_INFO, "Want to save FDS savefile using %s extension to: %s\n", ext, base);
-            std::ofstream out_tmp(base,std::ifstream::out|std::ifstream::binary);
+               log_cb(RETRO_LOG_INFO, "Want to save FDS savefile using %s extension to: %s\n", ext.c_str(), base.c_str());
+            std::ofstream out_tmp(base.c_str(),std::ifstream::out|std::ifstream::binary);
 
             if ((out_tmp.is_open()) && (fds_patch_format_ups))
                file.GetPatchContent(Api::User::File::PATCH_UPS, out_tmp);

@@ -1234,24 +1234,20 @@ static void check_variables(void)
    }
 
    var.key = "nestopia_overscan_v_top"; // Mask Overscan (Top Vertical)
-   if (environ_cb(RETRO_ENVIRONMENT_GET_VARIABLE, &var)) {
+   if (environ_cb(RETRO_ENVIRONMENT_GET_VARIABLE, &var))
       overscan_v_top = atoi(var.value);
-   }
 
    var.key = "nestopia_overscan_v_bottom"; // Mask Overscan (Bottom Vertical)
-   if (environ_cb(RETRO_ENVIRONMENT_GET_VARIABLE, &var)) {
+   if (environ_cb(RETRO_ENVIRONMENT_GET_VARIABLE, &var))
       overscan_v_bottom = atoi(var.value);
-   }
 
    var.key = "nestopia_overscan_h_left"; // Mask Overscan (Left Horizontal)
-   if (environ_cb(RETRO_ENVIRONMENT_GET_VARIABLE, &var)) {
+   if (environ_cb(RETRO_ENVIRONMENT_GET_VARIABLE, &var))
       overscan_h_left = atoi(var.value);
-   }
 
    var.key = "nestopia_overscan_h_right"; // Mask Overscan (Right Horizontal)
-   if (environ_cb(RETRO_ENVIRONMENT_GET_VARIABLE, &var)) {
+   if (environ_cb(RETRO_ENVIRONMENT_GET_VARIABLE, &var))
       overscan_h_right = atoi(var.value);
-   }
 
    var.key = "nestopia_aspect"; // Preferred Aspect Ratio
    if (environ_cb(RETRO_ENVIRONMENT_GET_VARIABLE, &var) && var.value)

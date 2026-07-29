@@ -855,7 +855,6 @@ static void poll_fds_buttons()
       bool pressed_r = pad_state[0] & (1 << RETRO_DEVICE_ID_JOYPAD_R);
 
       bool curL         = pressed_l;
-      static bool prevL = false;
 
       if (curL && !prevL)
       {
@@ -874,7 +873,6 @@ static void poll_fds_buttons()
       prevL = curL;
 
       bool curR         = pressed_r;
-      static bool prevR = false;
 
       if (curR && !prevR && (fds->GetNumDisks() > 1))
       {

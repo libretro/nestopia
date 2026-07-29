@@ -8,6 +8,9 @@
 #include <sstream>
 
 #include <streams/file_stream.h>
+#include <file/file_path.h>
+#include <compat/strl.h>
+#include <retro_miscellaneous.h>
 
 #include "../source/core/api/NstApiMachine.hpp"
 #include "../source/core/api/NstApiEmulator.hpp"
@@ -26,8 +29,6 @@
 
 #define NST_VERSION "1.53.2"
 
-#define MIN(a,b)      ((a)<(b)?(a):(b))
-#define MAX(a,b)      ((a)>(b)?(a):(b))
 #define NES_NTSC_PAR ((Api::Video::Output::WIDTH - (overscan_h_left + overscan_h_right)) * (8.0 / 7.0)) / (Api::Video::Output::HEIGHT - (overscan_v_top + overscan_v_bottom))
 #define NES_PAL_PAR ((Api::Video::Output::WIDTH - (overscan_h_left + overscan_h_right)) * (2950000.0 / 2128137.0)) / (Api::Video::Output::HEIGHT - (overscan_v_top + overscan_v_bottom))
 #define NES_4_3_DAR (4.0 / 3.0);
@@ -62,7 +63,7 @@ static Api::Fds *fds;
 static char g_basename[256];
 static char g_rom_dir[256];
 static char *g_save_dir;
-static char samp_dir[256];
+static char samp_dir[PATH_MAX_LENGTH];
 static unsigned blargg_ntsc;
 static bool fds_auto_insert;
 static int arkanoid_paddle_min = 0;
@@ -103,7 +104,6 @@ static void *sram;
 static unsigned long sram_size;
 static bool is_pal;
 static byte custpal[64*3];
-static char slash;
 
 static enum {
    FDS_SAVEFILE_SAV_UPS = 0,
@@ -143,7 +143,9 @@ void draw_crosshair(int x, int y)
 
 static void load_wav(const char* sampgame, Api::User::File& file)
 {
-   char samp_path[292];
+   char game_dir[PATH_MAX_LENGTH];
+   char samp_path[PATH_MAX_LENGTH];
+   char samp_name[16];
    int64_t length = 0;
    int blockalign = 0;
    int numchannels = 0;
@@ -153,7 +155,9 @@ static void load_wav(const char* sampgame, Api::User::File& file)
    char *wavfile = NULL;
    char *dataptr;
 
-   sprintf(samp_path, "%s%c%s%c%02d.wav", samp_dir, slash, sampgame, slash, file.GetId());
+   fill_pathname_join_special(game_dir, samp_dir, sampgame, sizeof(game_dir));
+   snprintf(samp_name, sizeof(samp_name), "%02u.wav", file.GetId());
+   fill_pathname_join_special(samp_path, game_dir, samp_name, sizeof(samp_path));
    if (log_cb)
       log_cb(RETRO_LOG_INFO, "samp_path: %s\n", samp_path);
 
@@ -235,12 +239,6 @@ static void NST_CALLBACK file_io_callback(void*, Api::User::File &file)
    const void *addr;
    unsigned long addr_size;
 
-#ifdef _WIN32
-   slash = '\\';
-#else
-   slash = '/';
-#endif
-
    switch (file.GetAction())
    {
       case Api::User::File::LOAD_SAMPLE_MOERO_PRO_YAKYUU:
@@ -272,8 +270,10 @@ static void NST_CALLBACK file_io_callback(void*, Api::User::File &file)
          break;
       case Api::User::File::LOAD_FDS:
          {
-            std::string base;
-            std::string ext;
+            char base[PATH_MAX_LENGTH];
+            const char *ext      = "";
+            const char *save_dir = (g_save_dir && *g_save_dir)
+                  ? g_save_dir : g_rom_dir;
             char *patch_data     = NULL;
             int64_t patch_size   = 0;
             if (fds_sav_extension)
@@ -282,11 +282,12 @@ static void NST_CALLBACK file_io_callback(void*, Api::User::File &file)
                ext = ".ups";
             else if (fds_ips_extension)
                ext = ".ips";
-            base = std::string(g_save_dir) + slash + g_basename + ext;
+            fill_pathname_join_special(base, save_dir, g_basename, sizeof(base));
+            strlcat(base, ext, sizeof(base));
             if (log_cb)
-               log_cb(RETRO_LOG_INFO, "Want to load FDS savefile using %s extension from: %s\n", ext.c_str(), base.c_str());
+               log_cb(RETRO_LOG_INFO, "Want to load FDS savefile using %s extension from: %s\n", ext, base);
 
-            if (!filestream_read_file(base.c_str(), (void**)&patch_data, &patch_size))
+            if (!filestream_read_file(base, (void**)&patch_data, &patch_size))
                return;
 
             {
@@ -300,8 +301,10 @@ static void NST_CALLBACK file_io_callback(void*, Api::User::File &file)
          break;
       case Api::User::File::SAVE_FDS:
          {
-            std::string base;
-            std::string ext;
+            char base[PATH_MAX_LENGTH];
+            const char *ext      = "";
+            const char *save_dir = (g_save_dir && *g_save_dir)
+                  ? g_save_dir : g_rom_dir;
             Result result = RESULT_ERR_GENERIC;
             std::ostringstream out_tmp(
                   std::ostringstream::out | std::ostringstream::binary);
@@ -311,9 +314,10 @@ static void NST_CALLBACK file_io_callback(void*, Api::User::File &file)
                ext = ".ups";
             else if (fds_ips_extension)
                ext = ".ips";
-            base = std::string(g_save_dir) + slash + g_basename + ext;
+            fill_pathname_join_special(base, save_dir, g_basename, sizeof(base));
+            strlcat(base, ext, sizeof(base));
             if (log_cb)
-               log_cb(RETRO_LOG_INFO, "Want to save FDS savefile using %s extension to: %s\n", ext.c_str(), base.c_str());
+               log_cb(RETRO_LOG_INFO, "Want to save FDS savefile using %s extension to: %s\n", ext, base);
 
             if (fds_patch_format_ups)
                result = file.GetPatchContent(Api::User::File::PATCH_UPS, out_tmp);
@@ -323,7 +327,7 @@ static void NST_CALLBACK file_io_callback(void*, Api::User::File &file)
             if (NES_SUCCEEDED(result))
             {
                const std::string patch = out_tmp.str();
-               filestream_write_file(base.c_str(), patch.data(), (int64_t)patch.size());
+               filestream_write_file(base, patch.data(), (int64_t)patch.size());
             }
          }
          break;
@@ -1473,15 +1477,9 @@ static void extract_directory(char *buf, const char *path, size_t size)
 bool retro_load_game(const struct retro_game_info *info)
 {
    const char *dir;
-   char slash;
-   char db_path[256];
-   char palette_path[256];
-   
-#if defined(_WIN32)
-   slash = '\\';
-#else
-   slash = '/';
-#endif
+   char nestopia_dir[PATH_MAX_LENGTH];
+   char db_path[PATH_MAX_LENGTH];
+   char palette_path[PATH_MAX_LENGTH];
 
    struct retro_input_descriptor desc[] = {
       { 0, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_LEFT,  "D-Pad Left" },
@@ -1557,9 +1555,10 @@ bool retro_load_game(const struct retro_game_info *info)
    if (!environ_cb(RETRO_ENVIRONMENT_GET_SYSTEM_DIRECTORY, &dir) || !dir)
       return false;
 
-   sprintf(samp_dir, "%s%cnestopia%csamples", dir, slash, slash);
+   fill_pathname_join_special(nestopia_dir, dir, "nestopia", sizeof(nestopia_dir));
+   fill_pathname_join_special(samp_dir, nestopia_dir, "samples", sizeof(samp_dir));
 
-   sprintf(palette_path, "%s%ccustom.pal", dir, slash);
+   fill_pathname_join_special(palette_path, dir, "custom.pal", sizeof(palette_path));
 
    if (log_cb)
       log_cb(RETRO_LOG_INFO, "Custom palette path: %s\n", palette_path);
@@ -1581,7 +1580,7 @@ bool retro_load_game(const struct retro_game_info *info)
          log_cb(RETRO_LOG_INFO, "custom.pal not found in system directory.\n");
    }
 
-   sprintf(db_path, "%s%cNstDatabase.xml", dir, slash);
+   fill_pathname_join_special(db_path, dir, "NstDatabase.xml", sizeof(db_path));
 
    if (log_cb)
       log_cb(RETRO_LOG_INFO, "NstDatabase.xml path: %s\n", db_path);
@@ -1635,12 +1634,12 @@ bool retro_load_game(const struct retro_game_info *info)
 
       if (fds)
       {
-         char fds_bios_path[256];
+         char fds_bios_path[PATH_MAX_LENGTH];
          char *bios_data     = NULL;
          int64_t bios_size   = 0;
 
          /* search for BIOS in system directory */
-         sprintf(fds_bios_path, "%s%cdisksys.rom", dir, slash);
+         fill_pathname_join_special(fds_bios_path, dir, "disksys.rom", sizeof(fds_bios_path));
          if (log_cb)
             log_cb(RETRO_LOG_INFO, "FDS BIOS path: %s\n", fds_bios_path);
 

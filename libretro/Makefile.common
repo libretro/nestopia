@@ -10,6 +10,7 @@ SOURCES_C =
 
 SOURCES_C += $(LIBRETRO_COMM_DIR)/compat/compat_posix_string.c
 SOURCES_C += $(LIBRETRO_COMM_DIR)/compat/compat_strcasestr.c
+SOURCES_C += $(LIBRETRO_COMM_DIR)/compat/compat_snprintf.c
 SOURCES_C += $(LIBRETRO_COMM_DIR)/compat/compat_strl.c
 SOURCES_C += $(LIBRETRO_COMM_DIR)/compat/fopen_utf8.c
 SOURCES_C += $(LIBRETRO_COMM_DIR)/encodings/encoding_utf.c

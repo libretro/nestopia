@@ -14,6 +14,7 @@ SOURCES_C += $(LIBRETRO_COMM_DIR)/compat/compat_strl.c
 SOURCES_C += $(LIBRETRO_COMM_DIR)/compat/fopen_utf8.c
 SOURCES_C += $(LIBRETRO_COMM_DIR)/encodings/encoding_utf.c
 SOURCES_C += $(LIBRETRO_COMM_DIR)/file/file_path.c
+SOURCES_C += $(LIBRETRO_COMM_DIR)/file/file_path_io.c
 SOURCES_C += $(LIBRETRO_COMM_DIR)/streams/file_stream.c
 SOURCES_C += $(LIBRETRO_COMM_DIR)/time/rtime.c
 SOURCES_C += $(LIBRETRO_COMM_DIR)/vfs/vfs_implementation.c

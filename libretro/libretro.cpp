@@ -156,7 +156,11 @@ static void load_wav(const char* sampgame, Api::User::File& file)
    char *dataptr;
 
    fill_pathname_join_special(game_dir, samp_dir, sampgame, sizeof(game_dir));
-   snprintf(samp_name, sizeof(samp_name), "%02u.wav", file.GetId());
+   /* sprintf rather than snprintf: newlib hides the C99 snprintf
+    * declaration under -std=c++98 (psl1ght).  Bounded by construction:
+    * "%02u.wav" of a 32-bit unsigned is at most 10 + 4 characters,
+    * 15 bytes with the terminator, and samp_name holds 16. */
+   sprintf(samp_name, "%02u.wav", file.GetId());
    fill_pathname_join_special(samp_path, game_dir, samp_name, sizeof(samp_path));
    if (log_cb)
       log_cb(RETRO_LOG_INFO, "samp_path: %s\n", samp_path);

@@ -593,6 +593,68 @@ static keymap bindmap_shifted[] = {
 
 static keymap *bindmap = bindmap_default;
 
+/* Input snapshot, captured exactly once per retro_run.
+ *
+ * Nestopia invokes the controller callbacks below from inside
+ * emulator.Execute(), once per hardware controller strobe.  A game may
+ * strobe zero or several times per frame, so polling and reading the
+ * frontend from those callbacks calls retro_input_poll_t an arbitrary
+ * number of times per frame and can observe several different input
+ * states within a single video frame.  Everything is sampled here
+ * instead; the callbacks only consume the snapshot. */
+static int16_t pad_state[4];
+static int16_t aux_mouse_dx, aux_mouse_dy;
+static int16_t aux_mouse_left;
+static int16_t aux_pointer_x, aux_pointer_y, aux_pointer_pressed;
+static int16_t aux_gun_x, aux_gun_y;
+static int16_t aux_gun_trigger, aux_gun_reload, aux_gun_offscreen;
+
+static void update_input_snapshot(void)
+{
+   unsigned p;
+
+   input_poll_cb();
+
+   for (p = 0; p < 4; p++)
+   {
+      if (libretro_supports_bitmasks)
+         pad_state[p] = input_state_cb(p, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_MASK);
+      else
+      {
+         int16_t ret = 0;
+         for (unsigned i = 0; i < (RETRO_DEVICE_ID_JOYPAD_R3 + 1); i++)
+            ret |= input_state_cb(p, RETRO_DEVICE_JOYPAD, 0, i) ? (1 << i) : 0;
+         pad_state[p] = ret;
+      }
+
+      /* A/B turbo cadence advances once per video frame, not once per
+       * controller strobe. */
+      if (tstate[p]) tstate[p]--; else tstate[p] = tpulse;
+   }
+
+   aux_mouse_dx        = input_state_cb(1, RETRO_DEVICE_MOUSE, 0, RETRO_DEVICE_ID_MOUSE_X);
+   aux_mouse_dy        = input_state_cb(1, RETRO_DEVICE_MOUSE, 0, RETRO_DEVICE_ID_MOUSE_Y);
+   aux_mouse_left      = input_state_cb(1, RETRO_DEVICE_MOUSE, 0, RETRO_DEVICE_ID_MOUSE_LEFT);
+   aux_pointer_x       = input_state_cb(1, RETRO_DEVICE_POINTER, 0, RETRO_DEVICE_ID_POINTER_X);
+   aux_pointer_y       = input_state_cb(1, RETRO_DEVICE_POINTER, 0, RETRO_DEVICE_ID_POINTER_Y);
+   aux_pointer_pressed = input_state_cb(1, RETRO_DEVICE_POINTER, 0, RETRO_DEVICE_ID_POINTER_PRESSED);
+   aux_gun_offscreen   = input_state_cb(1, RETRO_DEVICE_LIGHTGUN, 0, RETRO_DEVICE_ID_LIGHTGUN_IS_OFFSCREEN);
+   aux_gun_x           = input_state_cb(1, RETRO_DEVICE_LIGHTGUN, 0, RETRO_DEVICE_ID_LIGHTGUN_SCREEN_X);
+   aux_gun_y           = input_state_cb(1, RETRO_DEVICE_LIGHTGUN, 0, RETRO_DEVICE_ID_LIGHTGUN_SCREEN_Y);
+   aux_gun_trigger     = input_state_cb(1, RETRO_DEVICE_LIGHTGUN, 0, RETRO_DEVICE_ID_LIGHTGUN_TRIGGER);
+   aux_gun_reload      = input_state_cb(1, RETRO_DEVICE_LIGHTGUN, 0, RETRO_DEVICE_ID_LIGHTGUN_RELOAD);
+}
+
+/* Consume the frame's relative mouse motion exactly once, however many
+ * times the game strobes a mouse-driven controller this frame. */
+static void take_mouse_delta(int *dx, int *dy)
+{
+   if (dx) *dx = aux_mouse_dx;
+   if (dy) *dy = aux_mouse_dy;
+   aux_mouse_dx = 0;
+   aux_mouse_dy = 0;
+}
+
 static void NST_CALLBACK nst_cb_event(void *userdata, Api::User::Event event, const void *data) {
    // Handle special events
    switch (event) {
@@ -611,20 +673,10 @@ static void NST_CALLBACK nst_cb_event(void *userdata, Api::User::Event event, co
 
 static bool NST_CALLBACK gamepad_callback(Api::Base::UserData data, Core::Input::Controllers::Pad& pad, unsigned int port)
 {
-   input_poll_cb();
-
    bool pressed_l3        = false;
 
    uint buttons = 0;
-   int16_t ret = 0;
-
-   if (libretro_supports_bitmasks)
-      ret = input_state_cb(port, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_MASK);
-   else
-   {
-      for (unsigned i = 0; i < (RETRO_DEVICE_ID_JOYPAD_R3 + 1); i++)
-         ret |= input_state_cb(port, RETRO_DEVICE_JOYPAD, 0, i) ? (1 << i) : 0;
-   }
+   int16_t ret = pad_state[port];
 
    for (unsigned bind = 0; bind < sizeof(bindmap_default) / sizeof(bindmap[0]); bind++)
       buttons |= (ret & (1 << bindmap[bind].retro)) ? bindmap[bind].nes : 0;
@@ -642,8 +694,6 @@ static bool NST_CALLBACK gamepad_callback(Api::Base::UserData data, Core::Input:
       pressed_l3       = ret & (1 << RETRO_DEVICE_ID_JOYPAD_L3);
    }
 
-   if (tstate[port]) tstate[port]--; else tstate[port] = tpulse;
-
    if (pressed_l3)
       buttons = pad.mic | 0x04;
    pad.mic = buttons;
@@ -653,8 +703,6 @@ static bool NST_CALLBACK gamepad_callback(Api::Base::UserData data, Core::Input:
 
 static bool NST_CALLBACK arkanoid_callback(Api::Base::UserData data, Core::Input::Controllers::Paddle& paddle)
 {
-   input_poll_cb();
-
    int min_x = overscan_h_left;
    int max_x = 255 - overscan_h_right;
 
@@ -663,15 +711,19 @@ static bool NST_CALLBACK arkanoid_callback(Api::Base::UserData data, Core::Input
    switch (arkanoid_device)
    {
       case ARKANOID_DEVICE_MOUSE:
+      {
+         int dx;
          min_x = arkanoid_paddle_min;
          max_x = arkanoid_paddle_max;
-         cur_x += input_state_cb(1, RETRO_DEVICE_MOUSE, 0, RETRO_DEVICE_ID_MOUSE_X);
-         button = input_state_cb(1, RETRO_DEVICE_MOUSE, 0, RETRO_DEVICE_ID_MOUSE_LEFT);
+         take_mouse_delta(&dx, NULL);
+         cur_x += dx;
+         button = aux_mouse_left;
          break;
+      }
       case ARKANOID_DEVICE_POINTER:
-         cur_x = input_state_cb(1, RETRO_DEVICE_POINTER, 0, RETRO_DEVICE_ID_POINTER_X);
+         cur_x = aux_pointer_x;
          cur_x = (cur_x + 0x7FFF) * max_x / (0x7FFF * 2);
-         button = input_state_cb(1, RETRO_DEVICE_POINTER, 0, RETRO_DEVICE_ID_POINTER_PRESSED);
+         button = aux_pointer_pressed;
          break;
    }
 
@@ -687,18 +739,8 @@ static bool NST_CALLBACK arkanoid_callback(Api::Base::UserData data, Core::Input
 
 static bool NST_CALLBACK vssystem_callback(Api::Base::UserData data, Core::Input::Controllers::VsSystem& vsSystem)
 {
-   input_poll_cb();
-
    uint buttons = 0;
-   int16_t ret = 0;
-
-   if (libretro_supports_bitmasks)
-      ret = input_state_cb(0, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_MASK);
-   else
-   {
-      for (unsigned i = RETRO_DEVICE_ID_JOYPAD_L2; i < (RETRO_DEVICE_ID_JOYPAD_R2 + 1); i++)
-         ret |= input_state_cb(0, RETRO_DEVICE_JOYPAD, 0, i) ? (1 << i) : 0;
-   }
+   int16_t ret = pad_state[0];
 
    if (ret & (1 << RETRO_DEVICE_ID_JOYPAD_L2))
       buttons |= Core::Input::Controllers::VsSystem::COIN_1;
@@ -713,8 +755,6 @@ static bool NST_CALLBACK vssystem_callback(Api::Base::UserData data, Core::Input
 
 static bool NST_CALLBACK zapper_callback(Api::Base::UserData data, Core::Input::Controllers::Zapper& zapper)
 {
-   input_poll_cb();
-
    int min_x = overscan_h_left;
    int max_x = 255 - overscan_h_right;
    int min_y = overscan_v_top;
@@ -728,10 +768,10 @@ static bool NST_CALLBACK zapper_callback(Api::Base::UserData data, Core::Input::
    switch (zapper_device)
    {
       case ZAPPER_DEVICE_LIGHTGUN:
-         if (!input_state_cb(1, RETRO_DEVICE_LIGHTGUN, 0, RETRO_DEVICE_ID_LIGHTGUN_IS_OFFSCREEN))
+         if (!aux_gun_offscreen)
          {
-            cur_x = input_state_cb(1, RETRO_DEVICE_LIGHTGUN, 0, RETRO_DEVICE_ID_LIGHTGUN_SCREEN_X);
-            cur_y = input_state_cb(1, RETRO_DEVICE_LIGHTGUN, 0, RETRO_DEVICE_ID_LIGHTGUN_SCREEN_Y);
+            cur_x = aux_gun_x;
+            cur_y = aux_gun_y;
 
             cur_x = cur_x != 0 ? (cur_x + 0x7FFF) * max_x / (0x7FFF * 2) : crossx;
             cur_y = cur_y != 0 ? (cur_y + 0x7FFF) * max_y / (0x7FFF * 2) : crossy;
@@ -742,20 +782,23 @@ static bool NST_CALLBACK zapper_callback(Api::Base::UserData data, Core::Input::
             cur_y = min_y;
          }
 
-         if (input_state_cb(1, RETRO_DEVICE_LIGHTGUN, 0, RETRO_DEVICE_ID_LIGHTGUN_TRIGGER)) {
+         if (aux_gun_trigger) {
             zapper.x = cur_x;
             zapper.y = cur_y;
             zapper.fire = 1;
          }
 
-         if (input_state_cb(1, RETRO_DEVICE_LIGHTGUN, 0, RETRO_DEVICE_ID_LIGHTGUN_RELOAD)) {
+         if (aux_gun_reload) {
             zapper.x = ~1U;
             zapper.fire = 1;
          }
          break;
       case ZAPPER_DEVICE_MOUSE:
-         cur_x += input_state_cb(1, RETRO_DEVICE_MOUSE, 0, RETRO_DEVICE_ID_MOUSE_X);
-         cur_y += input_state_cb(1, RETRO_DEVICE_MOUSE, 0, RETRO_DEVICE_ID_MOUSE_Y);
+      {
+         int dx, dy;
+         take_mouse_delta(&dx, &dy);
+         cur_x += dx;
+         cur_y += dy;
 
          if (cur_x < min_x)
             cur_x = min_x;
@@ -767,21 +810,22 @@ static bool NST_CALLBACK zapper_callback(Api::Base::UserData data, Core::Input::
          else if (cur_y > max_y)
             cur_y = max_y;
 
-         if (input_state_cb(1, RETRO_DEVICE_MOUSE, 0, RETRO_DEVICE_ID_MOUSE_LEFT))
+         if (aux_mouse_left)
          {
             zapper.x = cur_x;
             zapper.y = cur_y;
             zapper.fire = 1;
          }
          break;
+      }
       case ZAPPER_DEVICE_POINTER:
-         cur_x = input_state_cb(1, RETRO_DEVICE_POINTER, 0, RETRO_DEVICE_ID_POINTER_X);
-         cur_y = input_state_cb(1, RETRO_DEVICE_POINTER, 0, RETRO_DEVICE_ID_POINTER_Y);
+         cur_x = aux_pointer_x;
+         cur_y = aux_pointer_y;
 
          cur_x = cur_x != 0 ? (cur_x + 0x7FFF) * max_x / (0x7FFF * 2) : crossx;
          cur_y = cur_y != 0 ? (cur_y + 0x7FFF) * max_y / (0x7FFF * 2) : crossy;
 
-         if (input_state_cb(1, RETRO_DEVICE_POINTER, 0, RETRO_DEVICE_ID_POINTER_PRESSED))
+         if (aux_pointer_pressed)
          {
             zapper.x = cur_x;
             zapper.y = cur_y;
@@ -807,23 +851,8 @@ static void poll_fds_buttons()
 {
    if (machine->Is(Nes::Api::Machine::DISK))
    {
-      input_poll_cb();
-
-      bool pressed_l         = false;
-      bool pressed_r         = false;
-
-      int16_t ret = 0;
-      if (libretro_supports_bitmasks)
-      {
-         ret = input_state_cb(0, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_MASK);
-         pressed_l           = ret & (1 << RETRO_DEVICE_ID_JOYPAD_L);
-         pressed_r           = ret & (1 << RETRO_DEVICE_ID_JOYPAD_R);
-      }
-      else
-      {
-         pressed_l           = input_state_cb(0, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_L);
-         pressed_r           = input_state_cb(0, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_R);
-      }
+      bool pressed_l = pad_state[0] & (1 << RETRO_DEVICE_ID_JOYPAD_L);
+      bool pressed_r = pad_state[0] & (1 << RETRO_DEVICE_ID_JOYPAD_R);
 
       bool curL         = pressed_l;
       static bool prevL = false;
@@ -1404,6 +1433,7 @@ static void check_variables(void)
 
 void retro_run(void)
 {
+   update_input_snapshot();
    poll_fds_buttons();
    emulator.Execute(video, audio, input);
 

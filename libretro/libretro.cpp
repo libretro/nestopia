@@ -1849,7 +1849,7 @@ bool retro_unserialize(const void *data, size_t size)
       reinterpret_cast<const char*>(data) + nestopia_savestate_size));
 
    // Only load libretro-specific bits if they exist
-   if (size < retro_serialize_size()) {
+   if (size >= retro_serialize_size()) {
       unsigned char const *tracked_input_state_ptr =
          reinterpret_cast<unsigned char const*>(data) + nestopia_savestate_size;
       tstate[0] = *tracked_input_state_ptr++;

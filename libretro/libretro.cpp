@@ -6,7 +6,11 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <sstream>
-#include <fstream>
+
+#include <streams/file_stream.h>
+#include <file/file_path.h>
+#include <compat/strl.h>
+#include <retro_miscellaneous.h>
 
 #include "../source/core/api/NstApiMachine.hpp"
 #include "../source/core/api/NstApiEmulator.hpp"
@@ -25,8 +29,6 @@
 
 #define NST_VERSION "1.53.2"
 
-#define MIN(a,b)      ((a)<(b)?(a):(b))
-#define MAX(a,b)      ((a)>(b)?(a):(b))
 #define NES_NTSC_PAR ((Api::Video::Output::WIDTH - (overscan_h_left + overscan_h_right)) * (8.0 / 7.0)) / (Api::Video::Output::HEIGHT - (overscan_v_top + overscan_v_bottom))
 #define NES_PAL_PAR ((Api::Video::Output::WIDTH - (overscan_h_left + overscan_h_right)) * (2950000.0 / 2128137.0)) / (Api::Video::Output::HEIGHT - (overscan_v_top + overscan_v_bottom))
 #define NES_4_3_DAR (4.0 / 3.0);
@@ -61,7 +63,7 @@ static Api::Fds *fds;
 static char g_basename[256];
 static char g_rom_dir[256];
 static char *g_save_dir;
-static char samp_dir[256];
+static char samp_dir[PATH_MAX_LENGTH];
 static unsigned blargg_ntsc;
 static bool fds_auto_insert;
 static int arkanoid_paddle_min = 0;
@@ -102,7 +104,6 @@ static void *sram;
 static unsigned long sram_size;
 static bool is_pal;
 static byte custpal[64*3];
-static char slash;
 
 static enum {
    FDS_SAVEFILE_SAV_UPS = 0,
@@ -142,42 +143,45 @@ void draw_crosshair(int x, int y)
 
 static void load_wav(const char* sampgame, Api::User::File& file)
 {
-   char samp_path[292];
-   int length = 0;
+   char game_dir[PATH_MAX_LENGTH];
+   char samp_path[PATH_MAX_LENGTH];
+   char samp_name[16];
+   int64_t length = 0;
    int blockalign = 0;
    int numchannels = 0;
    int bitspersample = 0;
    char fmt[4] = { 0x66, 0x6d, 0x74, 0x20};
    char subchunk2id[4] = { 0x64, 0x61, 0x74, 0x61};
-   char *wavfile;
+   char *wavfile = NULL;
    char *dataptr;
 
-   sprintf(samp_path, "%s%c%s%c%02d.wav", samp_dir, slash, sampgame, slash, file.GetId());
-   printf("samp_path: %s\n", samp_path);
+   fill_pathname_join_special(game_dir, samp_dir, sampgame, sizeof(game_dir));
+   snprintf(samp_name, sizeof(samp_name), "%02u.wav", file.GetId());
+   fill_pathname_join_special(samp_path, game_dir, samp_name, sizeof(samp_path));
+   if (log_cb)
+      log_cb(RETRO_LOG_INFO, "samp_path: %s\n", samp_path);
 
-   std::ifstream samp_file(samp_path, std::ifstream::in|std::ifstream::binary);
+   if (!filestream_read_file(samp_path, (void**)&wavfile, &length))
+      return;
 
-   if (samp_file) {
-       samp_file.seekg(0, samp_file.end);
-       length = samp_file.tellg();
-       samp_file.seekg(0, samp_file.beg);
-       wavfile = (char*)malloc(length * sizeof(char));
-       samp_file.read(wavfile, length);
-
-       // Check to see if it has a valid header
-       if (memcmp(&wavfile[0x00], "RIFF", 4) != 0) { return; }
-       if (memcmp(&wavfile[0x08], "WAVE", 4) != 0) { return; }
-       if (memcmp(&wavfile[0x0c], &fmt, 4) != 0) { return; }
-       if (memcmp(&wavfile[0x24], &subchunk2id, 4) != 0) { return; }
-
-       // Load the sample into the emulator
-       dataptr = &wavfile[0x2c];
-       blockalign = wavfile[0x21] << 8 | wavfile[0x20];
-       numchannels = wavfile[0x17] << 8 | wavfile[0x16];
-       bitspersample = wavfile[0x23] << 8 | wavfile[0x22];
-       file.SetSampleContent(dataptr, (length - 44) / blockalign, 0, bitspersample, 44100);
-       free(wavfile);
+   /* Smallest valid file: 44 byte canonical header plus sample data.
+    * Check to see if it has a valid header */
+   if (length > 44 &&
+         memcmp(&wavfile[0x00], "RIFF", 4) == 0 &&
+         memcmp(&wavfile[0x08], "WAVE", 4) == 0 &&
+         memcmp(&wavfile[0x0c], &fmt, 4) == 0 &&
+         memcmp(&wavfile[0x24], &subchunk2id, 4) == 0)
+   {
+      /* Load the sample into the emulator */
+      dataptr = &wavfile[0x2c];
+      blockalign = wavfile[0x21] << 8 | wavfile[0x20];
+      numchannels = wavfile[0x17] << 8 | wavfile[0x16];
+      bitspersample = wavfile[0x23] << 8 | wavfile[0x22];
+      if (blockalign > 0)
+         file.SetSampleContent(dataptr, (length - 44) / blockalign, 0, bitspersample, 44100);
    }
+
+   free(wavfile);
 }
 
 static void display_msg(enum retro_log_level level, unsigned duration, const char *str)
@@ -235,12 +239,6 @@ static void NST_CALLBACK file_io_callback(void*, Api::User::File &file)
    const void *addr;
    unsigned long addr_size;
 
-#ifdef _WIN32
-   slash = '\\';
-#else
-   slash = '/';
-#endif
-
    switch (file.GetAction())
    {
       case Api::User::File::LOAD_SAMPLE_MOERO_PRO_YAKYUU:
@@ -272,44 +270,65 @@ static void NST_CALLBACK file_io_callback(void*, Api::User::File &file)
          break;
       case Api::User::File::LOAD_FDS:
          {
-            std::string base;
-            std::string ext;
+            char base[PATH_MAX_LENGTH];
+            const char *ext      = "";
+            const char *save_dir = (g_save_dir && *g_save_dir)
+                  ? g_save_dir : g_rom_dir;
+            char *patch_data     = NULL;
+            int64_t patch_size   = 0;
             if (fds_sav_extension)
                ext = ".sav";
             else if (fds_ups_extension)
                ext = ".ups";
             else if (fds_ips_extension)
                ext = ".ips";
-            base = std::string(g_save_dir) + slash + g_basename + ext;
+            fill_pathname_join_special(base, save_dir, g_basename, sizeof(base));
+            strlcat(base, ext, sizeof(base));
             if (log_cb)
-               log_cb(RETRO_LOG_INFO, "Want to load FDS savefile using %s extension from: %s\n", ext.c_str(), base.c_str());
-            std::ifstream in_tmp(base.c_str(),std::ifstream::in|std::ifstream::binary);
+               log_cb(RETRO_LOG_INFO, "Want to load FDS savefile using %s extension from: %s\n", ext, base);
 
-            if (!in_tmp.is_open())
+            if (!filestream_read_file(base, (void**)&patch_data, &patch_size))
                return;
 
-            file.SetPatchContent(in_tmp);
+            {
+               std::istringstream in_tmp(
+                     std::string(patch_data, (size_t)patch_size),
+                     std::istringstream::in | std::istringstream::binary);
+               file.SetPatchContent(in_tmp);
+            }
+            free(patch_data);
          }
          break;
       case Api::User::File::SAVE_FDS:
          {
-            std::string base;
-            std::string ext;
+            char base[PATH_MAX_LENGTH];
+            const char *ext      = "";
+            const char *save_dir = (g_save_dir && *g_save_dir)
+                  ? g_save_dir : g_rom_dir;
+            Result result = RESULT_ERR_GENERIC;
+            std::ostringstream out_tmp(
+                  std::ostringstream::out | std::ostringstream::binary);
             if (fds_sav_extension)
                ext = ".sav";
             else if (fds_ups_extension)
                ext = ".ups";
             else if (fds_ips_extension)
                ext = ".ips";
-            base = std::string(g_save_dir) + slash + g_basename + ext;
+            fill_pathname_join_special(base, save_dir, g_basename, sizeof(base));
+            strlcat(base, ext, sizeof(base));
             if (log_cb)
-               log_cb(RETRO_LOG_INFO, "Want to save FDS savefile using %s extension to: %s\n", ext.c_str(), base.c_str());
-            std::ofstream out_tmp(base.c_str(),std::ifstream::out|std::ifstream::binary);
+               log_cb(RETRO_LOG_INFO, "Want to save FDS savefile using %s extension to: %s\n", ext, base);
 
-            if ((out_tmp.is_open()) && (fds_patch_format_ups))
-               file.GetPatchContent(Api::User::File::PATCH_UPS, out_tmp);
-            else if ((out_tmp.is_open()) && (fds_patch_format_ips))
-               file.GetPatchContent(Api::User::File::PATCH_IPS, out_tmp);
+            if (fds_patch_format_ups)
+               result = file.GetPatchContent(Api::User::File::PATCH_UPS, out_tmp);
+            else if (fds_patch_format_ips)
+               result = file.GetPatchContent(Api::User::File::PATCH_IPS, out_tmp);
+
+            if (NES_SUCCEEDED(result))
+            {
+               const std::string patch = out_tmp.str();
+               filestream_write_file(base, patch.data(), (int64_t)patch.size());
+            }
          }
          break;
       default:
@@ -443,9 +462,16 @@ void retro_get_system_av_info(struct retro_system_av_info *info)
 
 void retro_set_environment(retro_environment_t cb)
 {
+   struct retro_vfs_interface_info vfs_iface_info;
+
    environ_cb = cb;
    libretro_set_core_options(environ_cb,
          &libretro_supports_option_categories);
+
+   vfs_iface_info.required_interface_version = FILESTREAM_REQUIRED_VFS_VERSION;
+   vfs_iface_info.iface                      = NULL;
+   if (cb(RETRO_ENVIRONMENT_GET_VFS_INTERFACE, &vfs_iface_info))
+      filestream_vfs_init(&vfs_iface_info);
 
    static const struct retro_controller_description port1[] = {
       { "Auto", RETRO_DEVICE_AUTO },
@@ -1451,15 +1477,9 @@ static void extract_directory(char *buf, const char *path, size_t size)
 bool retro_load_game(const struct retro_game_info *info)
 {
    const char *dir;
-   char slash;
-   char db_path[256];
-   char palette_path[256];
-   
-#if defined(_WIN32)
-   slash = '\\';
-#else
-   slash = '/';
-#endif
+   char nestopia_dir[PATH_MAX_LENGTH];
+   char db_path[PATH_MAX_LENGTH];
+   char palette_path[PATH_MAX_LENGTH];
 
    struct retro_input_descriptor desc[] = {
       { 0, RETRO_DEVICE_JOYPAD, 0, RETRO_DEVICE_ID_JOYPAD_LEFT,  "D-Pad Left" },
@@ -1535,18 +1555,21 @@ bool retro_load_game(const struct retro_game_info *info)
    if (!environ_cb(RETRO_ENVIRONMENT_GET_SYSTEM_DIRECTORY, &dir) || !dir)
       return false;
 
-   sprintf(samp_dir, "%s%cnestopia%csamples", dir, slash, slash);
+   fill_pathname_join_special(nestopia_dir, dir, "nestopia", sizeof(nestopia_dir));
+   fill_pathname_join_special(samp_dir, nestopia_dir, "samples", sizeof(samp_dir));
 
-   sprintf(palette_path, "%s%ccustom.pal", dir, slash);
+   fill_pathname_join_special(palette_path, dir, "custom.pal", sizeof(palette_path));
 
    if (log_cb)
       log_cb(RETRO_LOG_INFO, "Custom palette path: %s\n", palette_path);
    
-   std::ifstream *custompalette = new std::ifstream(palette_path, std::ifstream::in|std::ifstream::binary);
-   
-   if (custompalette->is_open())
+   RFILE *custompalette = filestream_open(palette_path,
+         RETRO_VFS_FILE_ACCESS_READ, RETRO_VFS_FILE_ACCESS_HINT_NONE);
+
+   if (custompalette)
    {
-      custompalette->read((char*)custpal, sizeof(custpal));
+      filestream_read(custompalette, custpal, sizeof(custpal));
+      filestream_close(custompalette);
       if (log_cb)
          log_cb(RETRO_LOG_INFO, "custom.pal loaded from system directory.\n");
    }
@@ -1556,20 +1579,24 @@ bool retro_load_game(const struct retro_game_info *info)
       if (log_cb)
          log_cb(RETRO_LOG_INFO, "custom.pal not found in system directory.\n");
    }
-   delete custompalette;
 
-   sprintf(db_path, "%s%cNstDatabase.xml", dir, slash);
+   fill_pathname_join_special(db_path, dir, "NstDatabase.xml", sizeof(db_path));
 
    if (log_cb)
       log_cb(RETRO_LOG_INFO, "NstDatabase.xml path: %s\n", db_path);
    
    Api::Cartridge::Database database(emulator);
 
-   std::ifstream *db_file = new std::ifstream(db_path, std::ifstream::in|std::ifstream::binary);
+   char *db_data       = NULL;
+   int64_t db_file_len = 0;
 
-   if (db_file->is_open())
+   if (filestream_read_file(db_path, (void**)&db_data, &db_file_len))
    {
-      database.Load(*db_file);
+      std::istringstream db_external(
+            std::string(db_data, (size_t)db_file_len),
+            std::istringstream::in | std::istringstream::binary);
+      database.Load(db_external);
+      free(db_data);
       if (log_cb)
          log_cb(RETRO_LOG_INFO, "Using external XML database\n");
    }
@@ -1577,17 +1604,13 @@ bool retro_load_game(const struct retro_game_info *info)
    {
       size_t db_size = sizeof(nst_db_xml)/sizeof(unsigned char);
       std::string db_buf((const char*)nst_db_xml, db_size);
-      std::istringstream *db_baked = new std::istringstream(db_buf);
-      database.Load(*db_baked);
+      std::istringstream db_baked(db_buf);
+      database.Load(db_baked);
       if (log_cb)
          log_cb(RETRO_LOG_INFO, "Using baked in XML database\n");
    }
 
    database.Enable(true);
-
-   if (db_file)
-      delete db_file;
-   
    if (info->path != NULL)
    {
       extract_basename(g_basename, info->path, sizeof(g_basename));
@@ -1611,23 +1634,25 @@ bool retro_load_game(const struct retro_game_info *info)
 
       if (fds)
       {
-         char fds_bios_path[256];
-         /* search for BIOS in system directory */
-         bool found = false;
+         char fds_bios_path[PATH_MAX_LENGTH];
+         char *bios_data     = NULL;
+         int64_t bios_size   = 0;
 
-         sprintf(fds_bios_path, "%s%cdisksys.rom", dir, slash);
+         /* search for BIOS in system directory */
+         fill_pathname_join_special(fds_bios_path, dir, "disksys.rom", sizeof(fds_bios_path));
          if (log_cb)
             log_cb(RETRO_LOG_INFO, "FDS BIOS path: %s\n", fds_bios_path);
 
-         std::ifstream *fds_bios_file = new std::ifstream(fds_bios_path, std::ifstream::in|std::ifstream::binary);
-
-         if (fds_bios_file->is_open())
-            fds->SetBIOS(fds_bios_file);
-         else
-         {
-            delete fds_bios_file;
+         if (!filestream_read_file(fds_bios_path, (void**)&bios_data, &bios_size))
             return false;
+
+         {
+            std::istringstream fds_bios_stream(
+                  std::string(bios_data, (size_t)bios_size),
+                  std::istringstream::in | std::istringstream::binary);
+            fds->SetBIOS(&fds_bios_stream);
          }
+         free(bios_data);
       }
       else
          return false;

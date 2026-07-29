@@ -1,7 +1,7 @@
 /* Copyright  (C) 2010-2020 The RetroArch team
  *
  * ---------------------------------------------------------------------------------------
- * The following license statement only applies to this file (retro_inline.h).
+ * The following license statement only applies to this file (rtime.h).
  * ---------------------------------------------------------------------------------------
  *
  * Permission is hereby granted, free of charge,
@@ -20,26 +20,44 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-#ifndef __LIBRETRO_SDK_INLINE_H
-#define __LIBRETRO_SDK_INLINE_H
+#ifndef __LIBRETRO_SDK_RTIME_H__
+#define __LIBRETRO_SDK_RTIME_H__
 
-#ifndef INLINE
+#include <retro_common_api.h>
+
+#include <stdint.h>
+#include <stddef.h>
+#include <time.h>
+
+RETRO_BEGIN_DECLS
+
+/* TODO/FIXME: Move all generic time handling functions
+ * to this file */
 
 /**
- * Cross-platform inline specifier.
- *
- * Expands to something like \c __inline or \c inline,
- * depending on the compiler.
+ * Must be called before using \c rtime_localtime().
+ * May be called multiple times without ill effects,
+ * but must only be called from the main thread.
  */
-#if defined(_WIN32) || defined(__INTEL_COMPILER)
-#define INLINE __inline
-#elif defined(__STDC_VERSION__) && __STDC_VERSION__>=199901L
-#define INLINE inline
-#elif defined(__GNUC__)
-#define INLINE __inline__
-#else
-#define INLINE
-#endif
+void rtime_init(void);
 
-#endif
+/**
+ * Must be called upon program or core termination.
+ * May be called multiple times without ill effects,
+ * but must only be called from the main thread.
+ */
+void rtime_deinit(void);
+
+/**
+ * Thread-safe wrapper around standard \c localtime(),
+ * which by itself is not guaranteed to be thread-safe.
+ * @param timep Pointer to a time_t object to convert.
+ * @param result Pointer to a tm object to store the result in.
+ * @return \c result.
+ * @see https://en.cppreference.com/w/c/chrono/localtime
+ */
+struct tm *rtime_localtime(const time_t *timep, struct tm *result);
+
+RETRO_END_DECLS
+
 #endif

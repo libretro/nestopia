@@ -1,7 +1,7 @@
 /* Copyright  (C) 2010-2020 The RetroArch team
  *
  * ---------------------------------------------------------------------------------------
- * The following license statement only applies to this file (retro_inline.h).
+ * The following license statement only applies to this file (compat_strl.c).
  * ---------------------------------------------------------------------------------------
  *
  * Permission is hereby granted, free of charge,
@@ -20,26 +20,37 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-#ifndef __LIBRETRO_SDK_INLINE_H
-#define __LIBRETRO_SDK_INLINE_H
+#include <compat/strl.h>
 
-#ifndef INLINE
+/* Implementation of strlcpy()/strlcat() based on OpenBSD. */
 
-/**
- * Cross-platform inline specifier.
- *
- * Expands to something like \c __inline or \c inline,
- * depending on the compiler.
- */
-#if defined(_WIN32) || defined(__INTEL_COMPILER)
-#define INLINE __inline
-#elif defined(__STDC_VERSION__) && __STDC_VERSION__>=199901L
-#define INLINE inline
-#elif defined(__GNUC__)
-#define INLINE __inline__
-#else
-#define INLINE
-#endif
+#if !(defined(__MACH__) && defined(__APPLE__))
+size_t strlcpy(char *s, const char *in, size_t len)
+{
+   size_t src_len = strlen(in);
+   if (len)
+   {
+      size_t cpy_len = src_len < len - 1 ? src_len : len - 1;
+      memcpy(s, in, cpy_len);
+      s[cpy_len] = '\0';
+   }
+   return src_len;
+}
 
-#endif
+/* NOTE: When 'len' is smaller than strlen(s), the return value is
+ * strlen(s) + strlen(source), whereas OpenBSD returns
+ * len + strlen(source). No bytes are written in either case, and the
+ * usual 'return value >= len means truncated' test holds for both,
+ * so this only matters to callers that use the return value as an
+ * exact required-buffer-size figure. */
+size_t strlcat(char *s, const char *source, size_t len)
+{
+   size_t dst_len = strlen(s);
+   s += dst_len;
+   if (dst_len > len)
+      len = 0;
+   else
+      len -= dst_len;
+   return dst_len + strlcpy(s, source, len);
+}
 #endif

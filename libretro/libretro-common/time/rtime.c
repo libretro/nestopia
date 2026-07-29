@@ -1,7 +1,7 @@
 /* Copyright  (C) 2010-2020 The RetroArch team
  *
  * ---------------------------------------------------------------------------------------
- * The following license statement only applies to this file (retro_inline.h).
+ * The following license statement only applies to this file (rtime.c).
  * ---------------------------------------------------------------------------------------
  *
  * Permission is hereby granted, free of charge,
@@ -20,26 +20,59 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-#ifndef __LIBRETRO_SDK_INLINE_H
-#define __LIBRETRO_SDK_INLINE_H
-
-#ifndef INLINE
-
-/**
- * Cross-platform inline specifier.
- *
- * Expands to something like \c __inline or \c inline,
- * depending on the compiler.
- */
-#if defined(_WIN32) || defined(__INTEL_COMPILER)
-#define INLINE __inline
-#elif defined(__STDC_VERSION__) && __STDC_VERSION__>=199901L
-#define INLINE inline
-#elif defined(__GNUC__)
-#define INLINE __inline__
-#else
-#define INLINE
+#ifdef HAVE_THREADS
+#include <rthreads/rthreads.h>
+#include <stdlib.h>
 #endif
 
+#include <string.h>
+#include <time/rtime.h>
+
+#ifdef HAVE_THREADS
+/* TODO/FIXME - global */
+slock_t *rtime_localtime_lock = NULL;
 #endif
+
+/* Must be called before using rtime_localtime() */
+void rtime_init(void)
+{
+   rtime_deinit();
+#ifdef HAVE_THREADS
+   if (!rtime_localtime_lock)
+      rtime_localtime_lock = slock_new();
 #endif
+}
+
+/* Must be called upon program termination */
+void rtime_deinit(void)
+{
+#ifdef HAVE_THREADS
+   if (rtime_localtime_lock)
+   {
+      slock_free(rtime_localtime_lock);
+      rtime_localtime_lock = NULL;
+   }
+#endif
+}
+
+/* Thread-safe wrapper for localtime() */
+struct tm *rtime_localtime(const time_t *timep, struct tm *result)
+{
+   struct tm *time_info = NULL;
+
+   /* Lock mutex */
+#ifdef HAVE_THREADS
+   slock_lock(rtime_localtime_lock);
+#endif
+
+   time_info = localtime(timep);
+   if (time_info)
+      memcpy(result, time_info, sizeof(struct tm));
+
+   /* Unlock mutex */
+#ifdef HAVE_THREADS
+   slock_unlock(rtime_localtime_lock);
+#endif
+
+   return result;
+}

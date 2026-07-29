@@ -79,7 +79,7 @@ static int cur_x = 0; // Absolute x coordinate of zapper/arkanoid in pixels
 static int cur_y = 0; // Absolute y coordinate of zapper          in pixels
 static unsigned char prevL = false; // => L Button is held; controls famicon disc drive
 static unsigned char prevR = false; // => R Button is held; controls famicon disc drive
-static const int tracked_input_state_size_bytes = 8; // Send the 8 previous fields as unsigned char
+static const int tracked_input_state_size_bytes = 12; // 8 tracked-input bytes + 4 bytes of audio pacing accumulator
 static size_t state_size = 0;
 
 static enum {
@@ -104,6 +104,59 @@ static void *sram;
 static unsigned long sram_size;
 static bool is_pal;
 static byte custpal[64*3];
+
+/* Exact audio pacing.  The APU synthesizes SAMPLERATE samples per
+ * emulated second of master-clock time, so the true number of samples
+ * per video frame is
+ *
+ *    SAMPLERATE * master_ticks_per_frame / master_clock
+ *
+ * (798.68... for NTSC, 959.87... for PAL/Dendy), not SAMPLERATE/60 or
+ * SAMPLERATE/50.  Requesting the rounded-up integer every frame makes
+ * Apu::FlushSound() pad the difference by repeating the instantaneous
+ * sample without advancing synthesis time (measured with an
+ * instrumented build: 79 padded samples per 60 NTSC frames, 8 per 60
+ * PAL frames).  Track the exact rational with a remainder accumulator
+ * instead and request 798/799 (959/960) so generation and consumption
+ * stay in lock step. */
+static unsigned audio_spf_base;  /* whole samples per frame            */
+static unsigned long audio_spf_rem;  /* numerator of fractional part   */
+static unsigned long audio_spf_den;  /* denominator                    */
+static unsigned long audio_frac;     /* running remainder accumulator  */
+
+static unsigned long gcd_ul(unsigned long a, unsigned long b)
+{
+   while (b)
+   {
+      unsigned long t = a % b;
+      a = b;
+      b = t;
+   }
+   return a;
+}
+
+static void update_audio_timing(void)
+{
+   /* PAL and Dendy share the frame clock (PPU_DENDY_HVSYNC equals
+    * PPU_RP2C07_HVSYNC). */
+   unsigned long clk  = is_pal ? (unsigned long)Core::CLK_PAL
+                               : (unsigned long)Core::CLK_NTSC;
+   unsigned long tick = is_pal
+      ? Core::CLK_PAL_DIV  * (unsigned long)Core::PPU_RP2C07_HVSYNC
+      : Core::CLK_NTSC_DIV * (unsigned long)Core::PPU_RP2C02_HVSYNC;
+   /* Reduce SAMPLERATE/clk before multiplying so everything fits in
+    * 32 bits: 48000 and both master clocks share a large factor
+    * (worst case after reduction is 160 * 4255680 < 2^31). */
+   unsigned long g    = gcd_ul(SAMPLERATE, clk);
+   unsigned long rn   = SAMPLERATE / g;
+   unsigned long rd   = clk / g;
+
+   audio_spf_base = (unsigned)(rn * tick / rd);
+   audio_spf_rem  = rn * tick % rd;
+   audio_spf_den  = rd;
+   audio_frac     = 0;
+}
+
 
 static enum {
    FDS_SAVEFILE_SAV_UPS = 0,
@@ -449,7 +502,10 @@ double get_aspect_ratio(void)
 
 void retro_get_system_av_info(struct retro_system_av_info *info)
 {
-   const retro_system_timing timing = { is_pal ? 50.0 : 60.0, SAMPLERATE };
+   const retro_system_timing timing = {
+      is_pal ? (double)Core::CLK_PAL  / (Core::CLK_PAL_DIV  * (double)Core::PPU_RP2C07_HVSYNC)
+             : (double)Core::CLK_NTSC / (Core::CLK_NTSC_DIV * (double)Core::PPU_RP2C02_HVSYNC),
+      SAMPLERATE };
    info->timing = timing;
 
    // It's better if the size is based on NTSC_WIDTH if the filter is on
@@ -956,7 +1012,8 @@ static void check_variables(void)
       }
    }
    if (audio) delete audio;
-   audio = new Api::Sound::Output(audio_buffer, is_pal ? SAMPLERATE / 50 : SAMPLERATE / 60);
+   update_audio_timing();
+   audio = new Api::Sound::Output(audio_buffer, audio_spf_base);
 
    var.key = "nestopia_fds_auto_insert"; // FDS Auto Insert
    if (environ_cb(RETRO_ENVIRONMENT_GET_VARIABLE, &var))
@@ -1431,14 +1488,24 @@ static void check_variables(void)
 
 void retro_run(void)
 {
+   /* Exact per-frame sample count via remainder carry; must be set
+    * before Execute() since the APU reads the requested length when
+    * it flushes the frame's audio. */
+   unsigned frames = audio_spf_base;
+   audio_frac += audio_spf_rem;
+   if (audio_frac >= audio_spf_den)
+   {
+      audio_frac -= audio_spf_den;
+      frames++;
+   }
+   audio->length[0] = frames;
+
    update_input_snapshot();
    poll_fds_buttons();
    emulator.Execute(video, audio, input);
 
    if (show_crosshair == SHOW_CROSSHAIR_ON)
       draw_crosshair(crossx, crossy);
-   
-   unsigned frames = is_pal ? SAMPLERATE / 50 : SAMPLERATE / 60;
 
    bool updated = false;
    if (environ_cb(RETRO_ENVIRONMENT_GET_VARIABLE_UPDATE, &updated) && updated)
@@ -1835,21 +1902,33 @@ bool retro_serialize(void *data, size_t size)
    *tracked_input_state_ptr++ = (unsigned char) cur_y;
    *tracked_input_state_ptr++ = prevL;
    *tracked_input_state_ptr++ = prevR;
+   *tracked_input_state_ptr++ = (unsigned char)(audio_frac       & 0xff);
+   *tracked_input_state_ptr++ = (unsigned char)((audio_frac >> 8) & 0xff);
+   *tracked_input_state_ptr++ = (unsigned char)((audio_frac >> 16) & 0xff);
+   *tracked_input_state_ptr++ = (unsigned char)((audio_frac >> 24) & 0xff);
 
    return true;
 }
 
 bool retro_unserialize(const void *data, size_t size)
 {
-   // Preserve ability to load states not containing libretro-specific bits
-   size_t nestopia_savestate_size = size < retro_serialize_size() ?
-      size : size - tracked_input_state_size_bytes;
+   // Footer size detection: current states carry the full footer,
+   // states from the 8-byte-footer era carry 4 bytes less, and legacy
+   // states carry no footer at all.
+   size_t expected = retro_serialize_size();
+   size_t footer   = 0;
+
+   if (size >= expected)
+      footer = tracked_input_state_size_bytes;
+   else if (size + 4 >= expected)
+      footer = tracked_input_state_size_bytes - 4;
+
+   size_t nestopia_savestate_size = size - footer;
 
    std::stringstream ss(std::string(reinterpret_cast<const char*>(data),
       reinterpret_cast<const char*>(data) + nestopia_savestate_size));
 
-   // Only load libretro-specific bits if they exist
-   if (size >= retro_serialize_size()) {
+   if (footer >= 8) {
       unsigned char const *tracked_input_state_ptr =
          reinterpret_cast<unsigned char const*>(data) + nestopia_savestate_size;
       tstate[0] = *tracked_input_state_ptr++;
@@ -1860,6 +1939,20 @@ bool retro_unserialize(const void *data, size_t size)
       cur_y  = (int) *tracked_input_state_ptr++;
       prevL  = *tracked_input_state_ptr++;
       prevR  = *tracked_input_state_ptr++;
+
+      if (footer >= 12) {
+         audio_frac  = (unsigned long)*tracked_input_state_ptr++;
+         audio_frac |= (unsigned long)*tracked_input_state_ptr++ << 8;
+         audio_frac |= (unsigned long)*tracked_input_state_ptr++ << 16;
+         audio_frac |= (unsigned long)*tracked_input_state_ptr++ << 24;
+      }
+      else
+         audio_frac = 0;
+
+      /* Guard against a state saved under the other region's
+       * denominator. */
+      if (audio_spf_den && audio_frac >= audio_spf_den)
+         audio_frac %= audio_spf_den;
    }
 
    return !machine->LoadState(ss);

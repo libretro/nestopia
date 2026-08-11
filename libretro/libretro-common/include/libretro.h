@@ -1715,6 +1715,24 @@ enum retro_mod
 #define RETRO_ENVIRONMENT_GET_VFS_INTERFACE (45 | RETRO_ENVIRONMENT_EXPERIMENTAL)
 
 /**
+ * Returns a list of frontend-authorized filesystem locations.
+ *
+ * Paths returned by this call must be directly usable with the VFS interface,
+ * for example saf://... on Android.
+ *
+ * @param[out] data <tt>struct retro_vfs_authorized_locations *</tt>.
+ * The frontend owns the returned pointers. The core must copy strings
+ * if it needs to retain them.
+ * If \c data is \c NULL, the frontend should only return whether this
+ * environment callback is available.
+ *
+ * @return \c true if this environment call is available,
+ * \c false otherwise.
+ * @see RETRO_ENVIRONMENT_GET_VFS_INTERFACE
+ */
+#define RETRO_ENVIRONMENT_GET_VFS_AUTHORIZED_LOCATIONS (93 | RETRO_ENVIRONMENT_EXPERIMENTAL)
+
+/**
  * Returns an interface that the core can use
  * to set the state of any accessible device LEDs.
  *
@@ -3040,6 +3058,10 @@ typedef const char *(RETRO_CALLCONV *retro_vfs_get_path_t)(struct retro_vfs_file
  * @param path The path to open.
  * @param mode A bitwise combination of \c RETRO_VFS_FILE_ACCESS flags.
  * At a minimum, one of \c RETRO_VFS_FILE_ACCESS_READ or \c RETRO_VFS_FILE_ACCESS_WRITE must be specified.
+ * If \c RETRO_VFS_FILE_ACCESS_WRITE is specified and \c RETRO_VFS_FILE_ACCESS_UPDATE_EXISTING is not specified,
+ * and no file or directory exists at \c path, this function will attempt to create an empty file at \c path.
+ * If either \c RETRO_VFS_FILE_ACCESS_WRITE is not specified or \c RETRO_VFS_FILE_ACCESS_UPDATE_EXISTING is specified,
+ * and no file or directory exists at \c path, this function will return \c NULL without attempting to create a file at \c path.
  * @param hints A bitwise combination of \c RETRO_VFS_FILE_ACCESS_HINT flags.
  * @return A handle to the opened file,
  * or \c NULL upon failure.
@@ -3111,8 +3133,7 @@ typedef int64_t (RETRO_CALLCONV *retro_vfs_tell_t)(struct retro_vfs_file_handle 
  * @param stream The file to set the position of.
  * @param offset The new position, in bytes.
  * @param seek_position The position to seek from.
- * @return The new position,
- * or -1 if there was an error.
+ * @return 0 on success, -1 on failure.
  * @since VFS API v1
  * @see File Seek Positions
  * @see filestream_seek
@@ -3408,6 +3429,33 @@ struct retro_vfs_interface_info
     * and must not be modified or freed by the core.
     * @since VFS API v1 */
    struct retro_vfs_interface *iface;
+};
+
+/**
+ * Represents a single frontend-authorized filesystem location.
+ *
+ * The \c path field must be directly usable through the frontend VFS
+ * interface, for example saf://... on Android.
+ *
+ * The frontend owns all returned pointers. Cores must copy strings if they
+ * need to retain them after the environment callback returns.
+ */
+struct retro_vfs_authorized_location
+{
+   const char *path;
+   const char *label;
+   unsigned flags;
+};
+
+/**
+ * Represents the list of frontend-authorized filesystem locations.
+ *
+ * This is returned by RETRO_ENVIRONMENT_GET_VFS_AUTHORIZED_LOCATIONS.
+ */
+struct retro_vfs_authorized_locations
+{
+   const struct retro_vfs_authorized_location *locations;
+   size_t count;
 };
 
 /** @} */
@@ -7803,7 +7851,8 @@ struct retro_exec_mem_alloc
  */
 struct retro_exec_mem_free
 {
-   void *rx;  /**< The \c rx pointer returned by a previous alloc call. */
+   void *rx;  /**< The \c rx pointer returned by a previous alloc call.
+                   The matching \c rw pointer is also accepted. */
 };
 
 /** @} */

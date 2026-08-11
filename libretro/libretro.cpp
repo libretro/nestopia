@@ -208,13 +208,13 @@ static void load_wav(const char* sampgame, Api::User::File& file)
    char *wavfile = NULL;
    char *dataptr;
 
-   fill_pathname_join_special(game_dir, samp_dir, sampgame, sizeof(game_dir));
+   fill_pathname_join(game_dir, samp_dir, sampgame, sizeof(game_dir));
    /* sprintf rather than snprintf: newlib hides the C99 snprintf
     * declaration under -std=c++98 (psl1ght).  Bounded by construction:
     * "%02u.wav" of a 32-bit unsigned is at most 10 + 4 characters,
     * 15 bytes with the terminator, and samp_name holds 16. */
    sprintf(samp_name, "%02u.wav", file.GetId());
-   fill_pathname_join_special(samp_path, game_dir, samp_name, sizeof(samp_path));
+   fill_pathname_join(samp_path, game_dir, samp_name, sizeof(samp_path));
    if (log_cb)
       log_cb(RETRO_LOG_INFO, "samp_path: %s\n", samp_path);
 
@@ -339,7 +339,7 @@ static void NST_CALLBACK file_io_callback(void*, Api::User::File &file)
                ext = ".ups";
             else if (fds_ips_extension)
                ext = ".ips";
-            fill_pathname_join_special(base, save_dir, g_basename, sizeof(base));
+            fill_pathname_join(base, save_dir, g_basename, sizeof(base));
             strlcat(base, ext, sizeof(base));
             if (log_cb)
                log_cb(RETRO_LOG_INFO, "Want to load FDS savefile using %s extension from: %s\n", ext, base);
@@ -371,7 +371,7 @@ static void NST_CALLBACK file_io_callback(void*, Api::User::File &file)
                ext = ".ups";
             else if (fds_ips_extension)
                ext = ".ips";
-            fill_pathname_join_special(base, save_dir, g_basename, sizeof(base));
+            fill_pathname_join(base, save_dir, g_basename, sizeof(base));
             strlcat(base, ext, sizeof(base));
             if (log_cb)
                log_cb(RETRO_LOG_INFO, "Want to save FDS savefile using %s extension to: %s\n", ext, base);
@@ -1654,10 +1654,10 @@ bool retro_load_game(const struct retro_game_info *info)
    if (!environ_cb(RETRO_ENVIRONMENT_GET_SYSTEM_DIRECTORY, &dir) || !dir)
       return false;
 
-   fill_pathname_join_special(nestopia_dir, dir, "nestopia", sizeof(nestopia_dir));
-   fill_pathname_join_special(samp_dir, nestopia_dir, "samples", sizeof(samp_dir));
+   fill_pathname_join(nestopia_dir, dir, "nestopia", sizeof(nestopia_dir));
+   fill_pathname_join(samp_dir, nestopia_dir, "samples", sizeof(samp_dir));
 
-   fill_pathname_join_special(palette_path, dir, "custom.pal", sizeof(palette_path));
+   fill_pathname_join(palette_path, dir, "custom.pal", sizeof(palette_path));
 
    if (log_cb)
       log_cb(RETRO_LOG_INFO, "Custom palette path: %s\n", palette_path);
@@ -1679,7 +1679,7 @@ bool retro_load_game(const struct retro_game_info *info)
          log_cb(RETRO_LOG_INFO, "custom.pal not found in system directory.\n");
    }
 
-   fill_pathname_join_special(db_path, dir, "NstDatabase.xml", sizeof(db_path));
+   fill_pathname_join(db_path, dir, "NstDatabase.xml", sizeof(db_path));
 
    if (log_cb)
       log_cb(RETRO_LOG_INFO, "NstDatabase.xml path: %s\n", db_path);
@@ -1738,7 +1738,7 @@ bool retro_load_game(const struct retro_game_info *info)
          int64_t bios_size   = 0;
 
          /* search for BIOS in system directory */
-         fill_pathname_join_special(fds_bios_path, dir, "disksys.rom", sizeof(fds_bios_path));
+         fill_pathname_join(fds_bios_path, dir, "disksys.rom", sizeof(fds_bios_path));
          if (log_cb)
             log_cb(RETRO_LOG_INFO, "FDS BIOS path: %s\n", fds_bios_path);
 

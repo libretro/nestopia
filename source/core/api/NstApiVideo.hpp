@@ -222,11 +222,6 @@ namespace Nes
 			};
 
 			/**
-			* Adds extra scanlines to fix lag
-			*/
-			Result EnableOverclocking(bool state) throw();
-
-			/**
 			* Allows the PPU to render more than eight sprites per line.
 			*
 			* @param state true to allow it, default is false

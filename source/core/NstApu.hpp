@@ -57,6 +57,8 @@ namespace Nes
 			void  EndFrame();
 			void  WriteFrameCtrl(uint);
 			Cycle Clock();
+			void ClockPendingLoad(Cycle,uint);
+			bool IsDmaPutCycle(Cycle) const;
 			void  ClockDMA(uint=0);
 
 			Result SetSampleRate(dword);
@@ -328,6 +330,8 @@ namespace Nes
 				word frameDivider;
 				word frameIrqRepeat;
 				Cycle frameIrqClock;
+				Cycle frameIrqHold;
+				Cycle frameIrqPhantom;
 				Cycle dmcClock;
 
 				static const dword frameClocks[3][4];
@@ -528,8 +532,6 @@ namespace Nes
 
 				Dmc();
 
-				bool overclockingIsSafe;
-
 				void Reset(CpuModel);
 				void UpdateSettings(uint);
 				void LoadState(State::Loader&,const Cpu&,CpuModel,Cycle&);
@@ -539,7 +541,23 @@ namespace Nes
 				NST_SINGLE_CALL void WriteReg1(uint);
 				NST_SINGLE_CALL void WriteReg2(uint);
 				NST_SINGLE_CALL void WriteReg3(uint);
-				NST_SINGLE_CALL void Disable(bool,Cpu&);
+				NST_SINGLE_CALL void Disable(bool,Cpu&,Cycle);
+				void ScheduleLoadDMA(Cpu&,Cycle);
+
+				bool HasPendingLoad() const
+				{
+					return loadClock != 0;
+				}
+
+				Cycle GetLoadClock() const
+				{
+					return loadClock;
+				}
+
+				void ClockLoadDMA(Cpu&,uint,uint,Cycle);
+				void RebaseFrame(Cycle);
+				void ClockImplicitAbort(Cpu&);
+				Cycle GetAbortClock() const { return abortClock; }
 
 				NST_SINGLE_CALL dword GetSample();
 
@@ -554,7 +572,7 @@ namespace Nes
 
 			private:
 
-				void DoDMA(Cpu&,Cycle,uint=0);
+				Cycle DoDMA(Cpu&,Cycle,uint=0,uint=0);
 
 				enum
 				{
@@ -568,6 +586,10 @@ namespace Nes
 				uint linSample;
 				uint outputVolume;
 				Cycle frequency;
+				Cycle loadClock;
+				Cycle lastLoadFetch;
+				Cycle abortClock;
+				Cycle enableClock;
 
 				struct
 				{
@@ -625,16 +647,6 @@ namespace Nes
 			Settings settings;
 
 		public:
-
-			void SetOverclockSafety(bool safe)
-			{
-				dmc.overclockingIsSafe = safe;
-			}
-
-			bool GetOverclockSafety()
-			{
-				return dmc.overclockingIsSafe;
-			}
 
 			dword GetSampleRate() const
 			{

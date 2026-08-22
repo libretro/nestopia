@@ -1764,7 +1764,6 @@ bool retro_load_game(const struct retro_game_info *info)
 
    Api::Sound isound(emulator);
    isound.SetSampleRate(SAMPLERATE);
-   isound.SetSpeaker(Api::Sound::SPEAKER_MONO);
 
    Api::Input(emulator).AutoSelectControllers();
    Api::Input::Controllers::Pad::callback.Set(&gamepad_callback, NULL);

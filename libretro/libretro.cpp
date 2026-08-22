@@ -27,7 +27,7 @@
 #include "nstdatabase.hpp"
 #include "palettes.hpp"
 
-#define NST_VERSION "1.53.2"
+#define NST_VERSION "1.54.0"
 
 #define NES_NTSC_PAR ((Api::Video::Output::WIDTH - (overscan_h_left + overscan_h_right)) * (8.0 / 7.0)) / (Api::Video::Output::HEIGHT - (overscan_v_top + overscan_v_bottom))
 #define NES_PAL_PAR ((Api::Video::Output::WIDTH - (overscan_h_left + overscan_h_right)) * (2950000.0 / 2128137.0)) / (Api::Video::Output::HEIGHT - (overscan_v_top + overscan_v_bottom))

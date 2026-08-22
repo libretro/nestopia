@@ -300,6 +300,12 @@ namespace Nes
 
 			NST_NO_INLINE Channel::Sample GetSample();
 
+			/* The two DACs, tabulated. Indexed by a sum of channel levels:
+			 * 0-30 for the square pair, 0-202 for the triangle, noise and DMC.
+			*/
+			dword lutPulse[31];
+			dword lutTnd[203];
+
 			void NST_FASTCALL SyncOn    (Cycle);
 			void NST_FASTCALL SyncOnExt (Cycle);
 			void NST_FASTCALL SyncOff   (Cycle);
@@ -314,6 +320,7 @@ namespace Nes
 
 			void UpdateSettings();
 			void UpdateVolumes();
+			void UpdateMixLut();
 
 			struct Cycles
 			{
@@ -395,7 +402,9 @@ namespace Nes
 				NST_SINGLE_CALL void WriteReg3(uint,Cycle);
 				NST_SINGLE_CALL void Disable(bool);
 
-				dword GetSample();
+				dword GetLevel() const;
+				dword Remaining() const;
+				void Advance(dword);
 
 				NST_SINGLE_CALL void ClockEnvelope();
 				NST_SINGLE_CALL void ClockSweep(uint);
@@ -450,7 +459,9 @@ namespace Nes
 				NST_SINGLE_CALL void WriteReg3(uint,Cycle);
 				NST_SINGLE_CALL void Disable(bool);
 
-				NST_SINGLE_CALL dword GetSample();
+				NST_SINGLE_CALL dword GetLevel() const;
+				NST_SINGLE_CALL dword Remaining() const;
+				NST_SINGLE_CALL void Advance(dword);
 
 				NST_SINGLE_CALL void ClockLinearCounter();
 				NST_SINGLE_CALL void ClockLengthCounter();
@@ -500,7 +511,9 @@ namespace Nes
 				NST_SINGLE_CALL void WriteReg3(uint,Cycle);
 				NST_SINGLE_CALL void Disable(bool);
 
-				NST_SINGLE_CALL dword GetSample();
+				NST_SINGLE_CALL dword GetLevel() const;
+				NST_SINGLE_CALL dword Remaining() const;
+				NST_SINGLE_CALL void Advance(dword);
 
 				NST_SINGLE_CALL void ClockEnvelope();
 				NST_SINGLE_CALL void ClockLengthCounter();
@@ -559,7 +572,7 @@ namespace Nes
 				void ClockImplicitAbort(Cpu&);
 				Cycle GetAbortClock() const { return abortClock; }
 
-				NST_SINGLE_CALL dword GetSample();
+				NST_SINGLE_CALL dword GetLevel() const;
 
 				NST_SINGLE_CALL bool ClockDAC();
 				NST_SINGLE_CALL void Update();

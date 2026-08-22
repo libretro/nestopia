@@ -416,12 +416,20 @@ namespace Nes
 			Cycle rate; uint fixed;
 			CalculateOscillatorClock( rate, fixed );
 
-			square[0].UpdateSettings ( settings.muted ? 0 : settings.volumes[ Channel::APU_SQUARE1  ], rate, fixed );
-			square[1].UpdateSettings ( settings.muted ? 0 : settings.volumes[ Channel::APU_SQUARE2  ], rate, fixed );
-			triangle.UpdateSettings  ( settings.muted ? 0 : settings.volumes[ Channel::APU_TRIANGLE ], rate, fixed );
-			noise.UpdateSettings     ( settings.muted ? 0 : settings.volumes[ Channel::APU_NOISE    ], rate, fixed );
-			dmc.UpdateSettings       ( settings.muted ? 0 : settings.volumes[ Channel::APU_DPCM     ] );
+			/* The DAC index is a sum of channel levels, so a channel has to
+			 * contribute a whole number of them. Volume is mute or nothing.
+			*/
+			#define NST_APU_VOL(c_) ((settings.muted || !settings.volumes[ Channel::c_ ]) ? 0U : uint(Channel::DEFAULT_VOLUME))
 
+			square[0].UpdateSettings ( NST_APU_VOL( APU_SQUARE1  ), rate, fixed );
+			square[1].UpdateSettings ( NST_APU_VOL( APU_SQUARE2  ), rate, fixed );
+			triangle.UpdateSettings  ( NST_APU_VOL( APU_TRIANGLE ), rate, fixed );
+			noise.UpdateSettings     ( NST_APU_VOL( APU_NOISE    ), rate, fixed );
+			dmc.UpdateSettings       ( NST_APU_VOL( APU_DPCM     ) );
+
+			#undef NST_APU_VOL
+
+			UpdateMixLut();
 			UpdateVolumes();
 		}
 
@@ -1636,64 +1644,49 @@ namespace Nes
 			return lengthCounter.GetCount();
 		}
 
-		dword Apu::Square::GetSample()
+		dword Apu::Square::GetLevel() const
 		{
-			NST_VERIFY( bool(active) == CanOutput() && timer >= 0 );
-
-			dword sum = timer;
-			timer -= idword(rate);
-
-			if (active)
+			static const byte forms[4][8] =
 			{
-				static const byte forms[4][8] =
-				{
-					{0x1F,0x00,0x1F,0x1F,0x1F,0x1F,0x1F,0x1F},
-					{0x1F,0x00,0x00,0x1F,0x1F,0x1F,0x1F,0x1F},
-					{0x1F,0x00,0x00,0x00,0x00,0x1F,0x1F,0x1F},
-					{0x00,0x1F,0x1F,0x00,0x00,0x00,0x00,0x00}
-				};
+				{0x1F,0x00,0x1F,0x1F,0x1F,0x1F,0x1F,0x1F},
+				{0x1F,0x00,0x00,0x1F,0x1F,0x1F,0x1F,0x1F},
+				{0x1F,0x00,0x00,0x00,0x00,0x1F,0x1F,0x1F},
+				{0x00,0x1F,0x1F,0x00,0x00,0x00,0x00,0x00}
+			};
 
-				const byte* const NST_RESTRICT form = forms[duty];
+			return active ? (envelope.Volume() / Channel::OUTPUT_MUL) >> forms[duty][step] : 0;
+		}
 
-				if (timer >= 0)
+		dword Apu::Square::Remaining() const
+		{
+			/* A silenced square sits at zero whatever its phase is doing, so
+			 * the walk never has to stop for it. Advance still runs the phase.
+			*/
+			return active ? dword(timer) : ~dword(0);
+		}
+
+		void Apu::Square::Advance(dword span)
+		{
+			timer -= idword(span);
+
+			if (timer <= 0)
+			{
+				if (active)
 				{
-					amp = envelope.Volume() >> form[step];
+					do
+					{
+						step = (step + 1) & 0x7;
+						timer += idword(frequency);
+					}
+					while (timer <= 0);
 				}
 				else
 				{
-					sum >>= form[step];
-
-					do
-					{
-						sum += NST_MIN(-timer,idword(frequency)) >> form[step = (step + 1) & 0x7];
-						timer += idword(frequency);
-					}
-					while (timer < 0);
-
-					NST_VERIFY( !envelope.Volume() || sum <= 0xFFFFFFFF / envelope.Volume() + rate/2 );
-					amp = (sum * envelope.Volume() + rate/2) / rate;
-				}
-			}
-			else
-			{
-				if (timer < 0)
-				{
-					const uint count = (-timer + frequency - 1) / frequency;
+					const dword count = dword(-timer) / frequency + 1;
 					step = (step + count) & 0x7;
 					timer += idword(count * frequency);
 				}
-
-				if (amp < Channel::OUTPUT_DECAY)
-				{
-					return 0;
-				}
-				else
-				{
-					amp -= Channel::OUTPUT_DECAY;
-				}
 			}
-
-			return amp;
 		}
 
 		#ifdef NST_MSVC_OPTIMIZE
@@ -1874,11 +1867,27 @@ namespace Nes
 				active = false;
 		}
 
-		NST_SINGLE_CALL dword Apu::Triangle::GetSample()
+		NST_SINGLE_CALL dword Apu::Triangle::GetLevel() const
 		{
-			NST_VERIFY( bool(active) == CanOutput() && timer >= 0 );
+			/* amp is the last level the sequencer clocked out, and zero until
+			 * it has clocked at all. Advance is the only thing that sets it.
+			*/
+			return outputVolume ? amp : 0;
+		}
 
-			if (active)
+		NST_SINGLE_CALL dword Apu::Triangle::Remaining() const
+		{
+			return active ? dword(timer) : ~dword(0);
+		}
+
+		NST_SINGLE_CALL void Apu::Triangle::Advance(dword span)
+		{
+			if (!active)
+				return;
+
+			timer -= idword(span);
+
+			while (timer <= 0)
 			{
 				static const byte pyramid[32] =
 				{
@@ -1888,39 +1897,10 @@ namespace Nes
 					0x7,0x6,0x5,0x4,0x3,0x2,0x1,0x0
 				};
 
-				dword sum = timer;
-				timer -= idword(rate);
-
-				if (timer >= 0)
-				{
-					amp = pyramid[step] * outputVolume * 3;
-				}
-				else
-				{
-					sum *= pyramid[step];
-
-					do
-					{
-						sum += NST_MIN(-timer,idword(frequency)) * pyramid[step = (step + 1) & 0x1F];
-						timer += idword(frequency);
-					}
-					while (timer < 0);
-
-					NST_VERIFY( !outputVolume || sum <= 0xFFFFFFFF / outputVolume + rate/2 );
-					amp = (sum * outputVolume + rate/2) / rate * 3;
-				}
+				step = (step + 1) & 0x1F;
+				amp = pyramid[step];
+				timer += idword(frequency);
 			}
-			/*else if (amp < Channel::OUTPUT_DECAY)
-			{
-				return 0;
-			}
-			else
-			{
-				amp -= Channel::OUTPUT_DECAY;
-				step &= STEP_CHECK;
-			}*/
-
-			return amp;
 		}
 
 		inline uint Apu::Triangle::GetLengthCounter() const
@@ -2086,47 +2066,27 @@ namespace Nes
 				active = false;
 		}
 
-		NST_SINGLE_CALL dword Apu::Noise::GetSample()
+		NST_SINGLE_CALL dword Apu::Noise::GetLevel() const
 		{
-			NST_VERIFY( bool(active) == CanOutput() && timer >= 0 );
+			return (active && !(bits & 0x4000)) ? envelope.Volume() / Channel::OUTPUT_MUL : 0;
+		}
 
-			dword sum = timer;
-			timer -= idword(rate);
+		NST_SINGLE_CALL dword Apu::Noise::Remaining() const
+		{
+			return active ? dword(timer) : ~dword(0);
+		}
 
-			if (active)
-			{
-				if (timer >= 0)
-				{
-					if (!(bits & 0x4000))
-						return envelope.Volume() * 2;
-				}
-				else
-				{
-					if (bits & 0x4000)
-						sum = 0;
+		NST_SINGLE_CALL void Apu::Noise::Advance(dword span)
+		{
+			/* Every period feeds the shift register, so no bulk skip here.
+			*/
+			timer -= idword(span);
 
-					do
-					{
-						bits = (bits << 1) | ((bits >> 14 ^ bits >> shifter) & 0x1);
-
-						if (!(bits & 0x4000))
-							sum += NST_MIN(-timer,idword(frequency));
-
-						timer += idword(frequency);
-					}
-					while (timer < 0);
-
-					NST_VERIFY( !envelope.Volume() || sum <= 0xFFFFFFFF / envelope.Volume() + rate/2 );
-					return (sum * envelope.Volume() + rate/2) / rate * 2;
-				}
-			}
-			else while (timer < 0)
+			while (timer <= 0)
 			{
 				bits = (bits << 1) | ((bits >> 14 ^ bits >> shifter) & 0x1);
 				timer += idword(frequency);
 			}
-
-			return 0;
 		}
 
 		inline uint Apu::Noise::GetLengthCounter() const
@@ -2512,27 +2472,12 @@ namespace Nes
 			}
 		}
 
-		NST_SINGLE_CALL dword Apu::Dmc::GetSample()
+		NST_SINGLE_CALL dword Apu::Dmc::GetLevel() const
 		{
-			if (curSample != linSample)
-			{
-				const uint step = outputVolume * INP_STEP;
-
-				if (curSample + step - linSample <= step*2)
-				{
-					linSample = curSample;
-				}
-				else if (curSample > linSample)
-				{
-					linSample += step;
-				}
-				else
-				{
-					linSample -= step;
-				}
-			}
-
-			return linSample;
+			/* Straight off curSample. linSample is retained for the save state
+			 * only; slewing the level would distort what the DAC reads out.
+			*/
+			return outputVolume ? curSample / outputVolume : 0;
 		}
 
 		Cycle Apu::Dmc::DoDMA(Cpu& cpu,const Cycle clock,const uint readAddress,const uint haltParity)
@@ -2953,17 +2898,65 @@ namespace Nes
 			cycles.frameIrqRepeat = repeat;
 		}
 
+		void Apu::UpdateMixLut()
+		{
+			for (uint i=0; i < 31; ++i)
+			{
+				const dword dac = i * dword(Channel::OUTPUT_MUL);
+				lutPulse[i] = dac ? NLN_SQ_0 / (NLN_SQ_1 / dac + NLN_SQ_2) : 0;
+			}
+
+			for (uint i=0; i < 203; ++i)
+			{
+				const dword dac = i * dword(Channel::OUTPUT_MUL);
+				lutTnd[i] = dac ? NLN_TND_0 / (NLN_TND_1 / dac + NLN_TND_2) : 0;
+			}
+		}
+
 		NST_NO_INLINE Apu::Channel::Sample Apu::GetSample()
 		{
-			dword dac[2];
+			/* Both DACs are non-linear, and f(mean(x)) is not mean(f(x)), so
+			 * the channels have to be mixed at full rate and averaged after.
+			 * Walk the sample period one transition at a time, take the mixed
+			 * level over each span and weight it by the length of the span.
+			 * The walk stops only where a channel changes.
+			 *
+			 * The DMC DAC is driven from the CPU side and cannot move within
+			 * one output sample, so it is read once.
+			*/
+			const dword level = dmc.GetLevel();
+
+			qaword sum = 0;
+			dword left = cycles.rate;
+
+			do
+			{
+				dword span = left;
+
+				span = NST_MIN( span, square[0].Remaining() );
+				span = NST_MIN( span, square[1].Remaining() );
+				span = NST_MIN( span, triangle.Remaining() );
+				span = NST_MIN( span, noise.Remaining() );
+
+				sum += qaword
+				(
+					lutPulse[ square[0].GetLevel() + square[1].GetLevel() ] +
+					lutTnd  [ triangle.GetLevel() * 3 + noise.GetLevel() * 2 + level ]
+				) * span;
+
+				square[0].Advance( span );
+				square[1].Advance( span );
+				triangle.Advance( span );
+				noise.Advance( span );
+
+				left -= span;
+			}
+			while (left);
 
 			return Clamp<Channel::OUTPUT_MIN,Channel::OUTPUT_MAX>
 			(
-				dcBlocker.Apply
-				(
-					(0 != (dac[0] = square[0].GetSample() + square[1].GetSample()) ? NLN_SQ_0 / (NLN_SQ_1 / dac[0] + NLN_SQ_2) : 0) +
-					(0 != (dac[1] = triangle.GetSample() + noise.GetSample() + dmc.GetSample()) ? NLN_TND_0 / (NLN_TND_1 / dac[1] + NLN_TND_2) : 0)
-				) + (extChannel ? extChannel->GetSample() : 0)
+				dcBlocker.Apply( Channel::Sample(sum / cycles.rate) ) +
+				(extChannel ? extChannel->GetSample() : 0)
 			);
 		}
 

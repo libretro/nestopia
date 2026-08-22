@@ -1350,15 +1350,6 @@ static void check_variables(void)
    if (environ_cb(RETRO_ENVIRONMENT_GET_VARIABLE, &var) && var.value)
       sound.SetVolume(Api::Sound::CHANNEL_S5B, atoi(var.value));
 
-   var.key = "nestopia_audio_type"; // Audio output
-   if (environ_cb(RETRO_ENVIRONMENT_GET_VARIABLE, &var))
-   {
-      if (strcmp(var.value, "mono") == 0)
-         sound.SetSpeaker(Api::Sound::SPEAKER_MONO);
-      else
-         sound.SetSpeaker(Api::Sound::SPEAKER_STEREO);
-   }
-
    /* Input */
 
    var.key = "nestopia_select_adapter"; // 4 Player Adapter
@@ -1518,15 +1509,9 @@ void retro_run(void)
       Api::Video::Output::HEIGHT - (overscan_v_top + overscan_v_bottom),
       pitch);
 
-   // Use audio buffer untouched for stereo, duplicate samples for mono
-   if (Api::Sound(emulator).GetSpeaker() == Api::Sound::SPEAKER_MONO) 
-   {
-      for (unsigned i = 0; i < frames; i++)
-         audio_stereo_buffer[i << 1] = audio_stereo_buffer[(i << 1) + 1] = audio_buffer[i];
-      audio_batch_cb(audio_stereo_buffer, frames);
-   }
-   else
-      audio_batch_cb(audio_buffer, frames);
+   for (unsigned i = 0; i < frames; i++)
+      audio_stereo_buffer[i << 1] = audio_stereo_buffer[(i << 1) + 1] = audio_buffer[i];
+   audio_batch_cb(audio_stereo_buffer, frames);
 }
 
 static void extract_basename(char *buf, const char *path, size_t size)

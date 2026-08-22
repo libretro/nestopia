@@ -635,19 +635,6 @@ struct retro_core_option_v2_definition option_defs_us[] = {
       },
       "100"
    },
-   {
-      "nestopia_audio_type",
-      "Audio output",
-      NULL,
-      "Specify whether the audio output should be mono or stereo.",
-      NULL,
-      "audio",
-      {
-         { "mono", NULL },
-         { "stereo", NULL },
-      },
-      "stereo"
-   },
 
 /* Input */
 

@@ -50,9 +50,6 @@ namespace Nes
 			void Buffer::Reset(bool clear)
 			{
 				pos = start = 0;
-				history.pos = 0;
-
-				std::fill( history.buffer, history.buffer+History::SIZE, iword(0) );
 
 				if (clear)
 					std::fill( output, output+SIZE, iword(0) );

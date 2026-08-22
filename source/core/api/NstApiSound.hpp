@@ -234,20 +234,6 @@ namespace Nes
 				ALL_CHANNELS = APU_CHANNELS|EXT_CHANNELS
 			};
 
-			/**
-			* Speaker type.
-			*/
-			enum Speaker
-			{
-				/**
-				* Mono sound (default).
-				*/
-				SPEAKER_MONO,
-				/**
-				* Pseudo stereo sound.
-				*/
-				SPEAKER_STEREO
-			};
 
 			enum
 			{
@@ -274,19 +260,7 @@ namespace Nes
 			*/
 			ulong GetSampleRate() const throw();
 
-			/**
-			* Sets the speaker type.
-			*
-			* @param speaker speaker type, default is SPEAKER_MONO
-			*/
-			void SetSpeaker(Speaker speaker) throw();
 
-			/**
-			* Returns the speaker type.
-			*
-			* @return speaker type
-			*/
-			Speaker GetSpeaker() const throw();
 
 			/**
 			* Sets one or more channel volumes.

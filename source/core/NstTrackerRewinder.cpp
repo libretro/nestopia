@@ -135,7 +135,6 @@ namespace Nes
 		:
 		enabled (e),
 		good    (false),
-		stereo  (false),
 		rate    (0),
 		index   (0),
 		buffer  (NULL),
@@ -271,8 +270,7 @@ namespace Nes
 			const dword old = size * sizeof(iword);
 
 			rate = apu.GetSampleRate();
-			stereo = apu.InStereo();
-			size = rate << (stereo+1);
+			size = rate << 1;
 
 			const dword total = size * sizeof(iword);
 			NST_ASSERT( total );
@@ -552,8 +550,8 @@ namespace Nes
 
 				case LAST_FRAME:
 
-					*output.samples = static_cast<T*>(*output.samples) + (*output.length << stereo);
-					*output.length = dword(static_cast<T*>(buffer) + (size / 2) - static_cast<T*>(*output.samples)) >> stereo;
+					*output.samples = static_cast<T*>(*output.samples) + *output.length;
+					*output.length = dword(static_cast<T*>(buffer) + (size / 2) - static_cast<T*>(*output.samples));
 					break;
 
 				case NUM_FRAMES:
@@ -566,13 +564,13 @@ namespace Nes
 				case NUM_FRAMES+LAST_FRAME:
 
 					index = 0;
-					*output.samples = static_cast<T*>(*output.samples) + (*output.length << stereo);
-					*output.length = dword(static_cast<T*>(buffer) + (size / 1) - static_cast<T*>(*output.samples)) >> stereo;
+					*output.samples = static_cast<T*>(*output.samples) + *output.length;
+					*output.length = dword(static_cast<T*>(buffer) + (size / 1) - static_cast<T*>(*output.samples));
 					break;
 
 				default:
 
-					*output.samples = static_cast<T*>(*output.samples) + (*output.length << stereo);
+					*output.samples = static_cast<T*>(*output.samples) + *output.length;
 					break;
 			}
 
@@ -583,7 +581,7 @@ namespace Nes
 		{
 			NST_COMPILE_ASSERT( NUM_FRAMES % 2 == 0 );
 
-			if (!buffer || (rate ^ apu.GetSampleRate()) | (stereo ^ uint(bool(apu.InStereo()))))
+			if (!buffer || (rate ^ apu.GetSampleRate()))
 			{
 				if (!good || !Update() || !enabled)
 					return NULL;
@@ -596,7 +594,7 @@ namespace Nes
 		void Tracker::Rewinder::ReverseSound::ReverseSilence(const Output& target) const
 		{
 			for (uint i=0; i < 2; ++i)
-				std::fill( static_cast<T*>(target.samples[i]), static_cast<T*>(target.samples[i]) + (target.length[i] << stereo), SILENCE );
+				std::fill( static_cast<T*>(target.samples[i]), static_cast<T*>(target.samples[i]) + target.length[i], SILENCE );
 		}
 
 		template<typename T>
@@ -606,7 +604,7 @@ namespace Nes
 
 			for (uint i=0; i < 2; ++i)
 			{
-				if (const dword length = (target.length[i] << stereo))
+				if (const dword length = target.length[i])
 				{
 					T* NST_RESTRICT dst = static_cast<T*>(target.samples[i]);
 					T* const dstEnd = dst + length;

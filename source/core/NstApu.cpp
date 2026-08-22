@@ -397,15 +397,6 @@ namespace Nes
 			}
 		}
 
-		void Apu::EnableStereo(const bool enable)
-		{
-			if (settings.stereo != enable)
-			{
-				settings.stereo = enable;
-				UpdateSettings();
-			}
-		}
-
 		void Apu::UpdateSettings()
 		{
 			cycles.Update( settings.rate, settings.speed, cpu );
@@ -823,7 +814,6 @@ namespace Nes
 			return delta;
 		}
 
-		template<typename T,bool STEREO>
 		void Apu::FlushSound()
 		{
 			NST_ASSERT( (stream && settings.audible) && (cycles.rate && cycles.fixed) );
@@ -835,7 +825,7 @@ namespace Nes
 					Sound::Buffer::Block block( stream->length[i] );
 					buffer >> block;
 
-					Sound::Buffer::Renderer<T,STEREO> output( stream->samples[i], stream->length[i], buffer.history );
+					Sound::Buffer::Renderer output( stream->samples[i], stream->length[i] );
 
 					if (output << block)
 					{
@@ -893,10 +883,7 @@ namespace Nes
 				{
 					streamed = stream->length[0] + stream->length[1];
 
-					if (!settings.stereo)
-						FlushSound<iword,false>();
-					else
-						FlushSound<iword,true>();
+					FlushSound();
 
 					Sound::Output::unlockCallback( *stream );
 				}
@@ -962,7 +949,7 @@ namespace Nes
 		#endif
 
 		Apu::Settings::Settings()
-		: rate(44100), speed(0), muted(false), transpose(false), stereo(false), audible(true)
+		: rate(44100), speed(0), muted(false), transpose(false), audible(true)
 		{
 			for (uint i=0; i < MAX_CHANNELS; ++i)
 				volumes[i] = Channel::DEFAULT_VOLUME;

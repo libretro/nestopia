@@ -82,12 +82,7 @@ namespace Nes
 			emulator.cpu.GetApu().SetGenie( enable );
 		}
 
-		void Sound::SetSpeaker(Speaker speaker) throw()
-		{
-			emulator.cpu.GetApu().EnableStereo( speaker == SPEAKER_STEREO );
-		}
-
-		ulong Sound::GetSampleRate() const throw()
+				ulong Sound::GetSampleRate() const throw()
 		{
 			return emulator.cpu.GetApu().GetSampleRate();
 		}
@@ -127,12 +122,7 @@ namespace Nes
 			return emulator.cpu.GetApu().IsGenie();
 		}
 
-		Sound::Speaker Sound::GetSpeaker() const throw()
-		{
-			return emulator.cpu.GetApu().InStereo() ? SPEAKER_STEREO : SPEAKER_MONO;
-		}
-
-		void Sound::EmptyBuffer() throw()
+				void Sound::EmptyBuffer() throw()
 		{
 			emulator.cpu.GetApu().ClearBuffers();
 		}

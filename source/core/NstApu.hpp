@@ -69,7 +69,6 @@ namespace Nes
 			void   Mute(bool);
 			void   SetAutoTranspose(bool);
 			void   SetGenie(bool);
-			void   EnableStereo(bool);
 
 			void SaveState(State::Saver&,dword) const;
 			void LoadState(State::Loader&);
@@ -315,7 +314,6 @@ namespace Nes
 			NST_NO_INLINE void ClockDmc(Cycle,uint=0);
 			NST_NO_INLINE void ClockOscillators(bool);
 
-			template<typename T,bool STEREO>
 			void FlushSound();
 
 			void UpdateSettings();
@@ -639,7 +637,6 @@ namespace Nes
 				bool muted;
 				bool transpose;
 				bool genie;
-				bool stereo;
 				bool audible;
 				byte volumes[MAX_CHANNELS];
 			};
@@ -679,11 +676,6 @@ namespace Nes
 			bool IsGenie() const
 			{
 				return settings.genie;
-			}
-
-			bool InStereo() const
-			{
-				return settings.stereo;
 			}
 
 			bool IsMuted() const

@@ -1464,15 +1464,6 @@ static void check_variables(void)
          video.EnableUnlimSprites(true);
    }
 
-   var.key = "nestopia_overclock"; // CPU Speed (Overclock)
-   if (environ_cb(RETRO_ENVIRONMENT_GET_VARIABLE, &var))
-   {
-      if (strcmp(var.value, "1x") == 0)
-         video.EnableOverclocking(false);
-      else if (strcmp(var.value, "2x") == 0)
-         video.EnableOverclocking(true);
-   }
-
    var.key = "nestopia_ram_power_state"; // RAM Power-on State
    if (environ_cb(RETRO_ENVIRONMENT_GET_VARIABLE, &var))
    {

@@ -774,20 +774,6 @@ struct retro_core_option_v2_definition option_defs_us[] = {
       "disabled"
    },
    {
-      "nestopia_overclock",
-      "CPU Speed (Overclock)",
-      NULL,
-      "Overclock the emulated CPU.",
-      NULL,
-      "hacks",
-      {
-         { "1x", NULL },
-         { "2x", NULL },
-         { NULL, NULL },
-      },
-      "1x"
-   },
-   {
       "nestopia_ram_power_state",
       "RAM Power-on State",
       NULL,

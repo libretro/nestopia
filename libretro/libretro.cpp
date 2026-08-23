@@ -79,7 +79,7 @@ static int cur_x = 0; // Absolute x coordinate of zapper/arkanoid in pixels
 static int cur_y = 0; // Absolute y coordinate of zapper          in pixels
 static unsigned char prevL = false; // => L Button is held; controls famicon disc drive
 static unsigned char prevR = false; // => R Button is held; controls famicon disc drive
-static const int tracked_input_state_size_bytes = 12; // 8 tracked-input bytes + 4 bytes of audio pacing accumulator
+static const int tracked_input_state_size_bytes = 12; // 8 tracked-input bytes + 4 reserved bytes (formerly an audio pacing accumulator)
 static size_t state_size = 0;
 
 static enum {
@@ -105,58 +105,15 @@ static unsigned long sram_size;
 static bool is_pal;
 static byte custpal[64*3];
 
-/* Exact audio pacing.  The APU synthesizes SAMPLERATE samples per
- * emulated second of master-clock time, so the true number of samples
- * per video frame is
- *
- *    SAMPLERATE * master_ticks_per_frame / master_clock
- *
- * (798.68... for NTSC, 959.87... for PAL/Dendy), not SAMPLERATE/60 or
- * SAMPLERATE/50.  Requesting the rounded-up integer every frame makes
- * Apu::FlushSound() pad the difference by repeating the instantaneous
- * sample without advancing synthesis time (measured with an
- * instrumented build: 79 padded samples per 60 NTSC frames, 8 per 60
- * PAL frames).  Track the exact rational with a remainder accumulator
- * instead and request 798/799 (959/960) so generation and consumption
- * stay in lock step. */
-static unsigned audio_spf_base;  /* whole samples per frame            */
-static unsigned long audio_spf_rem;  /* numerator of fractional part   */
-static unsigned long audio_spf_den;  /* denominator                    */
-static unsigned long audio_frac;     /* running remainder accumulator  */
-
-static unsigned long gcd_ul(unsigned long a, unsigned long b)
-{
-   while (b)
-   {
-      unsigned long t = a % b;
-      a = b;
-      b = t;
-   }
-   return a;
-}
-
-static void update_audio_timing(void)
-{
-   /* PAL and Dendy share the frame clock (PPU_DENDY_HVSYNC equals
-    * PPU_RP2C07_HVSYNC). */
-   unsigned long clk  = is_pal ? (unsigned long)Core::CLK_PAL
-                               : (unsigned long)Core::CLK_NTSC;
-   unsigned long tick = is_pal
-      ? Core::CLK_PAL_DIV  * (unsigned long)Core::PPU_RP2C07_HVSYNC
-      : Core::CLK_NTSC_DIV * (unsigned long)Core::PPU_RP2C02_HVSYNC;
-   /* Reduce SAMPLERATE/clk before multiplying so everything fits in
-    * 32 bits: 48000 and both master clocks share a large factor
-    * (worst case after reduction is 160 * 4255680 < 2^31). */
-   unsigned long g    = gcd_ul(SAMPLERATE, clk);
-   unsigned long rn   = SAMPLERATE / g;
-   unsigned long rd   = clk / g;
-
-   audio_spf_base = (unsigned)(rn * tick / rd);
-   audio_spf_rem  = rn * tick % rd;
-   audio_spf_den  = rd;
-   audio_frac     = 0;
-}
-
+/* A frame spans a fractional number of samples - 798.68... for NTSC,
+ * 959.87... for PAL/Dendy at 48 kHz - so no whole-numbered request can
+ * ever be filled exactly.  Api::Sound::Output::length[] is in/out: ask
+ * for the rounded-up whole count and the core reports back how many it
+ * actually wrote, carrying the remainder in its own ring buffer.  Ask
+ * for the same figure the JG port does, SAMPLERATE / (unsigned)fps, and
+ * submit whatever comes back - 798 or 799 (959 or 960).  The request is
+ * only an upper bound, so it doubles as the buffer capacity. */
+static unsigned audio_spf;
 
 static enum {
    FDS_SAVEFILE_SAV_UPS = 0,
@@ -1012,8 +969,8 @@ static void check_variables(void)
       }
    }
    if (audio) delete audio;
-   update_audio_timing();
-   audio = new Api::Sound::Output(audio_buffer, audio_spf_base);
+   audio_spf = is_pal ? (SAMPLERATE / 50) : (SAMPLERATE / 60);
+   audio = new Api::Sound::Output(audio_buffer, audio_spf);
 
    var.key = "nestopia_fds_auto_insert"; // FDS Auto Insert
    if (environ_cb(RETRO_ENVIRONMENT_GET_VARIABLE, &var))
@@ -1470,21 +1427,18 @@ static void check_variables(void)
 
 void retro_run(void)
 {
-   /* Exact per-frame sample count via remainder carry; must be set
-    * before Execute() since the APU reads the requested length when
-    * it flushes the frame's audio. */
-   unsigned frames = audio_spf_base;
-   audio_frac += audio_spf_rem;
-   if (audio_frac >= audio_spf_den)
-   {
-      audio_frac -= audio_spf_den;
-      frames++;
-   }
-   audio->length[0] = frames;
+   /* Reassign the request every frame: length[0] comes back holding
+    * what was written, and the core clamps to what it has, so leaving
+    * the returned value in place would ratchet the request down and
+    * back the APU's ring buffer up until it wrapped. */
+   audio->length[0] = audio_spf;
 
    update_input_snapshot();
    poll_fds_buttons();
    emulator.Execute(video, audio, input);
+
+   /* Samples actually written this frame. */
+   unsigned frames = audio->length[0];
 
    if (show_crosshair == SHOW_CROSSHAIR_ON)
       draw_crosshair(crossx, crossy);
@@ -1877,10 +1831,15 @@ bool retro_serialize(void *data, size_t size)
    *tracked_input_state_ptr++ = (unsigned char) cur_y;
    *tracked_input_state_ptr++ = prevL;
    *tracked_input_state_ptr++ = prevR;
-   *tracked_input_state_ptr++ = (unsigned char)(audio_frac       & 0xff);
-   *tracked_input_state_ptr++ = (unsigned char)((audio_frac >> 8) & 0xff);
-   *tracked_input_state_ptr++ = (unsigned char)((audio_frac >> 16) & 0xff);
-   *tracked_input_state_ptr++ = (unsigned char)((audio_frac >> 24) & 0xff);
+
+   /* Four bytes that used to carry the audio pacing accumulator.  The
+    * core reports its own per-frame sample count now, so there is
+    * nothing left to carry, but the footer keeps its size so states
+    * stay interchangeable with builds that still write the field. */
+   *tracked_input_state_ptr++ = 0;
+   *tracked_input_state_ptr++ = 0;
+   *tracked_input_state_ptr++ = 0;
+   *tracked_input_state_ptr++ = 0;
 
    return true;
 }
@@ -1915,19 +1874,10 @@ bool retro_unserialize(const void *data, size_t size)
       prevL  = *tracked_input_state_ptr++;
       prevR  = *tracked_input_state_ptr++;
 
-      if (footer >= 12) {
-         audio_frac  = (unsigned long)*tracked_input_state_ptr++;
-         audio_frac |= (unsigned long)*tracked_input_state_ptr++ << 8;
-         audio_frac |= (unsigned long)*tracked_input_state_ptr++ << 16;
-         audio_frac |= (unsigned long)*tracked_input_state_ptr++ << 24;
-      }
-      else
-         audio_frac = 0;
-
-      /* Guard against a state saved under the other region's
-       * denominator. */
-      if (audio_spf_den && audio_frac >= audio_spf_den)
-         audio_frac %= audio_spf_den;
+      /* Bytes 8..11 held the audio pacing accumulator.  Nothing reads
+       * them any more - the core carries the fractional sample itself -
+       * so they are skipped whether they are zeros from this build or a
+       * live value from an older one. */
    }
 
    return !machine->LoadState(ss);

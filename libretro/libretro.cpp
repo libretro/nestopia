@@ -22,6 +22,7 @@
 #include "../source/core/api/NstApiUser.hpp"
 #include "../source/core/api/NstApiFds.hpp"
 #include "../source/core/api/NstApiNsf.hpp"
+#include "../source/core/api/NstApiMemory.hpp"
 
 #include "../source/core/NstMachine.hpp"
 
@@ -104,6 +105,14 @@ static Api::Machine::FavoredSystem favsystem;
 
 static void *sram;
 static unsigned long sram_size;
+
+/* Memory map handed to the frontend. The core enumerates what the running
+ * machine actually holds, so cartridge RAM is published whether or not the
+ * board has a battery - most MMC3 carts have 8k at $6000 and no battery,
+ * which is why achievements reading that range used to see nothing. */
+#define MAX_MEMORY_DESCRIPTORS 8
+static struct retro_memory_descriptor memory_descriptors[MAX_MEMORY_DESCRIPTORS];
+static struct retro_memory_map memory_map;
 static bool is_pal;
 static bool is_nsf;
 static byte custpal[64*3];
@@ -1736,6 +1745,123 @@ static void extract_directory(char *buf, const char *path, size_t size)
 }
 
 
+/* Clamp a region to what is actually reachable at its base address. MMC5 can
+ * carry 64k of work RAM but only banks 8k of it into $6000-$7FFF at a time,
+ * and a descriptor has no way to express the banking. */
+static size_t memdesc_len(size_t start, size_t len)
+{
+   if (start < 0x8000U && start + len > 0x8000U)
+      len = 0x8000U - start;
+
+   if (start + len > 0x10000U)
+      len = 0x10000U - start;
+
+   return len;
+}
+
+/* A zero select tells the frontend that start and len are the entire mapping,
+ * which it only accepts for an aligned power-of-two block. Anything else has
+ * to spell out the bits an address must share with start; every bit set in
+ * start must also be set there, so OR it back in. */
+static size_t memdesc_select(size_t start, size_t len)
+{
+   size_t win = 1;
+
+   while (win < len)
+      win <<= 1;
+
+   if (win == len && (start & (len - 1)) == 0)
+      return 0;
+
+   return (0xFFFFU & ~(win - 1)) | start;
+}
+
+static void set_memory_map(void)
+{
+   Nes::Api::Memory imemory(emulator);
+   unsigned long count = imemory.NumRegions();
+   unsigned n = 0;
+   unsigned long i;
+
+   memset(memory_descriptors, 0, sizeof(memory_descriptors));
+
+   for (i = 0; i < count && n < MAX_MEMORY_DESCRIPTORS; i++)
+   {
+      Nes::Api::Memory::Region r = imemory.GetRegion(i);
+
+      if (!r.data || !r.size)
+         continue;
+
+      memory_descriptors[n].ptr        = r.data;
+      memory_descriptors[n].offset     = 0;
+      memory_descriptors[n].start      = r.address;
+      memory_descriptors[n].disconnect = 0;
+      memory_descriptors[n].len        = memdesc_len(r.address, r.size);
+      memory_descriptors[n].select     = memdesc_select(r.address,
+                                            memory_descriptors[n].len);
+
+      switch (r.kind)
+      {
+         case Nes::Api::Memory::KIND_SYSTEM_RAM:
+            /* 2k mirrored four times across $0000-$1FFF: bits 11 and 12
+             * are not wired to the chip. Spelling that out lets the
+             * frontend resolve the mirrors instead of leaving them blank. */
+            memory_descriptors[n].flags      = RETRO_MEMDESC_SYSTEM_RAM;
+            memory_descriptors[n].select     = 0xE000;
+            memory_descriptors[n].disconnect = 0x1800;
+            memory_descriptors[n].addrspace  = "RAM";
+            break;
+
+         case Nes::Api::Memory::KIND_WORK_RAM:
+            /* SAVE_RAM means battery backed or flash, and the frontend may
+             * persist anything carrying it. Plenty of boards - most MMC3
+             * carts among them - have work RAM that dies with the power, so
+             * only the ones the core reports as battery backed get the flag.
+             * The rest are still mapped, just not advertised as savable. */
+            if (r.battery)
+            {
+               memory_descriptors[n].flags     = RETRO_MEMDESC_SAVE_RAM;
+               memory_descriptors[n].addrspace = "SRAM";
+            }
+            else
+            {
+               memory_descriptors[n].addrspace = "WRAM";
+            }
+            break;
+
+         case Nes::Api::Memory::KIND_DISK_RAM:
+            /* Volatile: the BIOS reloads it from the disk image, and disk
+             * writes persist through the FDS file callbacks instead. */
+            memory_descriptors[n].addrspace = "FDSRAM";
+            break;
+
+         case Nes::Api::Memory::KIND_EXPANSION_RAM:
+         default:
+            /* Mapper RAM outside the usual window. Mapped so addresses
+             * resolve, but not tagged as save or system memory. */
+            memory_descriptors[n].addrspace = "EXRAM";
+            break;
+      }
+
+      if (log_cb)
+         log_cb(RETRO_LOG_INFO,
+            "[Nestopia]: memory map: %-6s $%04X %lu bytes%s%s\n",
+            memory_descriptors[n].addrspace,
+            (unsigned)r.address,
+            (unsigned long)memory_descriptors[n].len,
+            r.battery ? " (battery)" : "",
+            memory_descriptors[n].len != r.size ? " (clamped, banked)" : "");
+
+      n++;
+   }
+
+   memory_map.descriptors     = memory_descriptors;
+   memory_map.num_descriptors = n;
+
+   if (n)
+      environ_cb(RETRO_ENVIRONMENT_SET_MEMORY_MAPS, &memory_map);
+}
+
 bool retro_load_game(const struct retro_game_info *info)
 {
    const char *dir;
@@ -1968,6 +2094,8 @@ bool retro_load_game(const struct retro_game_info *info)
 
    machine->Power(true);
 
+   set_memory_map();
+
    check_variables();
 
    if (fds_auto_insert && machine->Is(Nes::Api::Machine::DISK))
@@ -2027,6 +2155,10 @@ void retro_unload_game(void)
    sram = 0;
    sram_size = 0;
    state_size = 0;
+
+   memset(memory_descriptors, 0, sizeof(memory_descriptors));
+   memory_map.descriptors     = NULL;
+   memory_map.num_descriptors = 0;
    is_nsf = false;
    nsf_prev_buttons = 0;
 
@@ -2134,6 +2266,10 @@ bool retro_unserialize(const void *data, size_t size)
    return !machine->LoadState(ss);
 }
 
+/* Deliberately unchanged. RETRO_MEMORY_SAVE_RAM is what the frontend writes
+ * to the .srm file, and sram is populated only by the battery file callback,
+ * so volatile work RAM never reaches disk. Achievements get their coverage
+ * from the memory map above instead. */
 void *retro_get_memory_data(unsigned id)
 {
    Core::Machine& machineGet = emulator;

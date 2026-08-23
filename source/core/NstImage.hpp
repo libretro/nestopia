@@ -56,6 +56,27 @@ namespace Nes
 
 			typedef void* ExternalDevice;
 
+			/* A block of emulated memory a frontend may inspect, e.g. to build
+			 * an achievement or cheat-search memory map. Regions are reported
+			 * whether or not they are battery backed; the battery file path is
+			 * about persistence, not visibility.
+			*/
+			struct MemoryRegion
+			{
+				enum Kind
+				{
+					KIND_WORK_RAM,      // cartridge RAM, commonly $6000-$7FFF
+					KIND_EXPANSION_RAM, // mapper RAM outside the usual window
+					KIND_DISK_RAM       // FDS program RAM
+				};
+
+				Kind kind;
+				word address;   // CPU address it appears at, 0 if not directly mapped
+				dword size;
+				byte* data;
+				bool battery;
+			};
+
 			enum ExternalDeviceType
 			{
 				EXT_DIP_SWITCHES = 1,
@@ -109,6 +130,22 @@ namespace Nes
 			virtual ExternalDevice QueryExternalDevice(ExternalDeviceType)
 			{
 				return NULL;
+			}
+
+			virtual uint NumMemoryRegions() const
+			{
+				return 0;
+			}
+
+			virtual MemoryRegion GetMemoryRegion(uint) const
+			{
+				MemoryRegion region;
+				region.kind    = MemoryRegion::KIND_WORK_RAM;
+				region.address = 0;
+				region.size    = 0;
+				region.data    = NULL;
+				region.battery = false;
+				return region;
 			}
 
 		protected:

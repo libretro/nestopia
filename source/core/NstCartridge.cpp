@@ -211,6 +211,19 @@ namespace Nes
 			return profile.game.adapter;
 		}
 
+		uint Cartridge::NumMemoryRegions() const
+		{
+			return board ? board->NumMemoryRegions() : 0;
+		}
+
+		Cartridge::MemoryRegion Cartridge::GetMemoryRegion(uint index) const
+		{
+			if (board && index < board->NumMemoryRegions())
+				return board->GetMemoryRegion( index );
+
+			return Image::GetMemoryRegion( index );
+		}
+
 		Cartridge::ExternalDevice Cartridge::QueryExternalDevice(ExternalDeviceType deviceType)
 		{
 			switch (deviceType)

@@ -75,6 +75,7 @@ SOURCES_CXX += $(CORE_DIR)/source/core/api/NstApiFds.cpp
 SOURCES_CXX += $(CORE_DIR)/source/core/api/NstApiHomebrew.cpp
 SOURCES_CXX += $(CORE_DIR)/source/core/api/NstApiInput.cpp
 SOURCES_CXX += $(CORE_DIR)/source/core/api/NstApiMachine.cpp
+SOURCES_CXX += $(CORE_DIR)/source/core/api/NstApiMemory.cpp
 SOURCES_CXX += $(CORE_DIR)/source/core/api/NstApiNsf.cpp
 SOURCES_CXX += $(CORE_DIR)/source/core/api/NstApiSound.cpp
 SOURCES_CXX += $(CORE_DIR)/source/core/api/NstApiTapeRecorder.cpp

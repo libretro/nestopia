@@ -48,6 +48,33 @@ namespace Nes
 					Map( i, &Mmc6::Poke_A001 );
 			}
 
+			uint Mmc6::NumMemoryRegions() const
+			{
+				return Board::NumMemoryRegions() + 1;
+			}
+
+			Mmc6::MemoryRegion Mmc6::GetMemoryRegion(uint index) const
+			{
+				const uint base = Board::NumMemoryRegions();
+
+				if (index < base)
+					return Board::GetMemoryRegion( index );
+
+				/* Internal to the MMC6, not board work RAM: 1k mirrored across
+				 * $7000-$7FFF. Reads are gated by the enable bits, the storage
+				 * is live regardless.
+				*/
+				MemoryRegion region;
+
+				region.kind    = MemoryRegion::KIND_WORK_RAM;
+				region.address = 0x7000;
+				region.size    = sizeof(ram);
+				region.data    = const_cast<byte*>(ram);
+				region.battery = board.HasBattery();
+
+				return region;
+			}
+
 			void Mmc6::Load(File& file)
 			{
 				if (board.HasBattery())

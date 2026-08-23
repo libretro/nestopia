@@ -171,6 +171,32 @@ namespace Nes
 				dcBlocker.Reset();
 			}
 
+			uint Mmc5::NumMemoryRegions() const
+			{
+				return Board::NumMemoryRegions() + 1;
+			}
+
+			Mmc5::MemoryRegion Mmc5::GetMemoryRegion(uint index) const
+			{
+				const uint base = Board::NumMemoryRegions();
+
+				if (index < base)
+					return Board::GetMemoryRegion( index );
+
+				/* $5C00-$5FFF. Readable as RAM only in ExRAM modes 2 and 3, but
+				 * the storage is live in every mode and games park data there.
+				*/
+				MemoryRegion region;
+
+				region.kind    = MemoryRegion::KIND_EXPANSION_RAM;
+				region.address = 0x5C00;
+				region.size    = SIZE_1K;
+				region.data    = const_cast<byte*>(exRam.mem);
+				region.battery = false;
+
+				return region;
+			}
+
 			void Mmc5::SubReset(const bool hard)
 			{
 				cpu.AddHook( Hook(this,&Mmc5::Hook_Cpu) );

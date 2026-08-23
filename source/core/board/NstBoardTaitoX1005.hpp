@@ -53,6 +53,8 @@ namespace Nes
 					};
 
 					void SubReset(bool);
+					uint NumMemoryRegions() const;
+					MemoryRegion GetMemoryRegion(uint) const;
 					void Load(File&);
 					void Save(File&) const;
 					void SubSave(State::Saver&) const;

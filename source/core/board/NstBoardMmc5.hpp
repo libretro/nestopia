@@ -167,6 +167,9 @@ namespace Nes
 
 			private:
 
+				uint NumMemoryRegions() const;
+				MemoryRegion GetMemoryRegion(uint) const;
+
 				void SubReset(bool);
 				void VBlank();
 				void HDummy();

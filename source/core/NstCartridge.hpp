@@ -110,6 +110,8 @@ namespace Nes
 			System GetDesiredSystem(Region,CpuModel*,PpuModel*) const;
 
 			ExternalDevice QueryExternalDevice(ExternalDeviceType);
+			uint NumMemoryRegions() const;
+			MemoryRegion GetMemoryRegion(uint) const;
 
 			Boards::Board* board;
 			VsSystem* vs;

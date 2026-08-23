@@ -29,6 +29,7 @@
 #include "../NstPpu.hpp"
 #include "../NstChips.hpp"
 #include "../NstState.hpp"
+#include "../NstImage.hpp"
 
 namespace Nes
 {
@@ -710,6 +711,15 @@ namespace Nes
 				{
 					return NULL;
 				}
+
+				/* Memory a frontend may inspect. The base board reports its work
+				 * RAM; boards carrying extra RAM append to it. Index 0 is always
+				 * the work RAM when there is any, so callers can rely on that.
+				*/
+				typedef Image::MemoryRegion MemoryRegion;
+
+				virtual uint NumMemoryRegions() const;
+				virtual MemoryRegion GetMemoryRegion(uint) const;
 
 			protected:
 

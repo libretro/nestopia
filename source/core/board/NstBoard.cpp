@@ -469,6 +469,34 @@ namespace Nes
 					file.Load( File::BATTERY, wrk.Source().Mem(), board.GetSavableWram() );
 			}
 
+			uint Board::NumMemoryRegions() const
+			{
+				return board.GetWram() ? 1 : 0;
+			}
+
+			Board::MemoryRegion Board::GetMemoryRegion(uint index) const
+			{
+				MemoryRegion region;
+
+				region.kind    = MemoryRegion::KIND_WORK_RAM;
+				region.address = 0x6000;
+				region.size    = 0;
+				region.data    = NULL;
+				region.battery = false;
+
+				if (index == 0)
+				{
+					if (const uint size = board.GetWram())
+					{
+						region.size    = size;
+						region.data    = wrk.Source().Mem();
+						region.battery = board.HasBattery() && board.GetSavableWram();
+					}
+				}
+
+				return region;
+			}
+
 			void Board::SaveState(State::Saver& state,const dword baseChunk) const
 			{
 				state.Begin( baseChunk );

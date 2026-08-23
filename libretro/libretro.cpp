@@ -21,9 +21,11 @@
 #include "../source/core/api/NstApiCartridge.hpp"
 #include "../source/core/api/NstApiUser.hpp"
 #include "../source/core/api/NstApiFds.hpp"
+#include "../source/core/api/NstApiNsf.hpp"
 
 #include "../source/core/NstMachine.hpp"
 
+#include "nesfont.h"
 #include "nstdatabase.hpp"
 #include "palettes.hpp"
 
@@ -103,6 +105,7 @@ static Api::Machine::FavoredSystem favsystem;
 static void *sram;
 static unsigned long sram_size;
 static bool is_pal;
+static bool is_nsf;
 static byte custpal[64*3];
 
 /* A frame spans a fractional number of samples - 798.68... for NTSC,
@@ -149,6 +152,168 @@ void draw_crosshair(int x, int y)
    for (int i = MAX(-CROSSHAIR_SIZE, -y); i <= MIN(CROSSHAIR_SIZE, 239 - y); i++) {
      video_buffer[current_width * (y + i) + x] = i % 2 == 0 ? w : b;
    }
+}
+
+/* NSF player.
+ *
+ * A sound file drives no PPU, so Machine::Execute() leaves the video
+ * output untouched and the frontend owns the screen.  This draws the
+ * same player the JG port does: header text near the top, a waveform
+ * scope over the middle third, and the transport legend at the bottom.
+ *
+ * The text is only redrawn on an Nsf::Event, so it has to survive in
+ * video_buffer between frames.  That holds because nothing else writes
+ * the buffer in NSF mode and check_variables() pins the frame to a
+ * plain 256x240 - see the is_nsf branches there.  The scope band is
+ * repainted every frame. */
+
+#define NSF_TEXT_COLOR  0x00d45500  /* Jolly Good Orange, as in the JG port */
+#define NSF_SCOPE_TOP   80
+#define NSF_SCOPE_ROWS  100
+#define NSF_SCOPE_BG    0x0f0f0f0f
+#define NSF_SCOPE_FG    0x00ffffff
+
+static int16_t nsf_prev_buttons;
+
+static void nsf_draw_text(int xo, int yo, const char *text)
+{
+   int x, y;
+   int xoffset = xo;
+   int yoffset = yo;
+   size_t c;
+
+   if (!text)
+      return;
+
+   for (c = 0; text[c]; c++)
+   {
+      const uint8_t *bitmap;
+
+      if (text[c] == '\n')
+      {
+         yoffset += 8;
+         xoffset  = xo;
+         continue;
+      }
+
+      /* Header strings come straight out of the file and are not
+       * guaranteed to be ASCII; the font only covers U+0000..U+007F, so
+       * anything above that is folded rather than read past the end. */
+      bitmap = &nesfont[(text[c] & 0x7f) << 3];
+
+      if (xoffset + 8 > video_width || yoffset + 8 > Api::Video::Output::HEIGHT)
+         continue;
+
+      for (x = 0; x < 8; x++)
+         for (y = 0; y < 8; y++)
+            video_buffer[((y + yoffset) * video_width) + x + xoffset] =
+               (bitmap[y] & (1 << x)) ? NSF_TEXT_COLOR : 0x00000000;
+
+      xoffset += 8;
+   }
+}
+
+/* Repaint the scope band from the samples the frame just produced.
+ * Takes the real count rather than a nominal samples-per-frame: the
+ * core reports what it wrote and the tail of the buffer beyond that is
+ * last frame's audio. */
+static void nsf_draw_scope(unsigned samples)
+{
+   uint32_t *scope = video_buffer + (video_width * NSF_SCOPE_TOP);
+   const int16_t *abuf = audio_buffer;
+   int lastval = 0;
+   int i;
+
+   memset(scope, 0x0f, video_width * NSF_SCOPE_ROWS * sizeof(uint32_t));
+
+   if (samples < 2)
+      return;
+
+   for (i = 0; i < video_width; i++)
+   {
+      double pos   = (i * (double)samples) / video_width;
+      unsigned idx = (unsigned)pos;
+      double frac  = pos - idx;
+      int samp, val;
+
+      if (idx + 1 < samples)
+         samp = (int)(abuf[idx] * (1.0 - frac) + abuf[idx + 1] * frac);
+      else
+         samp = abuf[samples - 1];
+
+      /* Full scale spans the band exactly: -32768 is the bottom row,
+       * +32767 the top, so nothing can land outside the region cleared
+       * above and leave a pixel behind. */
+      val = (NSF_SCOPE_ROWS - 1) -
+         (((samp + 32768) * (NSF_SCOPE_ROWS - 1)) / 65535);
+
+      scope[i + (video_width * val)] = NSF_SCOPE_FG;
+
+      /* Connect the dots with Bresenham's line generation algorithm */
+      if (i)
+      {
+         int x0 = i - 1, x1 = i;
+         int y0 = lastval, y1 = val;
+         int dx = abs(x1 - x0), sx = x0 < x1 ? 1 : -1;
+         int dy = -abs(y1 - y0), sy = y0 < y1 ? 1 : -1;
+         int err = dx + dy;
+         int e2 = 0;
+
+         for (;;)
+         {
+            scope[(video_width * y0) + x0] = NSF_SCOPE_FG;
+            if (x0 == x1 && y0 == y1)
+               break;
+
+            e2 = 2 * err;
+
+            if (e2 >= dy)
+            {
+               err += dy;
+               x0  += sx;
+            }
+
+            if (e2 <= dx)
+            {
+               err += dx;
+               y0  += sy;
+            }
+         }
+      }
+
+      lastval = val;
+   }
+}
+
+static void nsf_draw_screen(void)
+{
+   Api::Nsf nsf(emulator);
+   std::ostringstream oss;
+
+   memset(video_buffer, 0x00,
+      Api::Video::Output::NTSC_WIDTH * Api::Video::Output::HEIGHT * sizeof(uint32_t));
+
+   nsf_draw_text(8, 16, nsf.GetName());
+   nsf_draw_text(8, 32, nsf.GetCopyright());
+   nsf_draw_text(8, 48, nsf.GetArtist());
+
+   oss << nsf.GetCurrentSong() + 1 << " / " << nsf.GetNumSongs();
+   nsf_draw_text(8, 64, oss.str().c_str());
+
+   nsf_draw_text(8, 192,
+      "Play: A Button\nStop: B Button\nPrev: Left\nNext: Right");
+}
+
+static void NST_CALLBACK nsf_event_callback(Api::Nsf::UserData data, Api::Nsf::Event evt)
+{
+   /* Play and stop are handled by discarding the frame's samples in
+    * retro_run() rather than by Sound::Mute().  Muting drives the APU
+    * inaudible, which makes Apu::EndFrame() skip FlushSound() entirely
+    * - length[0] would come back holding the request instead of a real
+    * count and the frontend would resubmit a stale frame forever. */
+   (void)data;
+   (void)evt;
+   nsf_draw_screen();
 }
 
 static void load_wav(const char* sampgame, Api::User::File& file)
@@ -430,7 +595,7 @@ void retro_get_system_info(struct retro_system_info *info)
    info->library_version  = NST_VERSION;
 #endif
    info->need_fullpath    = false;
-   info->valid_extensions = "nes|fds|unf|unif";
+   info->valid_extensions = "nes|fds|unf|unif|nsf";
 }
 
 double get_aspect_ratio(void)
@@ -559,6 +724,14 @@ void retro_reset(void)
       if (fds_auto_insert)
          fds->InsertDisk(0, 0);
    }
+
+   if (is_nsf)
+   {
+      /* Reset returns to the starting song without raising an event, so
+       * the header text has to be repainted by hand. */
+      nsf_prev_buttons = 0;
+      nsf_draw_screen();
+   }
 }
 
 typedef struct
@@ -666,6 +839,39 @@ static void take_mouse_delta(int *dx, int *dy)
    if (dy) *dy = aux_mouse_dy;
    aux_mouse_dx = 0;
    aux_mouse_dy = 0;
+}
+
+/* Rising edges on the transport buttons, taken from the frame's input
+ * snapshot.  Nestopia raises the Nsf::Event synchronously from inside
+ * these calls, so the screen is redrawn before the frame runs. */
+static void nsf_poll_transport(void)
+{
+   Api::Nsf nsf(emulator);
+   int16_t buttons = pad_state[0];
+   int16_t pressed = buttons & ~nsf_prev_buttons;
+   unsigned numsongs = nsf.GetNumSongs();
+   int cursong = nsf.GetCurrentSong();
+
+   nsf_prev_buttons = buttons;
+
+   if (pressed & (1 << RETRO_DEVICE_ID_JOYPAD_A))
+      nsf.PlaySong();
+   else if (pressed & (1 << RETRO_DEVICE_ID_JOYPAD_B))
+      nsf.StopSong();
+   else if (pressed & (1 << RETRO_DEVICE_ID_JOYPAD_LEFT))
+   {
+      if (cursong <= 0)
+         nsf.SelectSong(numsongs - 1);
+      else
+         nsf.SelectPrevSong();
+   }
+   else if (pressed & (1 << RETRO_DEVICE_ID_JOYPAD_RIGHT))
+   {
+      if (cursong + 1 >= (int)numsongs)
+         nsf.SelectSong(0);
+      else
+         nsf.SelectNextSong();
+   }
 }
 
 static void NST_CALLBACK nst_cb_event(void *userdata, Api::User::Event event, const void *data) {
@@ -1013,6 +1219,12 @@ static void check_variables(void)
          blargg_ntsc = 5;
    }
 
+   /* The NTSC filter reshapes PPU output, of which an NSF has none, and
+    * the player screen is laid out in 256x240 pixel coordinates.  Pin
+    * the frame to that regardless of the setting. */
+   if (is_nsf)
+      blargg_ntsc = 0;
+
    switch(blargg_ntsc)
    {
       case 0: // Disabled
@@ -1193,6 +1405,12 @@ static void check_variables(void)
    var.key = "nestopia_overscan_h_right"; // Mask Overscan (Right Horizontal)
    if (environ_cb(RETRO_ENVIRONMENT_GET_VARIABLE, &var))
       overscan_h_right = atoi(var.value);
+
+   /* Overscan masking hides the glitchy edges of a PPU frame.  There is
+    * no PPU frame here, only the player screen, and cropping it by up
+    * to 24 lines would eat the transport legend. */
+   if (is_nsf)
+      overscan_v_top = overscan_v_bottom = overscan_h_left = overscan_h_right = 0;
 
    var.key = "nestopia_aspect"; // Preferred Aspect Ratio
    if (environ_cb(RETRO_ENVIRONMENT_GET_VARIABLE, &var) && var.value)
@@ -1435,10 +1653,25 @@ void retro_run(void)
 
    update_input_snapshot();
    poll_fds_buttons();
+
+   if (is_nsf)
+      nsf_poll_transport();
+
    emulator.Execute(video, audio, input);
 
    /* Samples actually written this frame. */
    unsigned frames = audio->length[0];
+
+   if (is_nsf)
+   {
+      /* Stopping a tune leaves the APU holding whatever the channels
+       * were last set to, so the frame is silenced here rather than
+       * with Sound::Mute() - see nsf_event_callback(). */
+      if (!Api::Nsf(emulator).IsPlaying())
+         memset(audio_buffer, 0, frames * sizeof(int16_t));
+
+      nsf_draw_scope(frames);
+   }
 
    if (show_crosshair == SHOW_CROSSHAIR_ON)
       draw_crosshair(crossx, crossy);
@@ -1694,10 +1927,16 @@ bool retro_load_game(const struct retro_game_info *info)
    }
 
    is_pal = false;
+   is_nsf = false;
    check_variables();
 
    if (machine->Load(ss, favsystem))
       return false;
+
+   /* Has to be known before the second check_variables() below, which
+    * is what pins the frame geometry for the player screen. */
+   is_nsf = machine->Is(Api::Machine::SOUND);
+   nsf_prev_buttons = 0;
 
    Api::Video ivideo(emulator);
    ivideo.SetSharpness(Api::Video::DEFAULT_SHARPNESS_RGB);
@@ -1733,7 +1972,16 @@ bool retro_load_game(const struct retro_game_info *info)
 
    if (fds_auto_insert && machine->Is(Nes::Api::Machine::DISK))
       fds->InsertDisk(0, 0);
-   
+
+   if (is_nsf)
+   {
+      /* Hooked up only now that check_variables() has settled the frame
+       * geometry, so the callback never paints at the wrong stride. */
+      Api::Nsf::eventCallback.Set(nsf_event_callback, 0);
+      Api::Nsf(emulator).StopSong();
+      nsf_draw_screen();
+   }
+
    video = new Api::Video::Output(video_buffer, video_width * sizeof(uint32_t));
    
    if (log_cb)
@@ -1748,6 +1996,7 @@ void retro_unload_game(void)
    Api::Input::Controllers::Paddle::callback.Unset();
    Api::Input::Controllers::VsSystem::callback.Unset();
    Api::Input::Controllers::Zapper::callback.Unset();
+   Api::Nsf::eventCallback.Unset();
 
    if (machine)
    {
@@ -1778,6 +2027,8 @@ void retro_unload_game(void)
    sram = 0;
    sram_size = 0;
    state_size = 0;
+   is_nsf = false;
+   nsf_prev_buttons = 0;
 
 #ifdef _3DS
    linearFree(video_buffer);

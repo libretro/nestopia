@@ -30,10 +30,6 @@
 #include "../NstChips.hpp"
 #include "../NstState.hpp"
 
-#ifdef NST_PRAGMA_ONCE
-#pragma once
-#endif
-
 namespace Nes
 {
 	namespace Core

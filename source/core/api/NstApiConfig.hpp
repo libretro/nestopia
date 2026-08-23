@@ -36,9 +36,6 @@
 //
 // NST_DEBUG                 - Debug mode compilation.
 //
-// NST_PRAGMA_ONCE           - Define if #pragma once is supported. Auto-defined if
-//                             compiler is MCW or MSVC.
-//
 // NST_U64 <type>            - For native 64bit (or greater) integer support. May not
 //                             be needed if compiler is BC, GCC, ICC, MSVC or supports
 //                             the C99 long long integer type.
@@ -91,24 +88,6 @@
 //                              NST_ASSUME( miss_july == hot );
 //                             #endif
 //
-// NST_FASTDELEGATE          - Define this if your compiler can handle casts between member
-//                             function pointers of different types and calls through them.
-//
-//                             If the size required to store a non-virtual member function
-//                             pointer is deemed too large, as in
-//
-//                             sizeof( void (Class::*)() ) > sizeof( void (*)() )
-//
-//                             this option is not worth using and Nestopia will force a
-//                             compile time error. Auto-defined if compiler is MSVC.
-//
-// Abbrevations:
-//
-// BC - Borland C++
-// GCC - GNU Compiler Collection
-// ICC - Intel C/C++ Compiler
-// MCW - Metrowerks CodeWarrior
-// MSVC - Microsoft Visual C++
 //
 ////////////////////////////////////////////////////////////////////////////////////////
 */

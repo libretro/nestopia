@@ -30,10 +30,6 @@
 #include "NstFile.hpp"
 #include "api/NstApiCartridge.hpp"
 
-#ifdef NST_PRAGMA_ONCE
-#pragma once
-#endif
-
 namespace Nes
 {
 	namespace Core

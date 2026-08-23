@@ -29,10 +29,6 @@
 #include "NstCore.hpp"
 #endif
 
-#ifdef NST_PRAGMA_ONCE
-#pragma once
-#endif
-
 #ifndef NST_DEBUG
 
   #define NST_DEBUG_MSG(msg_) NST_NOP()

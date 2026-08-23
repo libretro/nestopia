@@ -25,10 +25,6 @@
 #ifndef NST_BOARD_SUPERGAME_H
 #define NST_BOARD_SUPERGAME_H
 
-#ifdef NST_PRAGMA_ONCE
-#pragma once
-#endif
-
 #include "NstBoardSuperGameBoogerman.hpp"
 #include "NstBoardSuperGameLionKing.hpp"
 #include "NstBoardSuperGamePocahontas2.hpp"

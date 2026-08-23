@@ -28,6 +28,8 @@
 
 #if NST_GCC && !defined(__STRICT_ANSI__)
 #warning "performance warning, no native 64bit integer support!"
+#elif defined(_MSC_VER)
+#pragma message("performance warning, no native 64bit integer support!")
 #endif
 
 #include "NstAssert.hpp"

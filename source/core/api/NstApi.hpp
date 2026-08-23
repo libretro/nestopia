@@ -29,10 +29,6 @@
 #include "../NstBase.hpp"
 #endif
 
-#ifdef NST_PRAGMA_ONCE
-#pragma once
-#endif
-
 #ifndef NST_CALLBACK
 #define NST_CALLBACK NST_CALL
 #endif

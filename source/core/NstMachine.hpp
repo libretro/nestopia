@@ -31,10 +31,6 @@
 #include "NstPpu.hpp"
 #include "NstVideoRenderer.hpp"
 
-#ifdef NST_PRAGMA_ONCE
-#pragma once
-#endif
-
 namespace Nes
 {
 	namespace Core

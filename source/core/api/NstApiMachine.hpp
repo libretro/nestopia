@@ -28,10 +28,6 @@
 #include <iosfwd>
 #include "NstApi.hpp"
 
-#ifdef NST_PRAGMA_ONCE
-#pragma once
-#endif
-
 namespace Nes
 {
 	namespace Api

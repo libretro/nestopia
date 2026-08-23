@@ -31,10 +31,6 @@
 #include "NstBase.hpp"
 #endif
 
-#ifdef NST_PRAGMA_ONCE
-#pragma once
-#endif
-
 #if defined(_WIN32) || defined(WIN32) || defined(__WIN32__)
 #define NST_WIN32
 #endif
@@ -66,7 +62,11 @@
 
 #endif
 
+#if NST_GCC
 #define NST_UNUSED __attribute__ ((unused))
+#else
+#define NST_UNUSED
+#endif
 
 #define NST_NOP() ((void)0)
 
@@ -390,6 +390,11 @@ namespace Nes
 	#else
 	typedef unsigned long long qaword;
 	#endif
+	#define NST_NATIVE_QWORD
+
+#elif defined(_UI64_MAX)
+
+	typedef unsigned __int64 qaword;
 	#define NST_NATIVE_QWORD
 
 #else

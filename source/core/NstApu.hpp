@@ -226,6 +226,7 @@ namespace Nes
 					DcBlocker();
 
 					void Reset();
+					void Prime(Sample);
 					Sample Apply(Sample);
 					void LoadState(State::Loader&);
 					void SaveState(State::Saver&,dword) const;
@@ -299,6 +300,7 @@ namespace Nes
 
 			NST_NO_INLINE Channel::Sample GetSample();
 			NST_NO_INLINE void NST_FASTCALL WalkSpan(dword);
+			NST_SINGLE_CALL dword MixLevel(dword) const;
 
 			/* The two DACs, tabulated. Indexed by a sum of channel levels:
 			 * 0-30 for the square pair, 0-202 for the triangle, noise and DMC.

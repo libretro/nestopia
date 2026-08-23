@@ -237,7 +237,11 @@ namespace Nes
 			noise.Reset( cpu.GetModel() );
 			dmc.Reset( cpu.GetModel() );
 
-			dcBlocker.Reset();
+			/* The triangle parks at the top of its ramp, so the mixer already
+			 * carries a DC before a single sample is asked for. Seed the
+			 * blocker with it rather than let it step up from silence.
+			*/
+			dcBlocker.Prime( Channel::Sample( MixLevel( dmc.GetLevel() ) ) );
 
 			stream = NULL;
 
@@ -1157,6 +1161,17 @@ namespace Nes
 		{
 			acc = 0;
 			prev = 0;
+			next = 0;
+		}
+
+		void Apu::Channel::DcBlocker::Prime(Sample dc)
+		{
+			/* Start already settled on the power-up DC. Seeding prev makes the
+			 * first Apply cancel exactly, instead of emitting the whole level
+			 * and decaying it away over the pole's ~10900 sample tail.
+			*/
+			acc  = 0;
+			prev = signed_shl(dc,15);
 			next = 0;
 		}
 
@@ -2802,6 +2817,15 @@ namespace Nes
 			}
 		}
 
+		NST_SINGLE_CALL dword Apu::MixLevel(dword dmcLevel) const
+		{
+			return
+			(
+				lutPulse[ square[0].GetLevel() + square[1].GetLevel() ] +
+				lutTnd  [ triangle.GetLevel() * 3 + noise.GetLevel() * 2 + dmcLevel ]
+			);
+		}
+
 		NST_NO_INLINE void NST_FASTCALL Apu::WalkSpan(dword span)
 		{
 			/* Both DACs are non-linear, and f(mean(x)) is not mean(f(x)), so
@@ -2823,11 +2847,7 @@ namespace Nes
 				step = NST_MIN( step, triangle.Remaining() );
 				step = NST_MIN( step, noise.Remaining() );
 
-				cycles.sampleSum += qaword
-				(
-					lutPulse[ square[0].GetLevel() + square[1].GetLevel() ] +
-					lutTnd  [ triangle.GetLevel() * 3 + noise.GetLevel() * 2 + level ]
-				) * step;
+				cycles.sampleSum += qaword( MixLevel( level ) ) * step;
 
 				square[0].Advance( step );
 				square[1].Advance( step );

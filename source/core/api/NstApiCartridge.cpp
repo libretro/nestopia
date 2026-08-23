@@ -37,10 +37,6 @@ namespace Nes
 	{
 		Cartridge::ChooseProfileCaller Cartridge::chooseProfileCallback;
 
-		#ifdef NST_MSVC_OPTIMIZE
-		#pragma optimize("s", on)
-		#endif
-
 		Cartridge::Profile::Hash::Hash() throw()
 		{
 			Clear();
@@ -573,9 +569,5 @@ namespace Nes
 		{
 			return Core::ImageDatabase::Entry(ref).GetDumpState();
 		}
-
-		#ifdef NST_MSVC_OPTIMIZE
-		#pragma optimize("", on)
-		#endif
 	}
 }

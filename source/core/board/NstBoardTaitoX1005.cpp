@@ -35,10 +35,6 @@ namespace Nes
 		{
 			namespace Taito
 			{
-				#ifdef NST_MSVC_OPTIMIZE
-				#pragma optimize("s", on)
-				#endif
-
 				X1005::X1005(const Context& c)
 				: Board(c), version(DetectVersion(c))
 				{
@@ -136,10 +132,6 @@ namespace Nes
 					state.Begin( AsciiId<'R','A','M'>::V ).Compress( ram ).End();
 					state.End();
 				}
-
-				#ifdef NST_MSVC_OPTIMIZE
-				#pragma optimize("", on)
-				#endif
 
 				NES_POKE_AD(X1005,7EF0_0)
 				{

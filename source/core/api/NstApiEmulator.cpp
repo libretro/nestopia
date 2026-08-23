@@ -29,10 +29,6 @@ namespace Nes
 {
 	namespace Api
 	{
-		#ifdef NST_MSVC_OPTIMIZE
-		#pragma optimize("s", on)
-		#endif
-
 		Emulator::Emulator()
 		: machine(*new Core::Machine)
 		{
@@ -43,10 +39,6 @@ namespace Nes
 			delete &machine;
 		}
 
-		#ifdef NST_MSVC_OPTIMIZE
-		#pragma optimize("", on)
-		#endif
-
 		Result Emulator::Execute
 		(
 			Core::Video::Output* video,
@@ -54,12 +46,12 @@ namespace Nes
 			Core::Input::Controllers* input
 		)   throw()
 		{
-			return machine.tracker.Execute( machine, video, sound, input );
+			return machine.ExecuteFrame( video, sound, input );
 		}
 
 		ulong Emulator::Frame() const throw()
 		{
-			return machine.tracker.Frame();
+			return machine.Frame();
 		}
 	}
 }

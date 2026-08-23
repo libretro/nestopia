@@ -27,10 +27,6 @@
 
 namespace Nes
 {
-	#ifdef NST_MSVC_OPTIMIZE
-	#pragma optimize("s", on)
-	#endif
-
 	namespace Core
 	{
 		namespace Sound
@@ -127,9 +123,5 @@ namespace Nes
 			emulator.cpu.GetApu().ClearBuffers();
 		}
 	}
-
-	#ifdef NST_MSVC_OPTIMIZE
-	#pragma optimize("", on)
-	#endif
 }
 

@@ -24,27 +24,9 @@
 
 #include "NstCore.hpp"
 
-#if NST_MSVC
-
- #if (defined(_DEBUG) && defined(NDEBUG)) || (!defined(_DEBUG) && !defined(NDEBUG))
- #pragma message("warning, NDEBUG and _DEBUG macro inconsistency!")
- #endif
-
- #if !defined(_DEBUG) && defined(__MSVC_RUNTIME_CHECKS)
- #pragma message("performance warning, RTCx compiler options enabled in non-debug mode!")
- #endif
-
- #ifdef _CPPRTTI
- #pragma message("performance warning, RTTI compiler option needlessly enabled!")
- #endif
-
-#endif
-
 #ifndef NST_NATIVE_QWORD
 
-#if NST_MSVC || NST_MWERKS >= 0x3000 || NST_BCB >= 0x600
-#pragma message("performance warning, no native 64bit integer support!")
-#elif NST_GCC && !defined(__STRICT_ANSI__)
+#if NST_GCC && !defined(__STRICT_ANSI__)
 #warning "performance warning, no native 64bit integer support!"
 #endif
 

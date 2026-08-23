@@ -120,15 +120,9 @@
 //
 // NST_NO_ZLIB    - ZLib compression library. Not recommended to disable
 //                  unless it's unavailable on the target platform. The core
-//                  uses it internally for save states and the rewinder
-//                  feature. Although they'll still work without them, memory
-//                  footprint will increase drastically.
-//
-// NST_NO_HQ2X    - hq2x and hq3x video filters
-//
-// NST_NO_SCALEX  - Scale2x and Scale3x video filters
-//
-// NST_NO_2XSAI   - 2xSaI video filter
+//                  uses it internally for save states. Although they'll
+//                  still work without it, memory footprint will increase
+//                  drastically.
 //
 ////////////////////////////////////////////////////////////////////////////////////////
 */

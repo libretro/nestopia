@@ -32,10 +32,6 @@ namespace Nes
 	{
 		namespace Boards
 		{
-			#ifdef NST_MSVC_OPTIMIZE
-			#pragma optimize("s", on)
-			#endif
-
 			const byte Mmc5::Filler::squared[4] = {0x00,0x55,0xAA,0xFF};
 
 			Mmc5::Sound::Sound(Apu& a,bool connect)
@@ -533,10 +529,6 @@ namespace Nes
 				amp = (data >> 8) * VOLUME;
 				sample = enabled ? amp : 0;
 			}
-
-			#ifdef NST_MSVC_OPTIMIZE
-			#pragma optimize("", on)
-			#endif
 
 			inline ibool Mmc5::IsPpuSprite8x16() const
 			{

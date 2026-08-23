@@ -199,10 +199,6 @@ namespace Nes
 			}
 		};
 
-		#ifdef NST_MSVC_OPTIMIZE
-		#pragma optimize("s", on)
-		#endif
-
 		Apu::Apu(Cpu& c)
 		:
 		cpu        (c),
@@ -692,10 +688,6 @@ namespace Nes
 			}
 		}
 
-		#ifdef NST_MSVC_OPTIMIZE
-		#pragma optimize("", on)
-		#endif
-
 		void NST_FASTCALL Apu::SyncOn(const Cycle target)
 		{
 			NST_ASSERT( (stream && settings.audible) && (cycles.rate && cycles.fixed) && (cycles.extCounter == Cpu::CYCLE_MAX) );
@@ -931,10 +923,6 @@ namespace Nes
 				cycles.extCounter -= frame;
 		}
 
-		#ifdef NST_MSVC_OPTIMIZE
-		#pragma optimize("s", on)
-		#endif
-
 		Apu::Settings::Settings()
 		: rate(44100), speed(0), muted(false), transpose(false), audible(true)
 		{
@@ -1010,10 +998,6 @@ namespace Nes
 			Resync( speed, cpu );
 		}
 
-		#ifdef NST_MSVC_OPTIMIZE
-		#pragma optimize("", on)
-		#endif
-
 		NST_SINGLE_CALL dword Apu::Synchronizer::Clock(const dword output,const dword sampleRate,const Cpu& cpu)
 		{
 			/*if (sync)
@@ -1060,10 +1044,6 @@ namespace Nes
 
 			return 0;
 		}
-
-		#ifdef NST_MSVC_OPTIMIZE
-		#pragma optimize("s", on)
-		#endif
 
 		Apu::Channel::LengthCounter::LengthCounter()
 		{
@@ -1134,10 +1114,6 @@ namespace Nes
 			UpdateOutput();
 		}
 
-		#ifdef NST_MSVC_OPTIMIZE
-		#pragma optimize("", on)
-		#endif
-
 		void Apu::Channel::Envelope::UpdateOutput()
 		{
 			output = (regs[regs[1] >> 4 & 1U] & 0xFUL) * outputVolume;
@@ -1172,10 +1148,6 @@ namespace Nes
 			UpdateOutput();
 		}
 
-		#ifdef NST_MSVC_OPTIMIZE
-		#pragma optimize("s", on)
-		#endif
-
 		Apu::Channel::DcBlocker::DcBlocker()
 		{
 			Reset();
@@ -1187,10 +1159,6 @@ namespace Nes
 			prev = 0;
 			next = 0;
 		}
-
-		#ifdef NST_MSVC_OPTIMIZE
-		#pragma optimize("", on)
-		#endif
 
 		Apu::Channel::Sample Apu::Channel::DcBlocker::Apply(Sample sample)
 		{
@@ -1249,10 +1217,6 @@ namespace Nes
 			}
 		}
 
-		#ifdef NST_MSVC_OPTIMIZE
-		#pragma optimize("s", on)
-		#endif
-
 		Apu::Channel::Channel(Apu& a)
 		: apu(a) {}
 
@@ -1288,10 +1252,6 @@ namespace Nes
 			return apu.settings.volumes[channel];
 		}
 
-		#ifdef NST_MSVC_OPTIMIZE
-		#pragma optimize("", on)
-		#endif
-
 		Cycle Apu::Channel::GetCpuClockBase() const
 		{
 			return apu.cpu.GetClockBase();
@@ -1326,10 +1286,6 @@ namespace Nes
 		{
 			return Cpu::CYCLE_MAX;
 		}
-
-		#ifdef NST_MSVC_OPTIMIZE
-		#pragma optimize("s", on)
-		#endif
 
 		Apu::Oscillator::Oscillator()
 		: rate(1), fixed(1) {}
@@ -1379,18 +1335,10 @@ namespace Nes
 			waveLength = 0;
 		}
 
-		#ifdef NST_MSVC_OPTIMIZE
-		#pragma optimize("", on)
-		#endif
-
 		inline bool Apu::Square::CanOutput() const
 		{
 			return lengthCounter.GetCount() && envelope.Volume() && validFrequency;
 		}
-
-		#ifdef NST_MSVC_OPTIMIZE
-		#pragma optimize("s", on)
-		#endif
 
 		void Apu::Square::UpdateSettings(uint v,dword r,uint f)
 		{
@@ -1514,10 +1462,6 @@ namespace Nes
 				state.End();
 			}
 		}
-
-		#ifdef NST_MSVC_OPTIMIZE
-		#pragma optimize("", on)
-		#endif
 
 		NST_SINGLE_CALL void Apu::Square::Disable(const bool disable)
 		{
@@ -1672,10 +1616,6 @@ namespace Nes
 			}
 		}
 
-		#ifdef NST_MSVC_OPTIMIZE
-		#pragma optimize("s", on)
-		#endif
-
 		Apu::Triangle::Triangle()
 		: outputVolume(0) {}
 
@@ -1699,18 +1639,10 @@ namespace Nes
 			lengthCounter.Reset();
 		}
 
-		#ifdef NST_MSVC_OPTIMIZE
-		#pragma optimize("", on)
-		#endif
-
 		inline bool Apu::Triangle::CanOutput() const
 		{
 			return lengthCounter.GetCount() && linearCounter && waveLength >= MIN_FRQ && outputVolume;
 		}
-
-		#ifdef NST_MSVC_OPTIMIZE
-		#pragma optimize("s", on)
-		#endif
 
 		void Apu::Triangle::UpdateSettings(uint v,dword r,uint f)
 		{
@@ -1800,10 +1732,6 @@ namespace Nes
 
 			active = CanOutput();
 		}
-
-		#ifdef NST_MSVC_OPTIMIZE
-		#pragma optimize("", on)
-		#endif
 
 		NST_SINGLE_CALL void Apu::Triangle::Disable(const bool disable)
 		{
@@ -1898,10 +1826,6 @@ namespace Nes
 			return lengthCounter.GetCount();
 		}
 
-		#ifdef NST_MSVC_OPTIMIZE
-		#pragma optimize("s", on)
-		#endif
-
 		void Apu::Noise::Reset(const CpuModel model)
 		{
 			Oscillator::Reset();
@@ -1926,18 +1850,10 @@ namespace Nes
 			return 0;
 		}
 
-		#ifdef NST_MSVC_OPTIMIZE
-		#pragma optimize("", on)
-		#endif
-
 		inline bool Apu::Noise::CanOutput() const
 		{
 			return lengthCounter.GetCount() && envelope.Volume();
 		}
-
-		#ifdef NST_MSVC_OPTIMIZE
-		#pragma optimize("s", on)
-		#endif
 
 		void Apu::Noise::UpdateSettings(uint v,dword r,uint f)
 		{
@@ -2015,10 +1931,6 @@ namespace Nes
 			active = CanOutput();
 		}
 
-		#ifdef NST_MSVC_OPTIMIZE
-		#pragma optimize("", on)
-		#endif
-
 		NST_SINGLE_CALL void Apu::Noise::Disable(const bool disable)
 		{
 			active &= lengthCounter.Disable( disable );
@@ -2083,10 +1995,6 @@ namespace Nes
 		{
 			return lengthCounter.GetCount();
 		}
-
-		#ifdef NST_MSVC_OPTIMIZE
-		#pragma optimize("s", on)
-		#endif
 
 		Apu::Dmc::Dmc()
 		: outputVolume(0)
@@ -2332,10 +2240,6 @@ namespace Nes
 				state.End();
 			}
 		}
-
-		#ifdef NST_MSVC_OPTIMIZE
-		#pragma optimize("", on)
-		#endif
 
 		void Apu::Dmc::RebaseFrame(const Cycle frame)
 		{
@@ -2706,10 +2610,6 @@ namespace Nes
 			return dma.lengthCounter;
 		}
 
-		#ifdef NST_MSVC_OPTIMIZE
-		#pragma optimize("s", on)
-		#endif
-
 		void Apu::ClearBuffers()
 		{
 			ClearBuffers( true );
@@ -2733,10 +2633,6 @@ namespace Nes
 
 			buffer.Reset( false );
 		}
-
-		#ifdef NST_MSVC_OPTIMIZE
-		#pragma optimize("", on)
-		#endif
 
 		bool Apu::IsDmaPutCycle(const Cycle clock) const
 		{

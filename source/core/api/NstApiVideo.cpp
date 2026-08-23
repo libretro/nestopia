@@ -39,19 +39,11 @@ namespace Nes
 
 	namespace Api
 	{
-		#ifdef NST_MSVC_OPTIMIZE
-		#pragma optimize("s", on)
-		#endif
-
 		Result Video::EnableUnlimSprites(bool state) throw()
 		{
-			if (emulator.tracker.IsLocked( true ))
-				return RESULT_ERR_NOT_READY;
-
 			if (!emulator.ppu.HasSpriteLimit() != state)
 			{
 				emulator.ppu.EnableSpriteLimit( !state );
-				emulator.tracker.Resync( true );
 				return RESULT_OK;
 			}
 
@@ -107,16 +99,6 @@ namespace Nes
 		{
 			return emulator.renderer.GetHue();
 		}
-		
-		bool Video::GetBlend() const throw()
-		{
-			return emulator.renderer.GetBlend() != 0;
-		}
-
-		int Video::GetCornerRounding() const throw()
-		{
-			return emulator.renderer.GetCornerRounding();
-		}
 
 		Result Video::SetBrightness(int value) throw()
 		{
@@ -161,16 +143,6 @@ namespace Nes
 		Result Video::SetHue(int value) throw()
 		{
 			return emulator.renderer.SetHue( value );
-		}
-		
-		Result Video::SetBlend(bool value) throw()
-		{
-			return emulator.renderer.SetBlend(value);
-		}
-
-		Result Video::SetCornerRounding(int value) throw()
-		{
-			return emulator.renderer.SetCornerRounding(value);
 		}
 
 		void Video::ClearFilterUpdateFlag() throw()
@@ -371,9 +343,5 @@ namespace Nes
 		{
 			return emulator.renderer.GetPalette();
 		}
-
-		#ifdef NST_MSVC_OPTIMIZE
-		#pragma optimize("", on)
-		#endif
 	}
 }

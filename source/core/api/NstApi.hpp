@@ -37,11 +37,6 @@
 #define NST_CALLBACK NST_CALL
 #endif
 
-#if NST_MSVC >= 1200
-#pragma warning( push )
-#pragma warning( disable : 4512 )
-#endif
-
 namespace Nes
 {
 	namespace Core
@@ -108,9 +103,5 @@ namespace Nes
 		};
 	}
 }
-
-#if NST_MSVC >= 1200
-#pragma warning( pop )
-#endif
 
 #endif

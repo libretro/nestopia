@@ -35,10 +35,6 @@ namespace Nes
 		{
 			namespace Taito
 			{
-				#ifdef NST_MSVC_OPTIMIZE
-				#pragma optimize("s", on)
-				#endif
-
 				X1017::X1017(const Context& c)
 				: Board(c)
 				{
@@ -152,10 +148,6 @@ namespace Nes
 
 					state.End();
 				}
-
-				#ifdef NST_MSVC_OPTIMIZE
-				#pragma optimize("", on)
-				#endif
 
 				void X1017::UpdateChr() const
 				{

@@ -51,7 +51,7 @@ namespace Nes
 
 			void Reset(bool,bool);
 			void PowerOff();
-			void BeginFrame(bool);
+			void BeginFrame();
 			void EndFrame();
 
 			enum

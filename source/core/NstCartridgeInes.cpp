@@ -35,10 +35,6 @@ namespace Nes
 {
 	namespace Core
 	{
-		#ifdef NST_MSVC_OPTIMIZE
-		#pragma optimize("s", on)
-		#endif
-
 		class Cartridge::Ines::Loader
 		{
 			bool Load(Ram&,dword);
@@ -1080,9 +1076,5 @@ namespace Nes
 
 			return RESULT_OK;
 		}
-
-		#ifdef NST_MSVC_OPTIMIZE
-		#pragma optimize("", on)
-		#endif
 	}
 }

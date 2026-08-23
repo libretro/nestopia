@@ -31,19 +31,6 @@
 #pragma once
 #endif
 
-#if NST_ICC >= 810
-#pragma warning( push )
-#pragma warning( disable : 304 444 )
-#elif NST_MSVC >= 1200
-#pragma warning( push )
-#pragma warning( disable : 4512 )
-#endif
-
-#define NST_NO_SCALEX 1
-#define NST_NO_HQ2X 1
-#define NST_NO_2XSAI 1
-#define NST_NO_XBR 1
-
 namespace Nes
 {
 	namespace Core
@@ -298,16 +285,6 @@ namespace Nes
 			* @return hue value in the range -45 to 45
 			*/
 			int GetHue() const throw();
-			
-			/**
-			* Returns whenever the xbr filters blends pixels or not
-			*/
-			bool GetBlend() const throw();
-
-			/**
-			* Returns how the xbr filters rounds corners
-			*/
-			int GetCornerRounding() const throw();
 
 			/**
 			* Sets the brightness.
@@ -380,16 +357,6 @@ namespace Nes
 			* @return result code
 			*/
 			Result SetHue(int value) throw();
-			
-			/**
-			 * Sets whenever the xbr filters is to blend pixels or not.
-			 */
-			Result SetBlend(bool value) throw();
-
-			/**
-			 * Sets whenever the xbr filters is to round corners or not.
-			 */
-			Result SetCornerRounding(int value) throw();
 
 			/**
 			 * Quickfix for blank screen issue.
@@ -697,45 +664,6 @@ namespace Nes
 					* NTSC filter.
 					*/
 					FILTER_NTSC
-				#ifndef NST_NO_SCALEX
-					,
-					/**
-					* Scale2x filter.
-					*/
-					FILTER_SCALE2X,
-					/**
-					* Scale3x filter.
-					*/
-					FILTER_SCALE3X
-				#endif
-				#ifndef NST_NO_HQ2X
-					,
-					/**
-					* Hq2x filter.
-					*/
-					FILTER_HQ2X,
-					/**
-					* Hq3x filter.
-					*/
-					FILTER_HQ3X,
-					/**
-					* Hq4x filter.
-					*/
-					FILTER_HQ4X
-				#endif
-				#ifndef NST_NO_2XSAI
-					,
-					/**
-					* 2xSaI filter.
-					*/
-					FILTER_2XSAI
-				#endif
-				#ifndef NST_NO_XBR
-					,
-					FILTER_2XBR,
-					FILTER_3XBR,
-					FILTER_4XBR
-				#endif
 				};
 
 				/**
@@ -744,17 +672,6 @@ namespace Nes
 				enum Scale
 				{
 					SCALE_NONE = 1
-				#ifndef NST_NO_SCALEX
-					,SCALE_SCALE2X = 2
-					,SCALE_SCALE3X = 3
-				#endif
-				#ifndef NST_NO_HQ2X
-					,SCALE_HQ2X = 2
-					,SCALE_HQ3X = 3
-				#endif
-				#ifndef NST_NO_2XSAI
-					,SCALE_2XSAI = 2
-				#endif
 				};
 
 				/**
@@ -781,9 +698,5 @@ namespace Nes
 		};
 	}
 }
-
-#if NST_MSVC >= 1200 || NST_ICC >= 810
-#pragma warning( pop )
-#endif
 
 #endif

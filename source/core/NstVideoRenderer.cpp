@@ -30,22 +30,7 @@
 #include "NstFpuPrecision.hpp"
 #include "NstVideoRenderer.hpp"
 #include "NstVideoFilterNone.hpp"
-
-#ifndef NO_NTSC
 #include "NstVideoFilterNtsc.hpp"
-#endif
-#ifndef NST_NO_SCALEX
-#include "NstVideoFilterScaleX.hpp"
-#endif
-#ifndef NST_NO_HQ2X
-#include "NstVideoFilterHqX.hpp"
-#endif
-#ifndef NST_NO_2XSAI
-#include "NstVideoFilter2xSaI.hpp"
-#endif
-#ifndef NST_NO_XBR
-#include "NstVideoFilterxBR.hpp"
-#endif
 
 namespace Nes
 {
@@ -157,10 +142,6 @@ namespace Nes
 				{-0.12, 0.00, 0.31, 0.72 },
 				{ 0.40, 0.68, 1.00, 1.00 }
 			};
-
-			#ifdef NST_MSVC_OPTIMIZE
-			#pragma optimize("s", on)
-			#endif
 
 			inline Renderer::Palette::Custom::Custom()
 			: emphasis(NULL) {}
@@ -532,9 +513,7 @@ namespace Nes
 			resolution   (0),
 			bleed        (0),
 			artifacts    (0),
-			fringing     (0),
-			blendPixels	 (1),
-			xbr_corner_rounding(0)
+			fringing     (0)
 			{
 				mask.r = 0;
 				mask.g = 0;
@@ -580,40 +559,6 @@ namespace Nes
 
 							break;
 
-					#ifndef NST_NO_SCALEX
-
-						case RenderState::FILTER_SCALE2X:
-						case RenderState::FILTER_SCALE3X:
-
-							if (FilterScaleX::Check( renderState ))
-								filter = new FilterScaleX( renderState );
-
-							break;
-					#endif
-					#ifndef NST_NO_HQ2X
-
-						case RenderState::FILTER_HQ2X:
-						case RenderState::FILTER_HQ3X:
-						case RenderState::FILTER_HQ4X:
-
-							if (FilterHqX::Check( renderState ))
-								filter = new FilterHqX( renderState );
-
-							break;
-
-					#endif
-					#ifndef NST_NO_2XSAI
-
-						case RenderState::FILTER_2XSAI:
-
-							if (Filter2xSaI::Check( renderState ))
-								filter = new Filter2xSaI( renderState );
-
-							break;
-
-					#endif
-
-					#ifndef NO_NTSC
 						case RenderState::FILTER_NTSC:
 
 							if (FilterNtsc::Check( renderState ))
@@ -631,17 +576,6 @@ namespace Nes
 								);
 							}
 							break;
-					#endif
-					
-					#ifndef NST_NO_XBR
-						case RenderState::FILTER_2XBR:
-						case RenderState::FILTER_3XBR:
-						case RenderState::FILTER_4XBR:
-
-							if (FilterxBR::Check( renderState ))
-								filter = new FilterxBR( renderState, state.blendPixels, state.xbr_corner_rounding );
-							break;
-					#endif
 					}
 				}
 				catch (const std::bad_alloc&)
@@ -808,10 +742,6 @@ namespace Nes
 
 				state.update = 0;
 			}
-
-			#ifdef NST_MSVC_OPTIMIZE
-			#pragma optimize("", on)
-			#endif
 
 			void Renderer::Blit(Output& output,Input& input,uint burstPhase)
 			{

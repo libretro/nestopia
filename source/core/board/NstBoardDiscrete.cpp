@@ -33,10 +33,6 @@ namespace Nes
 		{
 			namespace Discrete
 			{
-				#ifdef NST_MSVC_OPTIMIZE
-				#pragma optimize("s", on)
-				#endif
-
 				void Ic74x161x161x32::SubReset(bool)
 				{
 					if (board == Type::DISCRETE_74_161_161_32_A)
@@ -65,10 +61,6 @@ namespace Nes
 					if (hard)
 						prg.SwapBank<SIZE_32K,0x0000>(0);
 				}
-
-				#ifdef NST_MSVC_OPTIMIZE
-				#pragma optimize("", on)
-				#endif
 
 				NES_POKE_AD(Ic74x161x161x32,8000_0)
 				{

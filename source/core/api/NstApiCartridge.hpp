@@ -35,11 +35,6 @@
 #pragma once
 #endif
 
-#if NST_MSVC >= 1200
-#pragma warning( push )
-#pragma warning( disable : 4512 )
-#endif
-
 namespace Nes
 {
 	namespace Api
@@ -1402,9 +1397,5 @@ namespace Nes
 		};
 	}
 }
-
-#if NST_MSVC >= 1200
-#pragma warning( pop )
-#endif
 
 #endif

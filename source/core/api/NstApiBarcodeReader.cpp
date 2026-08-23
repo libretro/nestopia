@@ -36,10 +36,6 @@ namespace Nes
 {
 	namespace Api
 	{
-		#ifdef NST_MSVC_OPTIMIZE
-		#pragma optimize("s", on)
-		#endif
-
 		Core::BarcodeReader* BarcodeReader::Query() const
 		{
 			if (emulator.image)
@@ -106,22 +102,15 @@ namespace Nes
 
 		bool BarcodeReader::CanTransfer() const throw()
 		{
-			return !emulator.tracker.IsLocked() && Query();
+			return Query();
 		}
 
 		Result BarcodeReader::Transfer(const char* string,uint length) throw()
 		{
-			if (!emulator.tracker.IsLocked())
-			{
-				if (Core::BarcodeReader* const barcodeReader = Query())
-					return emulator.tracker.TryResync( barcodeReader->Transfer( string, length ) ? RESULT_OK : RESULT_ERR_INVALID_PARAM );
-			}
+			if (Core::BarcodeReader* const barcodeReader = Query())
+				return barcodeReader->Transfer( string, length ) ? RESULT_OK : RESULT_ERR_INVALID_PARAM;
 
 			return RESULT_ERR_NOT_READY;
 		}
-
-		#ifdef NST_MSVC_OPTIMIZE
-		#pragma optimize("", on)
-		#endif
 	}
 }

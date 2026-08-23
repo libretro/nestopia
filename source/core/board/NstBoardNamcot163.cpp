@@ -36,10 +36,6 @@ namespace Nes
 		{
 			namespace Namcot
 			{
-				#ifdef NST_MSVC_OPTIMIZE
-				#pragma optimize("s", on)
-				#endif
-
 				N163::N163(const Context& c)
 				:
 				Board (c),
@@ -262,10 +258,6 @@ namespace Nes
 
 					state.End();
 				}
-
-				#ifdef NST_MSVC_OPTIMIZE
-				#pragma optimize("", on)
-				#endif
 
 				bool N163::Irq::Clock()
 				{

@@ -34,10 +34,6 @@ namespace Nes
 		{
 			namespace Konami
 			{
-				#ifdef NST_MSVC_OPTIMIZE
-				#pragma optimize("s", on)
-				#endif
-
 				uint Vrc4::GetPrgLineShift(const Context& c,const uint pin,const uint def)
 				{
 					if (const Chips::Type* const vrc4 = c.chips.Find(L"Konami VRC IV"))
@@ -174,10 +170,6 @@ namespace Nes
 
 					state.Begin( chunk ).Write( data ).End();
 				}
-
-				#ifdef NST_MSVC_OPTIMIZE
-				#pragma optimize("", on)
-				#endif
 
 				NES_PEEK_A(Vrc4,6000)
 				{

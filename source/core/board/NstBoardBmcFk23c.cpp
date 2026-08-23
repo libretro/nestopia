@@ -36,10 +36,6 @@ namespace Nes
 		{
 			namespace Bmc
 			{
-				#ifdef NST_MSVC_OPTIMIZE
-				#pragma optimize("s", on)
-				#endif
-
 				class Fk23c::CartSwitches : public DipSwitches
 				{
 					enum Type
@@ -277,10 +273,6 @@ namespace Nes
 
 					state.Begin( AsciiId<'B','F','K'>::V ).Begin( AsciiId<'R','E','G'>::V ).Write( data ).End().End();
 				}
-
-				#ifdef NST_MSVC_OPTIMIZE
-				#pragma optimize("", on)
-				#endif
 
 				void NST_FASTCALL Fk23c::UpdatePrg(uint address,uint bank)
 				{

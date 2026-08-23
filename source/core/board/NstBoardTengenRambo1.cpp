@@ -33,10 +33,6 @@ namespace Nes
 		{
 			namespace Tengen
 			{
-				#ifdef NST_MSVC_OPTIMIZE
-				#pragma optimize("s", on)
-				#endif
-
 				Rambo1::Irq::Irq(Cpu& cpu,Ppu& ppu)
 				:
 				a12 ( cpu, ppu, unit ),
@@ -182,10 +178,6 @@ namespace Nes
 
 					state.End();
 				}
-
-				#ifdef NST_MSVC_OPTIMIZE
-				#pragma optimize("", on)
-				#endif
 
 				bool Rambo1::Irq::Unit::Clock()
 				{

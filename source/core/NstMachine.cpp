@@ -39,14 +39,11 @@ namespace Nes
 {
 	namespace Core
 	{
-		#ifdef NST_MSVC_OPTIMIZE
-		#pragma optimize("s", on)
-		#endif
-
 		Machine::Machine()
 		:
 		state         (Api::Machine::NTSC),
 		frame         (0),
+		execFrames    (0),
 		strobeRise    (0),
 		strobeHigh    (false),
 		strobeForwarded (false),
@@ -153,7 +150,7 @@ namespace Nes
 
 			const Result result = PowerOff();
 
-			tracker.Unload();
+			execFrames = 0;
 
 			Image::Unload( image );
 			image = NULL;
@@ -246,8 +243,6 @@ namespace Nes
 		{
 			if (state & Api::Machine::ON)
 			{
-				tracker.PowerOff();
-
 				if (image && !image->PowerOff() && NES_SUCCEEDED(result))
 					result = RESULT_WARN_SAVEDATA_LOST;
 
@@ -304,7 +299,7 @@ namespace Nes
 					if (homebrew)
 						homebrew->Reset();
 
-					tracker.Reset();
+					execFrames = 0;
 				}
 				else
 				{
@@ -532,9 +527,36 @@ namespace Nes
 			return true;
 		}
 
-		#ifdef NST_MSVC_OPTIMIZE
-		#pragma optimize("", on)
-		#endif
+		Result Machine::ExecuteFrame
+		(
+			Video::Output* video,
+			Sound::Output* sound,
+			Input::Controllers* input
+		)
+		{
+			if (!(state & Api::Machine::ON))
+				return RESULT_ERR_NOT_READY;
+
+			execFrames++;
+
+			try
+			{
+				Execute( video, sound, input );
+				return RESULT_OK;
+			}
+			catch (Result result)
+			{
+				return PowerOff( result );
+			}
+			catch (const std::bad_alloc&)
+			{
+				return PowerOff( RESULT_ERR_OUT_OF_MEMORY );
+			}
+			catch (...)
+			{
+				return PowerOff( RESULT_ERR_GENERIC );
+			}
+		}
 
 		void Machine::Execute
 		(
@@ -553,10 +575,10 @@ namespace Nes
 				extPort->BeginFrame( input );
 				expPort->BeginFrame( input );
 
-				ppu.BeginFrame( tracker.IsFrameLocked() );
+				ppu.BeginFrame();
 
 				if (cheats)
-					cheats->BeginFrame( tracker.IsFrameLocked() );
+					cheats->BeginFrame();
 
 				cpu.ExecuteFrame( sound );
 				ppu.EndFrame();

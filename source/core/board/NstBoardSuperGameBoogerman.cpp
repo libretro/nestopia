@@ -34,10 +34,6 @@ namespace Nes
 		{
 			namespace SuperGame
 			{
-				#ifdef NST_MSVC_OPTIMIZE
-				#pragma optimize("s", on)
-				#endif
-
 				void Boogerman::SubReset(const bool hard)
 				{
 					exRegs[0] = 0x00;
@@ -95,10 +91,6 @@ namespace Nes
 					Mmc3::SubSave( state );
 					state.Begin( AsciiId<'S','B','G'>::V ).Begin( AsciiId<'R','E','G'>::V ).Write( exRegs ).End().End();
 				}
-
-				#ifdef NST_MSVC_OPTIMIZE
-				#pragma optimize("", on)
-				#endif
 
 				void NST_FASTCALL Boogerman::UpdatePrg(uint address,uint bank)
 				{

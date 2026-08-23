@@ -32,10 +32,6 @@ namespace Nes
 {
 	namespace Api
 	{
-		#ifdef NST_MSVC_OPTIMIZE
-		#pragma optimize("s", on)
-		#endif
-
 		Result NST_CALL Cheats::GameGenieEncode(const Code& code,char (&characters)[9]) throw()
 		{
 			if (code.address < 0x8000)
@@ -257,25 +253,18 @@ namespace Nes
 
 		Result Cheats::SetCode(const Code& code) throw()
 		{
-			if (emulator.tracker.IsLocked( true ))
-				return RESULT_ERR_NOT_READY;
-
 			try
 			{
 				if (emulator.cheats == NULL)
 					emulator.cheats = new Core::Cheats( emulator.cpu );
 
-				return emulator.tracker.TryResync
+				return emulator.cheats->SetCode
 				(
-					emulator.cheats->SetCode
-					(
-						code.address,
-						code.value,
-						code.compare,
-						code.useCompare,
-						emulator.Is(Machine::GAME)
-					),
-					true
+					code.address,
+					code.value,
+					code.compare,
+					code.useCompare,
+					emulator.Is(Machine::GAME)
 				);
 			}
 			catch (const std::bad_alloc&)
@@ -290,13 +279,10 @@ namespace Nes
 
 		Result Cheats::DeleteCode(const ulong index) throw()
 		{
-			if (emulator.tracker.IsLocked( true ))
-				return RESULT_ERR_NOT_READY;
-
 			if (!emulator.cheats)
 				return RESULT_ERR_INVALID_PARAM;
 
-			const Result result = emulator.tracker.TryResync( emulator.cheats->DeleteCode( index ), true );
+			const Result result = emulator.cheats->DeleteCode( index );
 
 			if (!emulator.cheats->NumCodes())
 			{
@@ -327,14 +313,10 @@ namespace Nes
 
 		Result Cheats::ClearCodes() throw()
 		{
-			if (emulator.tracker.IsLocked( true ))
-				return RESULT_ERR_NOT_READY;
-
 			if (!emulator.cheats)
 				return RESULT_NOP;
 
 			if (emulator.cheats->NumCodes())
-				emulator.tracker.Resync( true );
 
 			delete emulator.cheats;
 			emulator.cheats = NULL;
@@ -346,10 +328,6 @@ namespace Nes
 		{
 			return emulator.cpu.GetRam();
 		}
-
-		#ifdef NST_MSVC_OPTIMIZE
-		#pragma optimize("", on)
-		#endif
 	}
 }
 

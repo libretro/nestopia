@@ -31,10 +31,6 @@ namespace Nes
 {
 	namespace Api
 	{
-		#ifdef NST_MSVC_OPTIMIZE
-		#pragma optimize("s", on)
-		#endif
-
 		Core::DipSwitches* DipSwitches::Query() const
 		{
 			if (emulator.image)
@@ -48,7 +44,7 @@ namespace Nes
 
 		bool DipSwitches::CanModify() const throw()
 		{
-			return !emulator.tracker.IsLocked() && Query();
+			return Query();
 		}
 
 		uint DipSwitches::NumDips() const throw()
@@ -105,33 +101,25 @@ namespace Nes
 
 		Result DipSwitches::SetValue(uint dip,uint value) throw()
 		{
-			if (!emulator.tracker.IsLocked())
+			if (Core::DipSwitches* const dipSwitches = Query())
 			{
-				if (Core::DipSwitches* const dipSwitches = Query())
+				if (dip >= dipSwitches->NumDips() || value >= dipSwitches->NumValues( dip ))
 				{
-					if (dip >= dipSwitches->NumDips() || value >= dipSwitches->NumValues( dip ))
-					{
-						return RESULT_ERR_INVALID_PARAM;
-					}
-					else if (value != dipSwitches->GetValue( dip ))
-					{
-						emulator.tracker.Resync();
-						dipSwitches->SetValue( dip, value );
+					return RESULT_ERR_INVALID_PARAM;
+				}
+				else if (value != dipSwitches->GetValue( dip ))
+				{
+					dipSwitches->SetValue( dip, value );
 
-						return RESULT_OK;
-					}
-					else
-					{
-						return RESULT_NOP;
-					}
+					return RESULT_OK;
+				}
+				else
+				{
+					return RESULT_NOP;
 				}
 			}
 
 			return RESULT_ERR_NOT_READY;
 		}
-
-		#ifdef NST_MSVC_OPTIMIZE
-		#pragma optimize("", on)
-		#endif
 	}
 }

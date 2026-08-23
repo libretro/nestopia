@@ -34,10 +34,6 @@ namespace Nes
 		{
 			namespace SuperGame
 			{
-				#ifdef NST_MSVC_OPTIMIZE
-				#pragma optimize("s", on)
-				#endif
-
 				void Pocahontas2::SubReset(const bool hard)
 				{
 					if (hard)
@@ -96,10 +92,6 @@ namespace Nes
 
 					state.Begin( AsciiId<'S','P','2'>::V ).Begin( AsciiId<'R','E','G'>::V ).Write( data ).End().End();
 				}
-
-				#ifdef NST_MSVC_OPTIMIZE
-				#pragma optimize("", on)
-				#endif
 
 				void NST_FASTCALL Pocahontas2::UpdatePrg(uint address,uint bank)
 				{

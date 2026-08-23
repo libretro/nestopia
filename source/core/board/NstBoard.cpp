@@ -181,10 +181,6 @@ namespace Nes
 	{
 		namespace Boards
 		{
-			#ifdef NST_MSVC_OPTIMIZE
-			#pragma optimize("s", on)
-			#endif
-
 			Board::Type::Type()
 			:
 			id       (UNKNOWN),
@@ -587,10 +583,6 @@ namespace Nes
 				cpu.Map(a,b).Set( &Board::Peek_Nop, &Board::Poke_Nop );
 			}
 
-			#ifdef NST_MSVC_OPTIMIZE
-			#pragma optimize("", on)
-			#endif
-
 			NES_PEEK_A(Board,Prg_8) { return prg[0][address - 0x8000]; }
 			NES_PEEK_A(Board,Prg_A) { return prg[1][address - 0xA000]; }
 			NES_PEEK_A(Board,Prg_C) { return prg[2][address - 0xC000]; }
@@ -734,10 +726,6 @@ namespace Nes
 				*/
 				return cpu.GetBusData();
 			}
-
-			#ifdef NST_MSVC_OPTIMIZE
-			#pragma optimize("s", on)
-			#endif
 
 			Board::Context::Context
 			(
@@ -3989,10 +3977,6 @@ namespace Nes
 			{
 				delete board;
 			}
-
-			#ifdef NST_MSVC_OPTIMIZE
-			#pragma optimize("", on)
-			#endif
 		}
 	}
 }

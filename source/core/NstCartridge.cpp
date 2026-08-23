@@ -39,10 +39,6 @@ namespace Nes
 {
 	namespace Core
 	{
-		#ifdef NST_MSVC_OPTIMIZE
-		#pragma optimize("s", on)
-		#endif
-
 		Cartridge::ProfileEx::ProfileEx()
 		: nmt(NMT_DEFAULT), battery(false), wramAuto(false) {}
 
@@ -503,10 +499,6 @@ namespace Nes
 				return Image::GetDesiredSystem( region, cpu, ppu );
 			}
 		}
-
-		#ifdef NST_MSVC_OPTIMIZE
-		#pragma optimize("", on)
-		#endif
 
 		void Cartridge::BeginFrame(const Api::Input& input,Input::Controllers* controllers)
 		{

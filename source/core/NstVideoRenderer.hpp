@@ -163,22 +163,6 @@ namespace Nes
 				class FilterNone;
 				class FilterNtsc;
 
-				#ifndef NST_NO_SCALEX
-				class FilterScaleX;
-				#endif
-
-				#ifndef NST_NO_HQ2X
-				class FilterHqX;
-				#endif
-
-				#ifndef NST_NO_2XSAI
-				class Filter2xSaI;
-				#endif
-				
-				#ifndef NST_NO_XBR
-				class FilterxBR;
-				#endif
-
 				class NST_NO_VTABLE Filter
 				{
 					struct Format
@@ -234,8 +218,6 @@ namespace Nes
 					schar bleed;
 					schar artifacts;
 					schar fringing;
-					schar blendPixels;
-					schar xbr_corner_rounding;
 					RenderState::Bits::Mask mask;
 				};
 
@@ -288,16 +270,6 @@ namespace Nes
 				{
 					return SetLevel( state.fringing, fringing, State::UPDATE_NTSC );
 				}
-				
-				Result SetBlend(bool correct)
-				{
-					return SetLevel( state.blendPixels, correct, State::UPDATE_FILTER_STATE );
-				}
-
-				Result SetCornerRounding(int mode)
-				{
-					return SetLevel( state.xbr_corner_rounding, mode, State::UPDATE_FILTER_STATE );
-				}
 
 				/**
 				 * Workaround for black screen issue if this flag is set while the emulator is loading settings
@@ -306,16 +278,6 @@ namespace Nes
 				{
 					//state.update ^= State::UPDATE_FILTER_STATE;
 					state.update = 1;
-				}
-
-				int GetBlend() const
-				{
-					return state.blendPixels;
-				}
-
-				int GetCornerRounding() const
-				{
-					return state.xbr_corner_rounding;
 				}
 
 				int GetBrightness() const

@@ -31,10 +31,6 @@ namespace Nes
 {
 	namespace Core
 	{
-		#ifdef NST_MSVC_OPTIMIZE
-		#pragma optimize("s", on)
-		#endif
-
 		const byte Ppu::yuvMaps[4][0x40] =
 		{
 			{
@@ -567,10 +563,6 @@ namespace Nes
 			}
 		}
 
-		#ifdef NST_MSVC_OPTIMIZE
-		#pragma optimize("", on)
-		#endif
-
 		NST_FORCE_INLINE Cycle Ppu::GetCycles() const
 		{
 			return (cycles.vClock + cycles.hClock) * cycles.one;
@@ -582,7 +574,7 @@ namespace Nes
 			return cycles.one == PPU_RP2C02_CC ? clock / PPU_RP2C02_CC : (clock+PPU_RP2C07_CC-1) / PPU_RP2C07_CC;
 		}
 
-		void Ppu::BeginFrame(bool frameLock)
+		void Ppu::BeginFrame()
 		{
 			NST_ASSERT
 			(
@@ -592,7 +584,7 @@ namespace Nes
 				(cpu.GetModel() == CPU_DENDY)  == (model == PPU_DENDY)
 			);
 
-			oam.limit = oam.buffer + ((oam.spriteLimit || frameLock) ? Oam::STD_LINE_SPRITES*4 : Oam::MAX_LINE_SPRITES*4);
+			oam.limit = oam.buffer + (oam.spriteLimit ? Oam::STD_LINE_SPRITES*4 : Oam::MAX_LINE_SPRITES*4);
 			output.target = output.pixels;
 
 			Cycle frame;

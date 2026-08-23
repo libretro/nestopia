@@ -32,10 +32,6 @@ namespace Nes
 	{
 		namespace Boards
 		{
-			#ifdef NST_MSVC_OPTIMIZE
-			#pragma optimize("s", on)
-			#endif
-
 			Mmc6::Mmc6(const Context& c)
 			: Mmc3(c,REV_A) {}
 
@@ -101,10 +97,6 @@ namespace Nes
 				state.Begin( AsciiId<'R','A','M'>::V ).Compress( ram ).End();
 				state.End();
 			}
-
-			#ifdef NST_MSVC_OPTIMIZE
-			#pragma optimize("", on)
-			#endif
 
 			inline bool Mmc6::IsRamEnabled() const
 			{

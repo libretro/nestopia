@@ -32,7 +32,6 @@ SOURCES_CXX += $(CORE_DIR)/source/core/NstCartridgeUnif.cpp
 SOURCES_CXX += $(CORE_DIR)/source/core/NstCheats.cpp
 SOURCES_CXX += $(CORE_DIR)/source/core/NstChecksum.cpp
 SOURCES_CXX += $(CORE_DIR)/source/core/NstChips.cpp
-SOURCES_CXX += $(CORE_DIR)/source/core/NstCore.cpp
 SOURCES_CXX += $(CORE_DIR)/source/core/NstCpu.cpp
 SOURCES_CXX += $(CORE_DIR)/source/core/NstCrc32.cpp
 SOURCES_CXX += $(CORE_DIR)/source/core/NstFds.cpp

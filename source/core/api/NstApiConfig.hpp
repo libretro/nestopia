@@ -42,12 +42,7 @@
 //
 //                             Example: #define NST_U64 unsigned long long
 //
-//                             If no suitable type is available, a default class based
-//                             implementation will be used which may generate slower code.
-//
-// NST_MM_INTRINSICS         - For MMX/SSE compiler intrinsics support through
-//                             xmmintrin.h/emmintrin.h/mmintrin.h. Auto-defined if
-//                             compiler is Win32 MSVC and _M_IX86 is defined.
+//                             If no suitable type is available, compilation will fail.
 //
 // NST_CALL <attribute>      - Compiler/platform specific calling convention for non-member
 //                             functions. Placed between return type and function name, e.g

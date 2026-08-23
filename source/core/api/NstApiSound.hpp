@@ -72,10 +72,13 @@ namespace Nes
 				*
 				* Assign 0 to length[1] if circular buffers aren't needed.
 				* Length doesn't neccesarily need to be the same value for every frame as long
-				* as they eventually add up in relation to the emulation speed. The requested
-				* number of samples will always be written even if the length is greater
-				* than what the sound engine normally produces. Non-written samples for one frame will
-				* be carried over to the next through an internal buffer.
+				* as they eventually add up in relation to the emulation speed.
+				*
+				* On return each length holds the number of samples actually written, which
+				* is at most what was asked for: a frame spans a fractional number of them
+				* and cannot fill a whole-numbered request. Consume that many and assign the
+				* request again before the next frame; the remainder is carried over through
+				* an internal buffer.
 				*/
 				uint length[2];
 

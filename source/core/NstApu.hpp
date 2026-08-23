@@ -298,6 +298,7 @@ namespace Nes
 			NES_DECL_PEEK( 40xx );
 
 			NST_NO_INLINE Channel::Sample GetSample();
+			NST_NO_INLINE void NST_FASTCALL WalkSpan(dword);
 
 			/* The two DACs, tabulated. Indexed by a sum of channel levels:
 			 * 0-30 for the square pair, 0-202 for the triangle, noise and DMC.
@@ -338,6 +339,13 @@ namespace Nes
 				Cycle frameIrqHold;
 				Cycle frameIrqPhantom;
 				Cycle dmcClock;
+
+				/* The output sample in progress. The walk stops on events
+				 * rather than on sample boundaries, so one sample is built
+				 * over several calls. Transients - reset with the buffer.
+				*/
+				qaword sampleSum;
+				dword sampleSpan;
 
 				static const dword frameClocks[3][4];
 				static const dword oscillatorClocks[3][2][4];

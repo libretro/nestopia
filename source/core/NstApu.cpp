@@ -586,6 +586,8 @@ namespace Nes
 						ctrl = data[0] & STATUS_BITS;
 
 						cycles.rateCounter = cycles.fixed * cpu.GetCycles();
+						cycles.sampleSum = 0;
+						cycles.sampleSpan = 0;
 
 						cycles.frameCounter = cycles.fixed *
 						(
@@ -669,6 +671,8 @@ namespace Nes
 						State::Loader::Data<4> data( state );
 
 						cycles.rateCounter = data[0] | (data[1] << 8) | (data[2] << 16) | (data[3] << 24);
+						cycles.sampleSum = 0;
+						cycles.sampleSpan = 0;
 						break;
 					}
 				}
@@ -696,23 +700,31 @@ namespace Nes
 		{
 			NST_ASSERT( (stream && settings.audible) && (cycles.rate && cycles.fixed) && (cycles.extCounter == Cpu::CYCLE_MAX) );
 
-			if (cycles.rateCounter < target)
+			while (cycles.rateCounter < target)
 			{
-				Cycle rateCounter = cycles.rateCounter;
-				const Cycle rate = cycles.rate;
+				if (cycles.frameCounter <= cycles.rateCounter)
+					ClockFrameCounter();
 
-				do
+				/* Stop on the end of the sample in progress, the next frame
+				 * clock or the target, whichever comes first. The target is a
+				 * register write, so landing on it exactly is what keeps the
+				 * write from being applied up to a sample late.
+				*/
+				const dword owed = cycles.rate - NST_MIN( cycles.sampleSpan, cycles.rate );
+				const Cycle edge = cycles.rateCounter + owed;
+				const Cycle stop = NST_MIN( target, cycles.frameCounter );
+
+				if (stop < edge)
 				{
-					buffer << GetSample();
-
-					if (cycles.frameCounter <= rateCounter)
-						ClockFrameCounter();
-
-					rateCounter += rate;
+					WalkSpan( dword(stop - cycles.rateCounter) );
+					cycles.rateCounter = stop;
 				}
-				while (rateCounter < target);
-
-				cycles.rateCounter = rateCounter;
+				else
+				{
+					WalkSpan( owed );
+					cycles.rateCounter = edge;
+					buffer << GetSample();
+				}
 			}
 
 			if (cycles.frameCounter < target)
@@ -726,37 +738,35 @@ namespace Nes
 		{
 			NST_ASSERT( (stream && settings.audible) && (cycles.rate && cycles.fixed) && extChannel );
 
-			Cycle extCounter = cycles.extCounter;
-
-			if (cycles.rateCounter < target)
+			while (cycles.rateCounter < target)
 			{
-				Cycle rateCounter = cycles.rateCounter;
+				if (cycles.extCounter <= cycles.rateCounter)
+					cycles.extCounter = extChannel->Clock( cycles.extCounter, cycles.fixed, cycles.rateCounter );
 
-				do
+				if (cycles.frameCounter <= cycles.rateCounter)
+					ClockFrameCounter();
+
+				const dword owed = cycles.rate - NST_MIN( cycles.sampleSpan, cycles.rate );
+				const Cycle edge = cycles.rateCounter + owed;
+				const Cycle stop = NST_MIN( NST_MIN( target, cycles.frameCounter ), cycles.extCounter );
+
+				if (stop < edge)
 				{
-					buffer << GetSample();
-
-					if (extCounter <= rateCounter)
-						extCounter = extChannel->Clock( extCounter, cycles.fixed, rateCounter );
-
-					if (cycles.frameCounter <= rateCounter)
-						ClockFrameCounter();
-
-					rateCounter += cycles.rate;
+					WalkSpan( dword(stop - cycles.rateCounter) );
+					cycles.rateCounter = stop;
 				}
-				while (rateCounter < target);
-
-				cycles.rateCounter = rateCounter;
+				else
+				{
+					WalkSpan( owed );
+					cycles.rateCounter = edge;
+					buffer << GetSample();
+				}
 			}
 
-			if (extCounter <= target)
+			if (cycles.extCounter <= target)
 			{
-				cycles.extCounter = extChannel->Clock( extCounter, cycles.fixed, target );
+				cycles.extCounter = extChannel->Clock( cycles.extCounter, cycles.fixed, target );
 				NST_ASSERT( cycles.extCounter > target );
-			}
-			else
-			{
-				cycles.extCounter = extCounter;
 			}
 
 			if (cycles.frameCounter < target)
@@ -771,6 +781,10 @@ namespace Nes
 			NST_ASSERT( !(stream && settings.audible) && cycles.fixed );
 
 			cycles.rateCounter = target;
+
+			// Nothing is being emitted; drop the sample in progress.
+			cycles.sampleSum = 0;
+			cycles.sampleSpan = 0;
 
 			while (cycles.frameCounter < target)
 				ClockFrameCounter();
@@ -818,6 +832,9 @@ namespace Nes
 		{
 			NST_ASSERT( (stream && settings.audible) && (cycles.rate && cycles.fixed) );
 
+			// Everything this frame produced has to be in the ring first.
+			Update( cpu.GetCycles() );
+
 			for (uint i=0; i < 2; ++i)
 			{
 				if (stream->length[i] && stream->samples[i])
@@ -825,48 +842,18 @@ namespace Nes
 					Sound::Buffer::Block block( stream->length[i] );
 					buffer >> block;
 
-					Sound::Buffer::Renderer output( stream->samples[i], stream->length[i] );
+					Sound::Buffer::Renderer output( stream->samples[i], block.length );
+					output << block;
 
-					if (output << block)
-					{
-						const Cycle target = cpu.GetCycles() * cycles.fixed;
-
-						if (cycles.rateCounter < target)
-						{
-							Cycle rateCounter = cycles.rateCounter;
-
-							do
-							{
-								output << GetSample();
-
-								if (cycles.frameCounter <= rateCounter)
-									ClockFrameCounter();
-
-								if (cycles.extCounter <= rateCounter)
-									cycles.extCounter = extChannel->Clock( cycles.extCounter, cycles.fixed, rateCounter );
-
-								rateCounter += cycles.rate;
-							}
-							while (rateCounter < target && output);
-
-							cycles.rateCounter = rateCounter;
-						}
-
-						if (output)
-						{
-							if (cycles.frameCounter < target)
-								ClockFrameCounter();
-
-							if (cycles.extCounter <= target)
-								cycles.extCounter = extChannel->Clock( cycles.extCounter, cycles.fixed, target );
-
-							do
-							{
-								output << GetSample();
-							}
-							while (output);
-						}
-					}
+					/* A frame spans a fractional number of samples - 798.7 at
+					 * 48 kHz NTSC - so report what was written instead of
+					 * running the channels on to pad the count out. Those
+					 * cycles are not emulated yet; spending them here takes
+					 * them from the next frame, and the theft accumulates
+					 * until anything phase-locked drifts in and out of
+					 * cancellation.
+					*/
+					stream->length[i] = block.length;
 				}
 			}
 		}
@@ -956,11 +943,13 @@ namespace Nes
 		}
 
 		Apu::Cycles::Cycles()
-		: fixed(1), rate(1) {}
+		: fixed(1), rate(1), sampleSum(0), sampleSpan(0) {}
 
 		void Apu::Cycles::Reset(const bool extChannel,const CpuModel model)
 		{
 			rateCounter = 0;
+			sampleSum = 0;
+			sampleSpan = 0;
 			frameDivider = 0;
 			frameIrqClock = Cpu::CYCLE_MAX;
 			frameIrqHold = 0;
@@ -989,6 +978,10 @@ namespace Nes
 
 			rate = clockBase * multiplier / sampleRate;
 			fixed = cpu.GetClockDivider() * multiplier;
+
+			// The sample in flight was accumulated over the old period.
+			sampleSum = 0;
+			sampleSpan = 0;
 
 			frameCounter *= fixed;
 			rateCounter *= fixed;
@@ -1533,9 +1526,12 @@ namespace Nes
 
 		void Apu::Square::UpdateFrequency()
 		{
+			// The divider counts at the programmed period whatever the gate
+			// below decides; a stale period keeps the wrong duty phase.
+			frequency = (waveLength + 1UL) * 2 * fixed;
+
 			if (waveLength >= MIN_FRQ && waveLength + (sweepIncrease & waveLength >> sweepShift) <= MAX_FRQ)
 			{
-				frequency = (waveLength + 1UL) * 2 * fixed;
 				validFrequency = true;
 				active = lengthCounter.GetCount() && envelope.Volume();
 			}
@@ -1687,7 +1683,14 @@ namespace Nes
 		{
 			Oscillator::Reset();
 
-			step = 0x7;
+			/* Hardware wakes at the top of the ramp with one period left on
+			 * the timer. The parked level biases the shared tnd DAC in every
+			 * ROM, so the seed matters even where the channel never plays.
+			*/
+			step = 0x10;
+			amp = 0xF;
+			timer = frequency;
+
 			status = STATUS_COUNTING;
 			waveLength = 0;
 			//linearCtrl = 0;
@@ -2725,6 +2728,9 @@ namespace Nes
 
 			dcBlocker.Reset();
 
+			cycles.sampleSum = 0;
+			cycles.sampleSpan = 0;
+
 			buffer.Reset( false );
 		}
 
@@ -2900,49 +2906,58 @@ namespace Nes
 			}
 		}
 
-		NST_NO_INLINE Apu::Channel::Sample Apu::GetSample()
+		NST_NO_INLINE void NST_FASTCALL Apu::WalkSpan(dword span)
 		{
 			/* Both DACs are non-linear, and f(mean(x)) is not mean(f(x)), so
-			 * the channels have to be mixed at full rate and averaged after.
-			 * Walk the sample period one transition at a time, take the mixed
-			 * level over each span and weight it by the length of the span.
-			 * The walk stops only where a channel changes.
-			 *
-			 * The DMC DAC is driven from the CPU side and cannot move within
-			 * one output sample, so it is read once.
+			 * the channels are mixed at full rate and averaged after: walk one
+			 * transition at a time, weighting each level by its span. The DMC
+			 * is updated to the current cycle before it can move, so it is
+			 * read once.
 			*/
 			const dword level = dmc.GetLevel();
 
-			qaword sum = 0;
-			dword left = cycles.rate;
+			cycles.sampleSpan += span;
 
-			do
+			while (span)
 			{
-				dword span = left;
+				dword step = span;
 
-				span = NST_MIN( span, square[0].Remaining() );
-				span = NST_MIN( span, square[1].Remaining() );
-				span = NST_MIN( span, triangle.Remaining() );
-				span = NST_MIN( span, noise.Remaining() );
+				step = NST_MIN( step, square[0].Remaining() );
+				step = NST_MIN( step, square[1].Remaining() );
+				step = NST_MIN( step, triangle.Remaining() );
+				step = NST_MIN( step, noise.Remaining() );
 
-				sum += qaword
+				cycles.sampleSum += qaword
 				(
 					lutPulse[ square[0].GetLevel() + square[1].GetLevel() ] +
 					lutTnd  [ triangle.GetLevel() * 3 + noise.GetLevel() * 2 + level ]
-				) * span;
+				) * step;
 
-				square[0].Advance( span );
-				square[1].Advance( span );
-				triangle.Advance( span );
-				noise.Advance( span );
+				square[0].Advance( step );
+				square[1].Advance( step );
+				triangle.Advance( step );
+				noise.Advance( step );
 
-				left -= span;
+				span -= step;
 			}
-			while (left);
+		}
+
+		NST_NO_INLINE Apu::Channel::Sample Apu::GetSample()
+		{
+			// Finish the sample the walk left part way through and average
+			// over the span that actually went into it.
+			if (cycles.sampleSpan < cycles.rate)
+				WalkSpan( cycles.rate - cycles.sampleSpan );
+
+			const qaword sum = cycles.sampleSum;
+			const dword span = cycles.sampleSpan;
+
+			cycles.sampleSum = 0;
+			cycles.sampleSpan = 0;
 
 			return Clamp<Channel::OUTPUT_MIN,Channel::OUTPUT_MAX>
 			(
-				dcBlocker.Apply( Channel::Sample(sum / cycles.rate) ) +
+				dcBlocker.Apply( Channel::Sample(sum / span) ) +
 				(extChannel ? extChannel->GetSample() : 0)
 			);
 		}

@@ -120,7 +120,7 @@ static unsigned long sram_size;
  * unique address to be looked up by. */
 #define OAM_BASE 0x4000
 
-#define MAX_MEMORY_DESCRIPTORS 24
+#define MAX_MEMORY_DESCRIPTORS 48
 static struct retro_memory_descriptor memory_descriptors[MAX_MEMORY_DESCRIPTORS];
 static struct retro_memory_map memory_map;
 static bool is_pal;
@@ -1755,32 +1755,80 @@ static void extract_directory(char *buf, const char *path, size_t size)
 }
 
 
-/* Clamp a region to what is reachable at its base address.  MMC5 can carry
- * 64k of work RAM but only banks 8k of it into $6000-$7FFF at a time, and a
- * descriptor cannot express the banking. */
-static size_t memdesc_len(size_t start, size_t len)
-{
-   if (start < 0x8000U && start + len > 0x8000U)
-      len = 0x8000U - start;
-
-   if (start + len > 0x10000U)
-      len = 0x10000U - start;
-
-   return len;
-}
-
-/* Bits an address has to share with start.  PPU_BIT is always included: it
- * is what keeps the two buses apart, so every descriptor has to say whether
- * it wants the bit set or clear rather than leaving it unconstrained.  Every
- * bit set in start must also be set here, so it is ORed back in. */
-static size_t memdesc_select(size_t start, size_t len)
+/* Smallest power of two that covers n, and the largest that fits under it. */
+static size_t memdesc_pow2_ceil(size_t n)
 {
    size_t win = 1;
 
-   while (win < len)
+   while (win < n)
       win <<= 1;
 
-   return PPU_BIT | (0xFFFFU & ~(win - 1)) | (start & 0xFFFFU);
+   return win;
+}
+
+static size_t memdesc_pow2_floor(size_t n)
+{
+   size_t win = 1;
+
+   while ((win << 1) <= n)
+      win <<= 1;
+
+   return win;
+}
+
+/* Largest aligned power-of-two block that fits at start.  CPU-space blocks are
+ * published in these so each one can carry a zero select and let the frontend
+ * derive it, which it only does for an aligned power-of-two length. */
+static size_t memdesc_chunk(size_t start, size_t len)
+{
+   size_t win = memdesc_pow2_floor(len);
+
+   while (win > 1 && (start & (win - 1)))
+      win >>= 1;
+
+   return win;
+}
+
+/* Bits a PPU-space address has to share with start.  Every bit set in start
+ * must also be set here, or the frontend rejects the descriptor and abandons
+ * the rest of the map; fceumm passes a bare PPU_BIT and trips exactly that. */
+static size_t memdesc_ppu_select(size_t start, size_t len)
+{
+   return PPU_BIT | (start & 0xFFFFU) | (0xFFFFU & ~(memdesc_pow2_ceil(len) - 1));
+}
+
+static void memdesc_emit(unsigned *n, void *ptr, size_t start, size_t len,
+      uint64_t flags, size_t select, const char *addrspace)
+{
+   if (*n >= MAX_MEMORY_DESCRIPTORS || !ptr || !len)
+      return;
+
+   memory_descriptors[*n].flags      = flags;
+   memory_descriptors[*n].ptr        = ptr;
+   memory_descriptors[*n].offset     = 0;
+   memory_descriptors[*n].start      = start;
+   memory_descriptors[*n].select     = select;
+   memory_descriptors[*n].disconnect = 0;
+   memory_descriptors[*n].len        = len;
+   memory_descriptors[*n].addrspace  = addrspace;
+
+   if (log_cb)
+      log_cb(RETRO_LOG_INFO, "[Nestopia]: memory map: %-6s $%08X %5u bytes%s\n",
+            addrspace ? addrspace : "CPU", (unsigned)start, (unsigned)len,
+            (flags & RETRO_MEMDESC_CONST) ? " ro" : "");
+
+   ++(*n);
+}
+
+static const char *memdesc_ppu_name(Nes::Api::Memory::Type type)
+{
+   switch (type)
+   {
+      case Nes::Api::Memory::TYPE_NAMETABLE_RAM: return "PPUNTA";
+      case Nes::Api::Memory::TYPE_PALETTE_RAM:   return "PPUPAL";
+      case Nes::Api::Memory::TYPE_OAM:           return "PPUOAM";
+      default:                                   return "PPUCHR";
+   }
 }
 
 static void set_memory_map(void)
@@ -1792,98 +1840,71 @@ static void set_memory_map(void)
 
    memset(memory_descriptors, 0, sizeof(memory_descriptors));
 
-   for (i = 0; i < count && n < MAX_MEMORY_DESCRIPTORS; i++)
+   for (i = 0; i < count; i++)
    {
       Nes::Api::Memory::Region r = imemory.GetRegion(i);
+      uint64_t flags = r.writable ? 0 : RETRO_MEMDESC_CONST;
       size_t start;
       size_t len;
 
       if (!r.data || !r.size)
          continue;
 
-      start = (size_t)r.address;
-      len   = (size_t)r.size;
-
-      switch (r.space)
+      /* PPU-side memory is lifted above the 6502's 64k.  Descriptor lookup in
+       * both RetroArch and rcheevos matches on start and select and ignores
+       * the address space name, so without the bit a cartridge address could
+       * resolve into nametable or palette RAM. */
+      if (r.space != Nes::Api::Memory::SPACE_CPU)
       {
-         case Nes::Api::Memory::SPACE_CPU:
-            len = memdesc_len(start, len);
-            break;
+         start = PPU_BIT | (r.type == Nes::Api::Memory::TYPE_OAM
+                              ? (size_t)OAM_BASE : (size_t)r.address);
 
-         case Nes::Api::Memory::SPACE_PPU:
-            start |= PPU_BIT;
-            break;
-
-         default:
-            start = PPU_BIT | OAM_BASE | start;
-            break;
+         memdesc_emit(&n, r.data, start, r.size, flags,
+               memdesc_ppu_select(start, r.size), memdesc_ppu_name(r.type));
+         continue;
       }
 
-      memory_descriptors[n].ptr        = r.data;
-      memory_descriptors[n].offset     = 0;
-      memory_descriptors[n].start      = start;
-      memory_descriptors[n].select     = memdesc_select(start, len);
-      memory_descriptors[n].disconnect = 0;
-      memory_descriptors[n].len        = len;
+      /* Trim to what is reachable at the base address: MMC5 can carry 64k of
+       * work RAM but only banks 8k into $6000-$7FFF at a time, and a
+       * descriptor cannot express the banking. */
+      start = r.address;
+      len   = r.size;
 
-      /* Read-only memory is flagged so the frontend does not offer it up for
-       * cheats or try to restore it from a savestate. */
-      if (!r.writable)
-         memory_descriptors[n].flags |= RETRO_MEMDESC_CONST;
+      if (start < 0x8000U && start + len > 0x8000U)
+         len = 0x8000U - start;
+      if (start + len > 0x10000U)
+         len = 0x10000U - start;
 
-      switch (r.type)
+      if (r.type == Nes::Api::Memory::TYPE_SYSTEM_RAM)
       {
-         case Nes::Api::Memory::TYPE_SYSTEM_RAM:
-            /* 2k mirrored four times across $0000-$1FFF: bits 11 and 12 are
-             * not wired to the chip.  Spelling that out lets the frontend
-             * resolve the mirrors instead of leaving them blank. */
-            memory_descriptors[n].flags     |= RETRO_MEMDESC_SYSTEM_RAM;
-            memory_descriptors[n].select     = PPU_BIT | 0xE000;
-            memory_descriptors[n].disconnect = 0x1800;
-            break;
+         /* 2k mirrored four times across $0000-$1FFF.  Published as four
+          * plain descriptors rather than one block with a disconnect mask,
+          * so there is no bit juggling for the frontend to reinterpret. */
+         size_t m;
 
-         case Nes::Api::Memory::TYPE_WORK_RAM:
-            /* SAVE_RAM means battery backed or flash, and the frontend may
-             * persist anything carrying it.  Plenty of boards - most MMC3
-             * carts among them - have work RAM that dies with the power, so
-             * only the ones the core reports as battery backed get flagged.
-             * The rest are still mapped, just not advertised as savable. */
-            if (r.battery)
-               memory_descriptors[n].flags |= RETRO_MEMDESC_SAVE_RAM;
-            break;
-
-         case Nes::Api::Memory::TYPE_CHR:
-            memory_descriptors[n].addrspace = "PPUCHR";
-            break;
-
-         case Nes::Api::Memory::TYPE_NAMETABLE_RAM:
-            memory_descriptors[n].addrspace = "PPUNTA";
-            break;
-
-         case Nes::Api::Memory::TYPE_PALETTE_RAM:
-            memory_descriptors[n].addrspace = "PPUPAL";
-            break;
-
-         case Nes::Api::Memory::TYPE_OAM:
-            memory_descriptors[n].addrspace = "PPUOAM";
-            break;
-
-         default:
-            /* Everything else shares the one 6502 address space, so it stays
-             * unnamed.  A name would declare a separate namespace. */
-            break;
+         for (m = 0; m < 0x2000U; m += len)
+            memdesc_emit(&n, r.data, m, len,
+                  flags | RETRO_MEMDESC_SYSTEM_RAM, 0, NULL);
+         continue;
       }
 
-      if (log_cb)
-         log_cb(RETRO_LOG_INFO,
-            "[Nestopia]: memory map: %-6s $%08X %5u bytes%s%s%s\n",
-            memory_descriptors[n].addrspace ? memory_descriptors[n].addrspace : "CPU",
-            (unsigned)start, (unsigned)len,
-            r.battery ? " battery" : "",
-            r.writable ? "" : " ro",
-            len != (size_t)r.size ? " (clamped, banked)" : "");
+      /* SAVE_RAM means battery backed or flash, and the frontend may persist
+       * anything carrying it.  Most MMC3 carts have work RAM that dies with
+       * the power, so only battery-backed blocks are flagged; the rest are
+       * still mapped, just not advertised as savable. */
+      if (r.type == Nes::Api::Memory::TYPE_WORK_RAM && r.battery)
+         flags |= RETRO_MEMDESC_SAVE_RAM;
 
-      n++;
+      while (len)
+      {
+         size_t chunk = memdesc_chunk(start, len);
+
+         memdesc_emit(&n, (unsigned char*)r.data + (start - r.address),
+               start, chunk, flags, 0, NULL);
+
+         start += chunk;
+         len   -= chunk;
+      }
    }
 
    memory_map.descriptors     = memory_descriptors;

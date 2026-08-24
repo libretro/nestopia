@@ -1325,7 +1325,14 @@ namespace Nes
 					banks.chrA[address] = data;
 					banks.lastChr = Banks::LAST_CHR_A;
 
-					if (!IsPpuSprite8x16() || !ppu.IsEnabled() || ppu.GetScanline() == Ppu::SCANLINE_VBLANK)
+					/* A bank value written while its own set is the live mapping has to
+					 * reach the PPU on the next fetch, not at the next hook. The MMC5
+					 * picks A or B per fetch; only the choice is latched at 257/320,
+					 * never the contents. Deferring the contents puts a mid-line bank
+					 * change a whole scanline late.
+					*/
+					if (!IsPpuSprite8x16() || !ppu.IsEnabled() || ppu.GetScanline() == Ppu::SCANLINE_VBLANK ||
+						banks.fetchMode == Banks::FETCH_MODE_SP)
 						UpdateChrA();
 				}
 			}
@@ -1342,7 +1349,8 @@ namespace Nes
 					banks.chrB[address] = data;
 					banks.lastChr = Banks::LAST_CHR_B;
 
-					if (!IsPpuSprite8x16() || !ppu.IsEnabled() || ppu.GetScanline() == Ppu::SCANLINE_VBLANK)
+					if (!IsPpuSprite8x16() || !ppu.IsEnabled() || ppu.GetScanline() == Ppu::SCANLINE_VBLANK ||
+						banks.fetchMode == Banks::FETCH_MODE_BG)
 						UpdateChrB();
 				}
 			}

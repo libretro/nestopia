@@ -469,31 +469,65 @@ namespace Nes
 					file.Load( File::BATTERY, wrk.Source().Mem(), board.GetSavableWram() );
 			}
 
+			/* Region 0 is work RAM when the board has any. After it come the four
+			 * 8k program windows and the eight 1k pattern pages, each reported as
+			 * currently banked. Banking means these are a snapshot: a caller that
+			 * needs to follow bank switches has to re-read them.
+			*/
 			uint Board::NumMemoryRegions() const
 			{
-				return board.GetWram() ? 1 : 0;
+				return (board.GetWram() ? 1 : 0) + PRG_WINDOWS + CHR_PAGES;
 			}
 
 			Board::MemoryRegion Board::GetMemoryRegion(uint index) const
 			{
 				MemoryRegion region;
 
-				region.kind    = MemoryRegion::KIND_WORK_RAM;
-				region.address = 0x6000;
-				region.size    = 0;
-				region.data    = NULL;
-				region.battery = false;
+				region.space    = MemoryRegion::SPACE_CPU;
+				region.type     = MemoryRegion::TYPE_WORK_RAM;
+				region.address  = 0x6000;
+				region.size     = 0;
+				region.data     = NULL;
+				region.battery  = false;
+				region.writable = true;
 
-				if (index == 0)
+				const uint wram = board.GetWram() ? 1 : 0;
+
+				if (wram && index == 0)
 				{
-					if (const uint size = board.GetWram())
-					{
-						region.size    = size;
-						region.data    = wrk.Source().Mem();
-						region.battery = board.HasBattery() && board.GetSavableWram();
-					}
+					region.size    = board.GetWram();
+					region.data    = wrk.Source().Mem();
+					region.battery = board.HasBattery() && board.GetSavableWram();
+					return region;
 				}
 
+				index -= wram;
+
+				if (index < PRG_WINDOWS)
+				{
+					region.type     = MemoryRegion::TYPE_PRG_ROM;
+					region.address  = 0x8000 + index * dword(SIZE_8K);
+					region.size     = SIZE_8K;
+					region.data     = const_cast<byte*>(prg[index]);
+					region.writable = false;
+					return region;
+				}
+
+				index -= PRG_WINDOWS;
+
+				if (index < CHR_PAGES)
+				{
+					region.space    = MemoryRegion::SPACE_PPU;
+					region.type     = MemoryRegion::TYPE_CHR;
+					region.address  = index * dword(SIZE_1K);
+					region.size     = SIZE_1K;
+					region.data     = const_cast<byte*>(chr[index]);
+					region.writable = board.GetChrRam() > 0;
+					return region;
+				}
+
+				region.size = 0;
+				region.data = NULL;
 				return region;
 			}
 

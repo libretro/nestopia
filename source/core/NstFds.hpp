@@ -516,11 +516,13 @@ namespace Nes
 			{
 				MemoryRegion region;
 
-				region.kind    = MemoryRegion::KIND_DISK_RAM;
+				region.space   = MemoryRegion::SPACE_CPU;
+				region.type    = MemoryRegion::TYPE_DISK_RAM;
 				region.address = 0x6000;
 				region.size    = (index == 0) ? dword(SIZE_32K) : 0;
 				region.data    = (index == 0) ? const_cast<byte*>(ram.mem) : NULL;
 				region.battery = false;
+				region.writable = true;
 
 				return region;
 			}

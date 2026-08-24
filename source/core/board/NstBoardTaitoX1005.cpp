@@ -103,12 +103,14 @@ namespace Nes
 					 * only readable once the security handshake has passed.
 					*/
 					MemoryRegion region;
+					region.space    = MemoryRegion::SPACE_CPU;
 
-					region.kind    = MemoryRegion::KIND_WORK_RAM;
-					region.address = 0x7F00;
-					region.size    = sizeof(ram);
-					region.data    = const_cast<byte*>(ram);
-					region.battery = board.HasBattery();
+					region.type     = MemoryRegion::TYPE_WORK_RAM;
+					region.address  = 0x7F00;
+					region.size     = sizeof(ram);
+					region.data     = const_cast<byte*>(ram);
+					region.battery  = board.HasBattery();
+					region.writable = true;
 
 					return region;
 				}

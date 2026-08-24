@@ -58,27 +58,71 @@ namespace Nes
 			: Base(instance) {}
 
 			/**
-			* Kind of memory a region holds.
+			* Which bus a region is visible on.
+			*
+			* A frontend building an address map needs to keep the two buses
+			* apart: an address means different things on each, and some blocks
+			* are reachable from neither.
 			*/
-			enum Kind
+			enum Space
+			{
+				/**
+				* Visible on the 6502 bus, $0000-$FFFF.
+				*/
+				SPACE_CPU,
+				/**
+				* Visible on the PPU bus, $0000-$3FFF.
+				*/
+				SPACE_PPU,
+				/**
+				* Addressable by neither bus, such as OAM.
+				*/
+				SPACE_INTERNAL
+			};
+
+			/**
+			* Type of memory a region holds.
+			*/
+			enum Type
 			{
 				/**
 				* CPU RAM, 2k at $0000.
 				*/
-				KIND_SYSTEM_RAM,
+				TYPE_SYSTEM_RAM,
 				/**
 				* Cartridge work RAM, commonly 8k at $6000.
 				*/
-				KIND_WORK_RAM,
+				TYPE_WORK_RAM,
 				/**
 				* Mapper RAM outside the usual work RAM window, such as
 				* the MMC5 expansion RAM at $5C00.
 				*/
-				KIND_EXPANSION_RAM,
+				TYPE_EXPANSION_RAM,
 				/**
 				* Famicom Disk System program RAM.
 				*/
-				KIND_DISK_RAM
+				TYPE_DISK_RAM,
+				/**
+				* Cartridge program ROM, as currently banked.
+				*/
+				TYPE_PRG_ROM,
+				/**
+				* Pattern data, as currently banked. Writable only on boards
+				* carrying character RAM rather than ROM.
+				*/
+				TYPE_CHR,
+				/**
+				* Nametable RAM.
+				*/
+				TYPE_NAMETABLE_RAM,
+				/**
+				* Palette RAM, 32 bytes.
+				*/
+				TYPE_PALETTE_RAM,
+				/**
+				* Object attribute memory, 256 bytes.
+				*/
+				TYPE_OAM
 			};
 
 			/**
@@ -87,9 +131,13 @@ namespace Nes
 			struct Region
 			{
 				/**
+				* Which bus the block is visible on.
+				*/
+				Space space;
+				/**
 				* What the block holds.
 				*/
-				Kind kind;
+				Type type;
 				/**
 				* CPU address the block appears at, or 0 if it is not
 				* directly visible in the CPU address space.
@@ -109,6 +157,10 @@ namespace Nes
 				* persisted through the file callbacks.
 				*/
 				bool battery;
+				/**
+				* False for read-only memory such as program ROM.
+				*/
+				bool writable;
 			};
 
 			/**
@@ -116,6 +168,10 @@ namespace Nes
 			*
 			* Zero before an image is loaded. Region 0 is always system RAM
 			* once a machine is up.
+			*
+			* Regions covering banked memory report what is mapped at the time
+			* of the call. A caller that needs to track bank switches has to
+			* re-read them rather than cache the pointers.
 			*
 			* @return number of regions
 			*/

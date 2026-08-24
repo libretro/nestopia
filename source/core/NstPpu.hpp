@@ -523,6 +523,19 @@ namespace Nes
 				return nmt;
 			}
 
+			/* Neither block is reachable through the PPU bus as plain memory,
+			 * so they are exposed directly for callers building an address map.
+			*/
+			byte* GetPaletteRam()
+			{
+				return palette.ram;
+			}
+
+			byte* GetOamRam()
+			{
+				return oam.ram;
+			}
+
 			Cycle GetClock(dword count=1) const
 			{
 				NST_ASSERT( count );

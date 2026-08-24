@@ -718,6 +718,12 @@ namespace Nes
 				*/
 				typedef Image::MemoryRegion MemoryRegion;
 
+				enum
+				{
+					PRG_WINDOWS = 4,   // 8k each, $8000-$FFFF
+					CHR_PAGES   = 8    // 1k each, PPU $0000-$1FFF
+				};
+
 				virtual uint NumMemoryRegions() const;
 				virtual MemoryRegion GetMemoryRegion(uint) const;
 

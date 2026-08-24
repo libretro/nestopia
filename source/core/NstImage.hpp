@@ -63,18 +63,29 @@ namespace Nes
 			*/
 			struct MemoryRegion
 			{
-				enum Kind
+				enum Space
 				{
-					KIND_WORK_RAM,      // cartridge RAM, commonly $6000-$7FFF
-					KIND_EXPANSION_RAM, // mapper RAM outside the usual window
-					KIND_DISK_RAM       // FDS program RAM
+					SPACE_CPU,      // visible on the 6502 bus
+					SPACE_PPU,      // visible on the PPU bus
+					SPACE_INTERNAL  // addressable by neither, e.g. OAM
 				};
 
-				Kind kind;
-				word address;   // CPU address it appears at, 0 if not directly mapped
+				enum Type
+				{
+					TYPE_WORK_RAM,      // cartridge RAM, commonly $6000-$7FFF
+					TYPE_EXPANSION_RAM, // mapper RAM outside the usual window
+					TYPE_DISK_RAM,      // FDS program RAM
+					TYPE_PRG_ROM,       // program ROM, as currently banked
+					TYPE_CHR            // pattern data, as currently banked
+				};
+
+				Space space;
+				Type type;
+				word address;   // address within its space
 				dword size;
 				byte* data;
 				bool battery;
+				bool writable;
 			};
 
 			enum ExternalDeviceType
@@ -140,11 +151,13 @@ namespace Nes
 			virtual MemoryRegion GetMemoryRegion(uint) const
 			{
 				MemoryRegion region;
-				region.kind    = MemoryRegion::KIND_WORK_RAM;
-				region.address = 0;
-				region.size    = 0;
-				region.data    = NULL;
-				region.battery = false;
+				region.space    = MemoryRegion::SPACE_CPU;
+				region.type     = MemoryRegion::TYPE_WORK_RAM;
+				region.address  = 0;
+				region.size     = 0;
+				region.data     = NULL;
+				region.battery  = false;
+				region.writable = false;
 				return region;
 			}
 

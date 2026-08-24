@@ -30,24 +30,34 @@ namespace Nes
 {
 	namespace Api
 	{
+		/* Region 0 is CPU RAM, then whatever the image reports (work RAM,
+		 * mapper RAM, program ROM, pattern data), then the PPU side, which
+		 * lives outside the image entirely.
+		 */
+		enum
+		{
+			PPU_REGIONS = 3   // nametable RAM, palette RAM, OAM
+		};
+
 		ulong Memory::NumRegions() const throw()
 		{
 			if (!emulator.image)
 				return 0;
 
-			// Region 0 is CPU RAM; the image contributes the rest.
-			return 1 + emulator.image->NumMemoryRegions();
+			return 1 + emulator.image->NumMemoryRegions() + PPU_REGIONS;
 		}
 
 		Memory::Region Memory::GetRegion(ulong index) const throw()
 		{
 			Region region;
 
-			region.kind    = KIND_SYSTEM_RAM;
-			region.address = 0x0000;
-			region.size    = 0;
-			region.data    = NULL;
-			region.battery = false;
+			region.space    = SPACE_CPU;
+			region.type     = TYPE_SYSTEM_RAM;
+			region.address  = 0x0000;
+			region.size     = 0;
+			region.data     = NULL;
+			region.battery  = false;
+			region.writable = true;
 
 			if (index >= NumRegions())
 				return region;
@@ -59,33 +69,77 @@ namespace Nes
 				return region;
 			}
 
-			const Core::Image::MemoryRegion source
-			(
-				emulator.image->GetMemoryRegion( uint(index) - 1 )
-			);
+			--index;
 
-			switch (source.kind)
+			const ulong imageRegions = emulator.image->NumMemoryRegions();
+
+			if (index < imageRegions)
 			{
-				case Core::Image::MemoryRegion::KIND_EXPANSION_RAM:
+				const Core::Image::MemoryRegion source
+				(
+					emulator.image->GetMemoryRegion( uint(index) )
+				);
 
-					region.kind = KIND_EXPANSION_RAM;
+				switch (source.space)
+				{
+					case Core::Image::MemoryRegion::SPACE_PPU:      region.space = SPACE_PPU;      break;
+					case Core::Image::MemoryRegion::SPACE_INTERNAL: region.space = SPACE_INTERNAL; break;
+					default:                                        region.space = SPACE_CPU;      break;
+				}
+
+				switch (source.type)
+				{
+					case Core::Image::MemoryRegion::TYPE_EXPANSION_RAM: region.type = TYPE_EXPANSION_RAM; break;
+					case Core::Image::MemoryRegion::TYPE_DISK_RAM:      region.type = TYPE_DISK_RAM;      break;
+					case Core::Image::MemoryRegion::TYPE_PRG_ROM:       region.type = TYPE_PRG_ROM;       break;
+					case Core::Image::MemoryRegion::TYPE_CHR:           region.type = TYPE_CHR;           break;
+					default:                                            region.type = TYPE_WORK_RAM;      break;
+				}
+
+				region.address  = source.address;
+				region.size     = source.size;
+				region.data     = source.data;
+				region.battery  = source.battery;
+				region.writable = source.writable;
+				return region;
+			}
+
+			switch (index - imageRegions)
+			{
+				case 0:
+
+					/* 4k of nametable storage at PPU $2000. Which of the four
+					 * 1k pages a given address reaches depends on the current
+					 * mirroring, so the whole block is reported at once.
+					 */
+					region.space   = SPACE_PPU;
+					region.type    = TYPE_NAMETABLE_RAM;
+					region.address = 0x2000;
+					region.size    = Core::SIZE_4K;
+					region.data    = emulator.ppu.GetNmtMem().Source().Mem();
 					break;
 
-				case Core::Image::MemoryRegion::KIND_DISK_RAM:
+				case 1:
 
-					region.kind = KIND_DISK_RAM;
+					region.space   = SPACE_PPU;
+					region.type    = TYPE_PALETTE_RAM;
+					region.address = 0x3F00;
+					region.size    = 0x20;   // palette RAM
+					region.data    = emulator.ppu.GetPaletteRam();
 					break;
 
 				default:
 
-					region.kind = KIND_WORK_RAM;
+					/* Not reachable from either bus; only through $2003/$2004
+					 * or a DMA from $4014.
+					 */
+					region.space   = SPACE_INTERNAL;
+					region.type    = TYPE_OAM;
+					region.address = 0;
+					region.size    = 0x100;  // OAM
+					region.data    = emulator.ppu.GetOamRam();
 					break;
 			}
-
-			region.address = source.address;
-			region.size    = source.size;
-			region.data    = source.data;
-			region.battery = source.battery;
 
 			return region;
 		}

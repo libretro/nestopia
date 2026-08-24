@@ -187,12 +187,14 @@ namespace Nes
 				 * the storage is live in every mode and games park data there.
 				*/
 				MemoryRegion region;
+				region.space    = MemoryRegion::SPACE_CPU;
 
-				region.kind    = MemoryRegion::KIND_EXPANSION_RAM;
-				region.address = 0x5C00;
-				region.size    = SIZE_1K;
-				region.data    = const_cast<byte*>(exRam.mem);
-				region.battery = false;
+				region.type     = MemoryRegion::TYPE_EXPANSION_RAM;
+				region.address  = 0x5C00;
+				region.size     = SIZE_1K;
+				region.data     = const_cast<byte*>(exRam.mem);
+				region.battery  = false;
+				region.writable = true;
 
 				return region;
 			}

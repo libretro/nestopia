@@ -92,12 +92,14 @@ namespace Nes
 
 					/* 5k inside the X1-017, mapped linearly across $6000-$73FF. */
 					MemoryRegion region;
+					region.space    = MemoryRegion::SPACE_CPU;
 
-					region.kind    = MemoryRegion::KIND_WORK_RAM;
-					region.address = 0x6000;
-					region.size    = sizeof(ram);
-					region.data    = const_cast<byte*>(ram);
-					region.battery = board.HasBattery();
+					region.type     = MemoryRegion::TYPE_WORK_RAM;
+					region.address  = 0x6000;
+					region.size     = sizeof(ram);
+					region.data     = const_cast<byte*>(ram);
+					region.battery  = board.HasBattery();
+					region.writable = true;
 
 					return region;
 				}

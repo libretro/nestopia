@@ -345,7 +345,15 @@ namespace Nes
 					uint volume = GetVolume(EXT_N163) * 68U / DEFAULT_VOLUME;
 					output = IsMuted() ? 0 : volume;
 
-					rate = GetCpuClockBase() * qaword(1UL << SPEED_SHIFT) / (GetSampleRate() * 45UL * GetCpuClockDivider());
+					/* One channel updates every 15 CPU cycles, so the divisor
+					 * is 15 * the CPU clock period - 12, 16 or 15, not the
+					 * master divider. The old 45 was the NTSC product with
+					 * the 4x below folded in, leaving PAL and Dendy sharp.
+					 * The extra two bits offset PHASE_SHIFT being 18 rather
+					 * than the hardware's 16; they cancel on NTSC.
+					*/
+					rate = GetCpuClockBase() * qaword(1UL << (SPEED_SHIFT + 2)) /
+						(GetSampleRate() * 15UL * GetCpuClock() * GetCpuClockDivider());
 
 					dcBlocker.Reset();
 

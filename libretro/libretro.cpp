@@ -106,11 +106,21 @@ static Api::Machine::FavoredSystem favsystem;
 static void *sram;
 static unsigned long sram_size;
 
-/* Memory map handed to the frontend. The core enumerates what the running
+/* Memory map handed to the frontend.  The core enumerates what the running
  * machine actually holds, so cartridge RAM is published whether or not the
- * board has a battery - most MMC3 carts have 8k at $6000 and no battery,
- * which is why achievements reading that range used to see nothing. */
-#define MAX_MEMORY_DESCRIPTORS 8
+ * board has a battery - most MMC3 carts have 8k at $6000 and no battery.
+ *
+ * Descriptor lookup in both RetroArch and rcheevos matches on start/select
+ * and ignores the address space name, so PPU-side blocks are lifted above
+ * the 6502's 64k rather than left to collide with cartridge addresses.
+ * fceumm does the same thing with the same bit. */
+#define PPU_BIT ((size_t)1 << 31)
+
+/* OAM answers to neither bus; parked past the PPU window so it still has a
+ * unique address to be looked up by. */
+#define OAM_BASE 0x4000
+
+#define MAX_MEMORY_DESCRIPTORS 24
 static struct retro_memory_descriptor memory_descriptors[MAX_MEMORY_DESCRIPTORS];
 static struct retro_memory_map memory_map;
 static bool is_pal;
@@ -1745,9 +1755,9 @@ static void extract_directory(char *buf, const char *path, size_t size)
 }
 
 
-/* Clamp a region to what is actually reachable at its base address. MMC5 can
- * carry 64k of work RAM but only banks 8k of it into $6000-$7FFF at a time,
- * and a descriptor has no way to express the banking. */
+/* Clamp a region to what is reachable at its base address.  MMC5 can carry
+ * 64k of work RAM but only banks 8k of it into $6000-$7FFF at a time, and a
+ * descriptor cannot express the banking. */
 static size_t memdesc_len(size_t start, size_t len)
 {
    if (start < 0x8000U && start + len > 0x8000U)
@@ -1759,10 +1769,10 @@ static size_t memdesc_len(size_t start, size_t len)
    return len;
 }
 
-/* A zero select tells the frontend that start and len are the entire mapping,
- * which it only accepts for an aligned power-of-two block. Anything else has
- * to spell out the bits an address must share with start; every bit set in
- * start must also be set there, so OR it back in. */
+/* Bits an address has to share with start.  PPU_BIT is always included: it
+ * is what keeps the two buses apart, so every descriptor has to say whether
+ * it wants the bit set or clear rather than leaving it unconstrained.  Every
+ * bit set in start must also be set here, so it is ORed back in. */
 static size_t memdesc_select(size_t start, size_t len)
 {
    size_t win = 1;
@@ -1770,10 +1780,7 @@ static size_t memdesc_select(size_t start, size_t len)
    while (win < len)
       win <<= 1;
 
-   if (win == len && (start & (len - 1)) == 0)
-      return 0;
-
-   return (0xFFFFU & ~(win - 1)) | start;
+   return PPU_BIT | (0xFFFFU & ~(win - 1)) | (start & 0xFFFFU);
 }
 
 static void set_memory_map(void)
@@ -1788,69 +1795,93 @@ static void set_memory_map(void)
    for (i = 0; i < count && n < MAX_MEMORY_DESCRIPTORS; i++)
    {
       Nes::Api::Memory::Region r = imemory.GetRegion(i);
+      size_t start;
+      size_t len;
 
       if (!r.data || !r.size)
          continue;
 
+      start = (size_t)r.address;
+      len   = (size_t)r.size;
+
+      switch (r.space)
+      {
+         case Nes::Api::Memory::SPACE_CPU:
+            len = memdesc_len(start, len);
+            break;
+
+         case Nes::Api::Memory::SPACE_PPU:
+            start |= PPU_BIT;
+            break;
+
+         default:
+            start = PPU_BIT | OAM_BASE | start;
+            break;
+      }
+
       memory_descriptors[n].ptr        = r.data;
       memory_descriptors[n].offset     = 0;
-      memory_descriptors[n].start      = r.address;
+      memory_descriptors[n].start      = start;
+      memory_descriptors[n].select     = memdesc_select(start, len);
       memory_descriptors[n].disconnect = 0;
-      memory_descriptors[n].len        = memdesc_len(r.address, r.size);
-      memory_descriptors[n].select     = memdesc_select(r.address,
-                                            memory_descriptors[n].len);
+      memory_descriptors[n].len        = len;
 
-      switch (r.kind)
+      /* Read-only memory is flagged so the frontend does not offer it up for
+       * cheats or try to restore it from a savestate. */
+      if (!r.writable)
+         memory_descriptors[n].flags |= RETRO_MEMDESC_CONST;
+
+      switch (r.type)
       {
-         case Nes::Api::Memory::KIND_SYSTEM_RAM:
-            /* 2k mirrored four times across $0000-$1FFF: bits 11 and 12
-             * are not wired to the chip. Spelling that out lets the
-             * frontend resolve the mirrors instead of leaving them blank. */
-            memory_descriptors[n].flags      = RETRO_MEMDESC_SYSTEM_RAM;
-            memory_descriptors[n].select     = 0xE000;
+         case Nes::Api::Memory::TYPE_SYSTEM_RAM:
+            /* 2k mirrored four times across $0000-$1FFF: bits 11 and 12 are
+             * not wired to the chip.  Spelling that out lets the frontend
+             * resolve the mirrors instead of leaving them blank. */
+            memory_descriptors[n].flags     |= RETRO_MEMDESC_SYSTEM_RAM;
+            memory_descriptors[n].select     = PPU_BIT | 0xE000;
             memory_descriptors[n].disconnect = 0x1800;
-            memory_descriptors[n].addrspace  = "RAM";
             break;
 
-         case Nes::Api::Memory::KIND_WORK_RAM:
+         case Nes::Api::Memory::TYPE_WORK_RAM:
             /* SAVE_RAM means battery backed or flash, and the frontend may
-             * persist anything carrying it. Plenty of boards - most MMC3
+             * persist anything carrying it.  Plenty of boards - most MMC3
              * carts among them - have work RAM that dies with the power, so
-             * only the ones the core reports as battery backed get the flag.
+             * only the ones the core reports as battery backed get flagged.
              * The rest are still mapped, just not advertised as savable. */
             if (r.battery)
-            {
-               memory_descriptors[n].flags     = RETRO_MEMDESC_SAVE_RAM;
-               memory_descriptors[n].addrspace = "SRAM";
-            }
-            else
-            {
-               memory_descriptors[n].addrspace = "WRAM";
-            }
+               memory_descriptors[n].flags |= RETRO_MEMDESC_SAVE_RAM;
             break;
 
-         case Nes::Api::Memory::KIND_DISK_RAM:
-            /* Volatile: the BIOS reloads it from the disk image, and disk
-             * writes persist through the FDS file callbacks instead. */
-            memory_descriptors[n].addrspace = "FDSRAM";
+         case Nes::Api::Memory::TYPE_CHR:
+            memory_descriptors[n].addrspace = "PPUCHR";
             break;
 
-         case Nes::Api::Memory::KIND_EXPANSION_RAM:
+         case Nes::Api::Memory::TYPE_NAMETABLE_RAM:
+            memory_descriptors[n].addrspace = "PPUNTA";
+            break;
+
+         case Nes::Api::Memory::TYPE_PALETTE_RAM:
+            memory_descriptors[n].addrspace = "PPUPAL";
+            break;
+
+         case Nes::Api::Memory::TYPE_OAM:
+            memory_descriptors[n].addrspace = "PPUOAM";
+            break;
+
          default:
-            /* Mapper RAM outside the usual window. Mapped so addresses
-             * resolve, but not tagged as save or system memory. */
-            memory_descriptors[n].addrspace = "EXRAM";
+            /* Everything else shares the one 6502 address space, so it stays
+             * unnamed.  A name would declare a separate namespace. */
             break;
       }
 
       if (log_cb)
          log_cb(RETRO_LOG_INFO,
-            "[Nestopia]: memory map: %-6s $%04X %lu bytes%s%s\n",
-            memory_descriptors[n].addrspace,
-            (unsigned)r.address,
-            (unsigned long)memory_descriptors[n].len,
-            r.battery ? " (battery)" : "",
-            memory_descriptors[n].len != r.size ? " (clamped, banked)" : "");
+            "[Nestopia]: memory map: %-6s $%08X %5u bytes%s%s%s\n",
+            memory_descriptors[n].addrspace ? memory_descriptors[n].addrspace : "CPU",
+            (unsigned)start, (unsigned)len,
+            r.battery ? " battery" : "",
+            r.writable ? "" : " ro",
+            len != (size_t)r.size ? " (clamped, banked)" : "");
 
       n++;
    }
@@ -2266,10 +2297,6 @@ bool retro_unserialize(const void *data, size_t size)
    return !machine->LoadState(ss);
 }
 
-/* Deliberately unchanged. RETRO_MEMORY_SAVE_RAM is what the frontend writes
- * to the .srm file, and sram is populated only by the battery file callback,
- * so volatile work RAM never reaches disk. Achievements get their coverage
- * from the memory map above instead. */
 void *retro_get_memory_data(unsigned id)
 {
    Core::Machine& machineGet = emulator;

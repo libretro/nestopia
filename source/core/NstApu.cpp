@@ -404,8 +404,28 @@ namespace Nes
 			dcBlocker.Reset();
 			buffer.Reset();
 
-			Cycle rate; uint fixed;
-			CalculateOscillatorClock( rate, fixed );
+			UpdateChannelSettings();
+
+			UpdateMixLut();
+			UpdateVolumes();
+		}
+
+		void Apu::UpdateChannelSettings()
+		{
+			/* The walk hands Advance() spans measured in the cycles domain,
+			 * so the oscillator timers have to be scaled in that same domain
+			 * or they run at the wrong speed. One CPU cycle is cpu.GetClock()
+			 * ticks and one tick is cycles.fixed of them.
+			 *
+			 * CalculateOscillatorClock cannot be used for this. It picks its
+			 * own multiplier, under a different cap, for the expansion audio
+			 * channels - those still clock themselves once per output sample
+			 * and need a rate/fixed pair in their own domain. Its multiplier
+			 * happens to match cycles.fixed on NTSC and does not on PAL or
+			 * Dendy, where it lands on 118 against 160.
+			*/
+			const Cycle rate = cycles.rate;
+			const uint fixed = uint(cpu.GetClock() * cycles.fixed);
 
 			/* The DAC index is a sum of channel levels, so a channel has to
 			 * contribute a whole number of them. Volume is mute or nothing.
@@ -419,9 +439,6 @@ namespace Nes
 			dmc.UpdateSettings       ( NST_APU_VOL( APU_DPCM     ) );
 
 			#undef NST_APU_VOL
-
-			UpdateMixLut();
-			UpdateVolumes();
 		}
 
 		void Apu::UpdateVolumes()
@@ -439,6 +456,10 @@ namespace Nes
 		void Apu::Resync(const dword rate)
 		{
 			cycles.Update( rate, settings.speed, cpu );
+
+			// cycles.fixed just moved, so the oscillator timers move with it.
+			UpdateChannelSettings();
+
 			ClearBuffers( false );
 		}
 

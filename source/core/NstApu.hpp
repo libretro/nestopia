@@ -320,6 +320,7 @@ namespace Nes
 			void FlushSound();
 
 			void UpdateSettings();
+			void UpdateChannelSettings();
 			void UpdateVolumes();
 			void UpdateMixLut();
 

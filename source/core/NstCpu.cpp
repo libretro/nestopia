@@ -192,6 +192,9 @@ namespace Nes
 			logged  = 0;
 			busData = busDataInternal = 0;
 
+			dmaOam      = false;
+			dmaOamCycle = 0;
+
 			pc = RESET_VECTOR;
 
 			cycles.count  = 0;

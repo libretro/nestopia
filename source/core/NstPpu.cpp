@@ -220,6 +220,13 @@ namespace Nes
 				cycles.reset = 0;
 			}
 
+			// Cpu::Reset zeroes the monotonic counter on soft reset too, so
+			// nothing here can carry over. Same reasoning as LoadState.
+			for (uint i=0; i < 8; ++i)
+				decay.timestamp[i] = 0;
+
+			decay.rd2007 = 0;
+
 			if (chr.Source().Empty())
 			{
 				chr.Source().Set( Ram::RAM, true, false, NameTable::SIZE, nameTable.ram );

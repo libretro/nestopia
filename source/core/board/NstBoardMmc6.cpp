@@ -22,6 +22,7 @@
 //
 ////////////////////////////////////////////////////////////////////////////////////////
 
+#include <cstring>
 #include "NstBoard.hpp"
 #include "NstBoardMmc6.hpp"
 #include "../NstFile.hpp"
@@ -33,7 +34,11 @@ namespace Nes
 		namespace Boards
 		{
 			Mmc6::Mmc6(const Context& c)
-			: Mmc3(c,REV_A) {}
+			: Mmc3(c,REV_A)
+			{
+				// Not in SubReset: Load() runs after the ctor and before Reset(hard).
+				std::memset( ram, 0, sizeof(ram) );
+			}
 
 			void Mmc6::SubReset(const bool hard)
 			{

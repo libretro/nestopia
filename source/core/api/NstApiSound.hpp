@@ -326,6 +326,18 @@ namespace Nes
 			void SetFilter(bool filter) throw();
 
 			/**
+			* Enables DMC pop reduction.
+			*
+			* A direct load to $4011 far from the current DMC level steps the
+			* DAC hard enough to be heard as a click. When enabled, a step of
+			* more than 50 is halved. This is deliberately inaccurate and will
+			* quieten samples streamed as large swings through $4011.
+			*
+			* @param reduce true to enable
+			*/
+			void SetDmcPopReducer(bool reduce) throw();
+
+			/**
 			* Checks if automatic transposing is enabled.
 			*
 			* @return true if enabled
@@ -345,6 +357,13 @@ namespace Nes
 			* @return true if enabled
 			*/
 			bool IsFiltered() const throw();
+
+			/**
+			* Checks if DMC pop reduction is enabled.
+			*
+			* @return true if enabled
+			*/
+			bool IsDmcPopReduced() const throw();
 
 			/**
 			* Checks if sound is audible at all.

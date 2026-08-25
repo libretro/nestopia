@@ -84,6 +84,11 @@ namespace Nes
 			emulator.cpu.GetApu().SetFilter( enable );
 		}
 
+		void Sound::SetDmcPopReducer(bool enable) throw()
+		{
+			emulator.cpu.GetApu().SetDmcPopReducer( enable );
+		}
+
 				ulong Sound::GetSampleRate() const throw()
 		{
 			return emulator.cpu.GetApu().GetSampleRate();
@@ -127,6 +132,11 @@ namespace Nes
 		bool Sound::IsFiltered() const throw()
 		{
 			return emulator.cpu.GetApu().IsFiltered();
+		}
+
+		bool Sound::IsDmcPopReduced() const throw()
+		{
+			return emulator.cpu.GetApu().IsDmcPopReduced();
 		}
 
 				void Sound::EmptyBuffer() throw()

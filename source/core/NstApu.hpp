@@ -71,6 +71,7 @@ namespace Nes
 			void   SetAutoTranspose(bool);
 			void   SetGenie(bool);
 			void   SetFilter(bool);
+			void   SetDmcPopReducer(bool);
 
 			void SaveState(State::Saver&,dword) const;
 			void LoadState(State::Loader&);
@@ -384,6 +385,7 @@ namespace Nes
 
 				uint fixed;
 				Cycle rate;
+				uint sampleShift;
 				Cycle rateCounter;
 				Cycle frameCounter;
 				Cycle extCounter;
@@ -394,11 +396,13 @@ namespace Nes
 				Cycle frameIrqPhantom;
 				Cycle dmcClock;
 
-				/* The output sample in progress. The walk stops on events
-				 * rather than on sample boundaries, so one sample is built
-				 * over several calls. Transients - reset with the buffer.
+				/* The output sample in progress, plus the rising half of the
+				 * window that carries into the next one. The walk stops on
+				 * events rather than on sample boundaries, so one sample is
+				 * built over several calls. Transients - reset with the buffer.
 				*/
 				qaword sampleSum;
+				qaword sampleNext;
 				dword sampleSpan;
 
 				static const dword frameClocks[3][4];
@@ -530,11 +534,12 @@ namespace Nes
 
 			private:
 
-				inline bool CanOutput() const;
+				inline void UpdateGate();
 
 				enum
 				{
-					MIN_FRQ                   = 2 + 1,
+					MIN_FRQ                   = 2,
+					PARK_LEVEL                = 7,
 					STEP_CHECK                = 0x1F,
 					REG0_LINEAR_COUNTER_LOAD  = 0x7F,
 					REG0_LINEAR_COUNTER_START = 0x80,
@@ -549,6 +554,7 @@ namespace Nes
 				};
 
 				uint step;
+				ibool gate;
 				uint outputVolume;
 				Status status;
 				word waveLength;
@@ -611,7 +617,7 @@ namespace Nes
 				void SaveState(State::Saver&,dword,const Cpu&,Cycle) const;
 
 				NST_SINGLE_CALL bool WriteReg0(uint,CpuModel);
-				NST_SINGLE_CALL void WriteReg1(uint);
+				NST_SINGLE_CALL void WriteReg1(uint,bool);
 				NST_SINGLE_CALL void WriteReg2(uint);
 				NST_SINGLE_CALL void WriteReg3(uint);
 				NST_SINGLE_CALL void Disable(bool,Cpu&,Cycle);
@@ -652,7 +658,8 @@ namespace Nes
 					REG0_FREQUENCY  = 0x0F,
 					REG0_LOOP       = 0x40,
 					REG0_IRQ_ENABLE = 0x80,
-					INP_STEP        = 8
+					INP_STEP        = 8,
+					POP_STEP        = 50
 				};
 
 				uint curSample;
@@ -701,6 +708,7 @@ namespace Nes
 				bool genie;
 				bool audible;
 				bool filter;
+				bool dmcPopReducer;
 				byte volumes[MAX_CHANNELS];
 			};
 
@@ -745,6 +753,11 @@ namespace Nes
 			bool IsFiltered() const
 			{
 				return settings.filter;
+			}
+
+			bool IsDmcPopReduced() const
+			{
+				return settings.dmcPopReducer;
 			}
 
 			bool IsMuted() const

@@ -413,6 +413,12 @@ namespace Nes
 			}
 		}
 
+		void Apu::SetDmcPopReducer(const bool reduce)
+		{
+			// Only affects later $4011 writes, so nothing to flush here.
+			settings.dmcPopReducer = reduce;
+		}
+
 		void Apu::UpdateSettings()
 		{
 			cycles.Update( settings.rate, settings.speed, cpu );
@@ -628,6 +634,7 @@ namespace Nes
 
 						cycles.rateCounter = cycles.fixed * cpu.GetCycles();
 						cycles.sampleSum = 0;
+						cycles.sampleNext = 0;
 						cycles.sampleSpan = 0;
 
 						cycles.frameCounter = cycles.fixed *
@@ -713,6 +720,7 @@ namespace Nes
 
 						cycles.rateCounter = data[0] | (data[1] << 8) | (data[2] << 16) | (data[3] << 24);
 						cycles.sampleSum = 0;
+						cycles.sampleNext = 0;
 						cycles.sampleSpan = 0;
 						break;
 					}
@@ -821,6 +829,7 @@ namespace Nes
 
 			// Nothing is being emitted; drop the sample in progress.
 			cycles.sampleSum = 0;
+			cycles.sampleNext = 0;
 			cycles.sampleSpan = 0;
 
 			while (cycles.frameCounter < target)
@@ -969,19 +978,20 @@ namespace Nes
 		}
 
 		Apu::Settings::Settings()
-		: rate(44100), speed(0), muted(false), transpose(false), genie(false), audible(true), filter(false)
+		: rate(44100), speed(0), muted(false), transpose(false), genie(false), audible(true), filter(false), dmcPopReducer(false)
 		{
 			for (uint i=0; i < MAX_CHANNELS; ++i)
 				volumes[i] = Channel::DEFAULT_VOLUME;
 		}
 
 		Apu::Cycles::Cycles()
-		: fixed(1), rate(1), sampleSum(0), sampleSpan(0) {}
+		: fixed(1), rate(1), sampleShift(0), sampleSum(0), sampleNext(0), sampleSpan(0) {}
 
 		void Apu::Cycles::Reset(const bool extChannel,const CpuModel model)
 		{
 			rateCounter = 0;
 			sampleSum = 0;
+			sampleNext = 0;
 			sampleSpan = 0;
 			frameDivider = 0;
 			frameIrqClock = Cpu::CYCLE_MAX;
@@ -1012,8 +1022,19 @@ namespace Nes
 			rate = clockBase * multiplier / sampleRate;
 			fixed = cpu.GetClockDivider() * multiplier;
 
+			/* Window weights go as the square of the rate, so the moment is
+			 * scaled until a period's worth still fits the accumulator. Zero
+			 * wherever the multiplier search divides exactly, which covers
+			 * every rate anything actually asks for.
+			*/
+			sampleShift = 0;
+
+			while ((rate >> sampleShift) > 0xFFFF)
+				++sampleShift;
+
 			// The sample in flight was accumulated over the old period.
 			sampleSum = 0;
+			sampleNext = 0;
 			sampleSpan = 0;
 
 			frameCounter *= fixed;
@@ -1765,11 +1786,19 @@ namespace Nes
 			linearCounter = 0;
 
 			lengthCounter.Reset();
+
+			UpdateGate();
 		}
 
-		inline bool Apu::Triangle::CanOutput() const
+		inline void Apu::Triangle::UpdateGate()
 		{
-			return lengthCounter.GetCount() && linearCounter && waveLength >= MIN_FRQ && outputVolume;
+			/* Two things: whether the sequencer is clocked at all, and whether
+			 * the level tracks it. An ultrasonic period sweeps the whole ramp
+			 * between output samples, so the DAC only sees a mean, and a muted
+			 * channel reads zero - neither has to stop the walk.
+			*/
+			gate = lengthCounter.GetCount() && linearCounter;
+			active = gate && outputVolume && waveLength >= MIN_FRQ;
 		}
 
 		void Apu::Triangle::UpdateSettings(uint v,dword r,uint f)
@@ -1777,7 +1806,7 @@ namespace Nes
 			Oscillator::UpdateSettings( r, f );
 
 			outputVolume = (v * Channel::OUTPUT_MUL + Channel::DEFAULT_VOLUME/2) / Channel::DEFAULT_VOLUME;
-			active = CanOutput();
+			UpdateGate();
 		}
 
 		void Apu::Triangle::SaveState(State::Saver& state,const dword chunk) const
@@ -1858,12 +1887,13 @@ namespace Nes
 				state.End();
 			}
 
-			active = CanOutput();
+			UpdateGate();
 		}
 
 		NST_SINGLE_CALL void Apu::Triangle::Disable(const bool disable)
 		{
-			active &= lengthCounter.Disable( disable );
+			lengthCounter.Disable( disable );
+			UpdateGate();
 		}
 
 		NST_SINGLE_CALL void Apu::Triangle::WriteReg0(const uint data)
@@ -1876,7 +1906,7 @@ namespace Nes
 			waveLength = (waveLength & uint(REG3_WAVE_LENGTH_HIGH)) | (data & REG2_WAVE_LENGTH_LOW);
 			frequency = (waveLength + 1UL) * fixed;
 
-			active = CanOutput();
+			UpdateGate();
 		}
 
 		NST_SINGLE_CALL void Apu::Triangle::WriteReg3(const uint data,const Cycle frameCounterDelta)
@@ -1887,7 +1917,7 @@ namespace Nes
 			status = STATUS_RELOAD;
 			lengthCounter.Write( data, frameCounterDelta );
 
-			active = CanOutput();
+			UpdateGate();
 		}
 
 		NST_SINGLE_CALL void Apu::Triangle::ClockLinearCounter()
@@ -1895,7 +1925,7 @@ namespace Nes
 			if (status == STATUS_COUNTING)
 			{
 				if (linearCounter && !--linearCounter)
-					active = false;
+					UpdateGate();
 			}
 			else
 			{
@@ -1903,22 +1933,27 @@ namespace Nes
 					status = STATUS_COUNTING;
 
 				linearCounter = linearCtrl & uint(REG0_LINEAR_COUNTER_LOAD);
-				active = CanOutput();
+				UpdateGate();
 			}
 		}
 
 		NST_SINGLE_CALL void Apu::Triangle::ClockLengthCounter()
 		{
 			if (!(linearCtrl & uint(REG0_LINEAR_COUNTER_START)) && lengthCounter.Clock())
-				active = false;
+				UpdateGate();
 		}
 
 		NST_SINGLE_CALL dword Apu::Triangle::GetLevel() const
 		{
-			/* amp is the last level the sequencer clocked out, and zero until
-			 * it has clocked at all. Advance is the only thing that sets it.
+			/* amp is the level the sequencer last clocked out. Above the
+			 * ultrasonic threshold the ramp is swept faster than the output
+			 * rate, so the shared tnd DAC is biased by its mean rather than
+			 * by wherever the walk happened to sample it.
 			*/
-			return outputVolume ? amp : 0;
+			if (!outputVolume)
+				return 0;
+
+			return (gate && waveLength < MIN_FRQ) ? dword(PARK_LEVEL) : amp;
 		}
 
 		NST_SINGLE_CALL dword Apu::Triangle::Remaining() const
@@ -1928,24 +1963,44 @@ namespace Nes
 
 		NST_SINGLE_CALL void Apu::Triangle::Advance(dword span)
 		{
-			if (!active)
-				return;
+			static const byte pyramid[32] =
+			{
+				0x0,0x1,0x2,0x3,0x4,0x5,0x6,0x7,
+				0x8,0x9,0xA,0xB,0xC,0xD,0xE,0xF,
+				0xF,0xE,0xD,0xC,0xB,0xA,0x9,0x8,
+				0x7,0x6,0x5,0x4,0x3,0x2,0x1,0x0
+			};
 
 			timer -= idword(span);
 
-			while (timer <= 0)
+			if (timer <= 0)
 			{
-				static const byte pyramid[32] =
+				if (active)
 				{
-					0x0,0x1,0x2,0x3,0x4,0x5,0x6,0x7,
-					0x8,0x9,0xA,0xB,0xC,0xD,0xE,0xF,
-					0xF,0xE,0xD,0xC,0xB,0xA,0x9,0x8,
-					0x7,0x6,0x5,0x4,0x3,0x2,0x1,0x0
-				};
+					do
+					{
+						step = (step + 1) & STEP_CHECK;
+						amp = pyramid[step];
+						timer += idword(frequency);
+					}
+					while (timer <= 0);
+				}
+				else
+				{
+					/* The divider free-runs whatever the sequencer is doing,
+					 * and an ultrasonic sequencer would step per CPU cycle,
+					 * so both are caught up in closed form.
+					*/
+					const dword count = dword(-timer) / frequency + 1;
 
-				step = (step + 1) & 0x1F;
-				amp = pyramid[step];
-				timer += idword(frequency);
+					if (gate)
+					{
+						step = (step + count) & STEP_CHECK;
+						amp = pyramid[step];
+					}
+
+					timer += idword(count * frequency);
+				}
 			}
 		}
 
@@ -2669,9 +2724,27 @@ namespace Nes
 			return data & REG0_IRQ_ENABLE;
 		}
 
-		NST_SINGLE_CALL void Apu::Dmc::WriteReg1(const uint data)
+		NST_SINGLE_CALL void Apu::Dmc::WriteReg1(const uint data,const bool popReducer)
 		{
-			out.dac = data & 0x7F;
+			const uint next = data & 0x7F;
+			const uint prev = out.dac;
+
+			out.dac = next;
+
+			/* A direct load far from the current level is heard as a click.
+			 * Halving the step keeps the move and softens the edge, and a
+			 * later write within POP_STEP lands exactly, so a one-shot jump
+			 * becomes a staircase rather than a lasting offset. Written
+			 * unsigned: C++98 leaves negative division rounding open.
+			*/
+			if (popReducer)
+			{
+				if (next > prev + POP_STEP)
+					out.dac = next - (next - prev) / 2;
+				else if (prev > next + POP_STEP)
+					out.dac = next + (prev - next) / 2;
+			}
+
 			curSample = out.dac * outputVolume;
 		}
 
@@ -2758,6 +2831,7 @@ namespace Nes
 			filter.Reset( settings.rate );
 
 			cycles.sampleSum = 0;
+			cycles.sampleNext = 0;
 			cycles.sampleSpan = 0;
 
 			buffer.Reset( false );
@@ -2949,8 +3023,8 @@ namespace Nes
 			 * read once.
 			*/
 			const dword level = dmc.GetLevel();
-
-			cycles.sampleSpan += span;
+			const Cycle rate = cycles.rate;
+			const dword unitWeight = (rate + rate) >> cycles.sampleShift;
 
 			while (span)
 			{
@@ -2961,7 +3035,23 @@ namespace Nes
 				step = NST_MIN( step, triangle.Remaining() );
 				step = NST_MIN( step, noise.Remaining() );
 
-				cycles.sampleSum += qaword( MixLevel( level ) ) * step;
+				/* Triangular window: a cycle's weight ramps down across the
+				 * sample it lands in and up across the next, so a level is
+				 * split between the two rather than landing wholly in one.
+				 * Costs the second moment of the step and squares the box
+				 * response, which on its own folds too much back in.
+				*/
+				const dword pos = cycles.sampleSpan;
+
+				NST_ASSERT( pos + step <= rate );
+
+				const qaword rise = qaword(step) * ((pos + pos + step) >> cycles.sampleShift);
+				const qaword fall = qaword(step) * unitWeight - rise;
+				const qaword mix  = MixLevel( level );
+
+				cycles.sampleSum  += mix * fall;
+				cycles.sampleNext += mix * rise;
+				cycles.sampleSpan += step;
 
 				square[0].Advance( step );
 				square[1].Advance( step );
@@ -2974,20 +3064,24 @@ namespace Nes
 
 		NST_NO_INLINE Apu::Channel::Sample Apu::GetSample()
 		{
-			// Finish the sample the walk left part way through and average
-			// over the span that actually went into it.
+			/* Finish the sample the walk left part way through: the window
+			 * reaches a whole period either side of its peak, so its weight
+			 * is fixed and the period has to be completed to match it.
+			*/
 			if (cycles.sampleSpan < cycles.rate)
 				WalkSpan( cycles.rate - cycles.sampleSpan );
 
 			const qaword sum = cycles.sampleSum;
-			const dword span = cycles.sampleSpan;
+			const qaword weight = qaword(cycles.rate) * ((cycles.rate + cycles.rate) >> cycles.sampleShift);
 
-			cycles.sampleSum = 0;
+			// The rising half just accumulated leads the next sample.
+			cycles.sampleSum = cycles.sampleNext;
+			cycles.sampleNext = 0;
 			cycles.sampleSpan = 0;
 
 			const Channel::Sample sample = Clamp<Channel::OUTPUT_MIN,Channel::OUTPUT_MAX>
 			(
-				dcBlocker.Apply( Channel::Sample(sum / span) ) +
+				dcBlocker.Apply( Channel::Sample(sum / weight) ) +
 				(extChannel ? extChannel->GetSample() : 0)
 			);
 
@@ -3062,7 +3156,7 @@ namespace Nes
 		NES_POKE_D(Apu,4011)
 		{
 			Update();
-			dmc.WriteReg1( data );
+			dmc.WriteReg1( data, settings.dmcPopReducer );
 		}
 
 		NES_POKE_D(Apu,4012)

@@ -5,8 +5,6 @@ Nestopia is a cycle accurate emulator for the NES/Famicom.
 This is the libretro port of the Nestopia emulator, based on the de facto
 upstream Nestopia JG fork, which lives at: https://gitlab.com/jgemu/nestopia
 
-The libretro port contains an additional overclocking feature.
-
 Famicom Disk System
 -------------------
 FDS support requires the FDS BIOS to be placed in the "system" directory:

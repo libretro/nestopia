@@ -1452,6 +1452,10 @@ static void check_variables(void)
    if (environ_cb(RETRO_ENVIRONMENT_GET_VARIABLE, &var) && var.value)
       sound.SetFilter(strcmp(var.value, "enabled") == 0);
 
+   var.key = "nestopia_dmc_pop_reducer"; // DMC Pop Reducer
+   if (environ_cb(RETRO_ENVIRONMENT_GET_VARIABLE, &var) && var.value)
+      sound.SetDmcPopReducer(strcmp(var.value, "enabled") == 0);
+
    var.key = "nestopia_genie_distortion"; // Game Genie Sound Distortion
    if (environ_cb(RETRO_ENVIRONMENT_GET_VARIABLE, &var))
    {

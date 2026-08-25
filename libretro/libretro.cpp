@@ -158,7 +158,7 @@ void draw_crosshair(int x, int y)
    uint32_t w = 0xFFFFFFFF;
    uint32_t b = 0x00000000;
    int current_width = 256;
-   
+
    if (blargg_ntsc){
       x *= 2.36;
       current_width = 602;
@@ -637,7 +637,7 @@ double get_aspect_ratio(void)
   {
     aspect_ratio = 0;
   }
-    
+
   return aspect_ratio;
 }
 
@@ -1448,6 +1448,10 @@ static void check_variables(void)
 
    /* Audio */
 
+   var.key = "nestopia_audio_filter"; // Audio Output Filter
+   if (environ_cb(RETRO_ENVIRONMENT_GET_VARIABLE, &var) && var.value)
+      sound.SetFilter(strcmp(var.value, "enabled") == 0);
+
    var.key = "nestopia_genie_distortion"; // Game Genie Sound Distortion
    if (environ_cb(RETRO_ENVIRONMENT_GET_VARIABLE, &var))
    {
@@ -2002,7 +2006,7 @@ bool retro_load_game(const struct retro_game_info *info)
 
    if (log_cb)
       log_cb(RETRO_LOG_INFO, "Custom palette path: %s\n", palette_path);
-   
+
    RFILE *custompalette = filestream_open(palette_path,
          RETRO_VFS_FILE_ACCESS_READ, RETRO_VFS_FILE_ACCESS_HINT_NONE);
 
@@ -2024,7 +2028,7 @@ bool retro_load_game(const struct retro_game_info *info)
 
    if (log_cb)
       log_cb(RETRO_LOG_INFO, "NstDatabase.xml path: %s\n", db_path);
-   
+
    Api::Cartridge::Database database(emulator);
 
    char *db_data       = NULL;
@@ -2056,7 +2060,7 @@ bool retro_load_game(const struct retro_game_info *info)
       extract_basename(g_basename, info->path, sizeof(g_basename));
       extract_directory(g_rom_dir, info->path, sizeof(g_rom_dir));
    }
-   
+
    enum retro_pixel_format fmt = RETRO_PIXEL_FORMAT_XRGB8888;
    if (!environ_cb(RETRO_ENVIRONMENT_SET_PIXEL_FORMAT, &fmt))
    {
@@ -2064,7 +2068,7 @@ bool retro_load_game(const struct retro_game_info *info)
          log_cb(RETRO_LOG_ERROR, "XRGB8888 is not supported.\n");
       return false;
    }
-   
+
    std::stringstream ss(std::string(reinterpret_cast<const char*>(info->data),
             reinterpret_cast<const char*>(info->data) + info->size));
 
@@ -2097,7 +2101,7 @@ bool retro_load_game(const struct retro_game_info *info)
       else
          return false;
    }
-   
+
    if (!environ_cb(RETRO_ENVIRONMENT_GET_SAVE_DIRECTORY, &g_save_dir))
    {
       if (log_cb)
@@ -2163,7 +2167,7 @@ bool retro_load_game(const struct retro_game_info *info)
    }
 
    video = new Api::Video::Output(video_buffer, video_width * sizeof(uint32_t));
-   
+
    if (log_cb)
       log_cb(RETRO_LOG_INFO, "[Nestopia]: Machine is %s.\n", is_pal ? "PAL" : "NTSC");
 
@@ -2325,10 +2329,10 @@ void *retro_get_memory_data(unsigned id)
    {
       case RETRO_MEMORY_SAVE_RAM:
       return sram;
-       
+
       case RETRO_MEMORY_SYSTEM_RAM:
       return (void*)&machineGet.cpu.GetRam()[0];
-       
+
    }
 
    return NULL;
@@ -2341,7 +2345,7 @@ size_t retro_get_memory_size(unsigned id)
    {
       case RETRO_MEMORY_SAVE_RAM:
          return sram_size;
-       
+
       case RETRO_MEMORY_SYSTEM_RAM:
          return machineGet.cpu.RAM_SIZE;
    }

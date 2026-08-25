@@ -333,6 +333,20 @@ struct retro_core_option_v2_definition option_defs_us[] = {
 /* Audio */
 
    {
+      "nestopia_audio_filter",
+      "Audio Output Filter",
+      NULL,
+      "Approximate the analog stage that follows the DAC on real hardware, by applying a first order 220Hz high pass and a first order 14kHz low pass to the mixed output. This removes the DC offset the mixer sits on and rolls off the extreme treble.",
+      NULL,
+      "audio",
+      {
+         { "disabled", NULL },
+         { "enabled",  NULL },
+         { NULL, NULL },
+      },
+      "disabled"
+   },
+   {
       "nestopia_genie_distortion",
       "Game Genie Sound Distortion",
       NULL,

@@ -3,6 +3,7 @@
 // Nestopia - NES/Famicom emulator written in C++
 //
 // Copyright (C) 2003-2008 Martin Freij
+// Copyright (C) 2023-2026 Rupert Carmichael
 //
 // This file is part of Nestopia.
 //
@@ -22,6 +23,7 @@
 //
 ////////////////////////////////////////////////////////////////////////////////////////
 
+#include <cmath>
 #include <cstring>
 #include "NstCpu.hpp"
 #include "NstState.hpp"
@@ -397,11 +399,29 @@ namespace Nes
 			}
 		}
 
+		void Apu::SetFilter(const bool filtered)
+		{
+			if (settings.filter != filtered)
+			{
+				settings.filter = filtered;
+
+				/* Not UpdateSettings: that resets the DC blocker, which then
+				 * thumps as it settles again. Clearing the sections keeps a
+				 * given toggle point repeatable.
+				*/
+				filter.Reset( settings.rate );
+			}
+		}
+
 		void Apu::UpdateSettings()
 		{
 			cycles.Update( settings.rate, settings.speed, cpu );
 			synchronizer.Reset( settings.speed, settings.rate, cpu );
 			dcBlocker.Reset();
+
+			// Coefficients are cut for one output rate; re-cut when it moves.
+			filter.Reset( settings.rate );
+
 			buffer.Reset();
 
 			UpdateChannelSettings();
@@ -949,7 +969,7 @@ namespace Nes
 		}
 
 		Apu::Settings::Settings()
-		: rate(44100), speed(0), muted(false), transpose(false), audible(true)
+		: rate(44100), speed(0), muted(false), transpose(false), genie(false), audible(true), filter(false)
 		{
 			for (uint i=0; i < MAX_CHANNELS; ++i)
 				volumes[i] = Channel::DEFAULT_VOLUME;
@@ -1251,6 +1271,78 @@ namespace Nes
 
 				state.End();
 			}
+		}
+
+		Apu::Channel::Filter::Filter()
+		{
+			Reset( DEFAULT_RATE );
+		}
+
+		void Apu::Channel::Filter::Reset(const dword rate)
+		{
+			sections[HIGH_PASS].Reset( true,  HIGH_PASS_FREQ, rate );
+			sections[LOW_PASS ].Reset( false, LOW_PASS_FREQ,  rate );
+		}
+
+		void Apu::Channel::Filter::Section::Reset(const bool highPass,const dword fc,const dword fs)
+		{
+			const double pi = 3.1415926535897932384626433832795;
+
+			/* A corner at or above Nyquist is not a filter that exists, and
+			 * the design puts the pole outside the unit circle there, so the
+			 * section passes through rather than running away. Only reachable
+			 * below 28kHz, under the rate range the API documents.
+			*/
+			if (fc * 2 >= fs)
+			{
+				a0 = 1.0f;
+				a1 = b1 = x1 = y1 = 0.0f;
+				return;
+			}
+
+			/* Float, not double: double moves the low pass b1 by an ulp at
+			 * 44100 and a0 by an ulp at 96000, and this is meant to leave
+			 * the stream untouched.
+			*/
+			const float theta = float(2.0 * pi * fc / fs);
+			const float gamma = float(std::cos( theta ) / (1.0 + std::sin( theta )));
+
+			// One sign covers both differences: -1 high pass, +1 low.
+			const float sign = highPass ? -1.0f : 1.0f;
+
+			a0 = float((1.0 - sign * gamma) / 2.0);
+			a1 = sign * a0;
+			b1 = -gamma;
+
+			x1 = 0.0f;
+			y1 = 0.0f;
+		}
+
+		Apu::Channel::Sample Apu::Channel::Filter::Section::Apply(const Sample sample)
+		{
+			const double x = sample / 32768.0;
+
+			const float y = float( (a0 * x) + (a1 * x1) - (b1 * y1) );
+
+			x1 = float(x);
+			y1 = y;
+
+			/* Requantized between sections, not only at the end: the low
+			 * pass has always been fed the int16 output of the high pass.
+			*/
+			const float scaled = y * 32768;
+
+			if (scaled > 32767.0)
+				return 32767;
+			else if (scaled <= -32768.0)
+				return -32768;
+
+			return Sample(scaled);
+		}
+
+		Apu::Channel::Sample Apu::Channel::Filter::Apply(const Sample sample)
+		{
+			return sections[LOW_PASS].Apply( sections[HIGH_PASS].Apply( sample ) );
 		}
 
 		Apu::Channel::Channel(Apu& a)
@@ -2663,6 +2755,7 @@ namespace Nes
 			dmc.ClearAmp();
 
 			dcBlocker.Reset();
+			filter.Reset( settings.rate );
 
 			cycles.sampleSum = 0;
 			cycles.sampleSpan = 0;
@@ -2892,11 +2985,15 @@ namespace Nes
 			cycles.sampleSum = 0;
 			cycles.sampleSpan = 0;
 
-			return Clamp<Channel::OUTPUT_MIN,Channel::OUTPUT_MAX>
+			const Channel::Sample sample = Clamp<Channel::OUTPUT_MIN,Channel::OUTPUT_MAX>
 			(
 				dcBlocker.Apply( Channel::Sample(sum / span) ) +
 				(extChannel ? extChannel->GetSample() : 0)
 			);
+
+			// Filtered here, not over the delivered buffer: the ring carries
+			// samples across frames, so draining would split the stream.
+			return settings.filter ? filter.Apply( sample ) : sample;
 		}
 
 		NES_POKE_AD(Apu,4000)

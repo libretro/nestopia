@@ -3,6 +3,7 @@
 // Nestopia - NES/Famicom emulator written in C++
 //
 // Copyright (C) 2003-2008 Martin Freij
+// Copyright (C) 2023-2026 Rupert Carmichael
 //
 // This file is part of Nestopia.
 //
@@ -78,6 +79,11 @@ namespace Nes
 			emulator.cpu.GetApu().SetGenie( enable );
 		}
 
+		void Sound::SetFilter(bool enable) throw()
+		{
+			emulator.cpu.GetApu().SetFilter( enable );
+		}
+
 				ulong Sound::GetSampleRate() const throw()
 		{
 			return emulator.cpu.GetApu().GetSampleRate();
@@ -116,6 +122,11 @@ namespace Nes
 		bool Sound::IsGenie() const throw()
 		{
 			return emulator.cpu.GetApu().IsGenie();
+		}
+
+		bool Sound::IsFiltered() const throw()
+		{
+			return emulator.cpu.GetApu().IsFiltered();
 		}
 
 				void Sound::EmptyBuffer() throw()

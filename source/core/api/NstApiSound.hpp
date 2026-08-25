@@ -3,6 +3,7 @@
 // Nestopia - NES/Famicom emulator written in C++
 //
 // Copyright (C) 2003-2008 Martin Freij
+// Copyright (C) 2023-2026 Rupert Carmichael
 //
 // This file is part of Nestopia.
 //
@@ -314,6 +315,17 @@ namespace Nes
 			void SetGenie(bool genie) throw();
 
 			/**
+			* Enables the audio output filter.
+			*
+			* Approximates the analog stage following the DAC on a real
+			* console: a first order 220Hz high pass followed by a first
+			* order 14kHz low pass, applied to the mixed output.
+			*
+			* @param filter true to enable
+			*/
+			void SetFilter(bool filter) throw();
+
+			/**
 			* Checks if automatic transposing is enabled.
 			*
 			* @return true if enabled
@@ -326,6 +338,13 @@ namespace Nes
 			* @return true if enabled
 			*/
 			bool IsGenie() const throw();
+
+			/**
+			* Checks if the audio output filter is enabled.
+			*
+			* @return true if enabled
+			*/
+			bool IsFiltered() const throw();
 
 			/**
 			* Checks if sound is audible at all.

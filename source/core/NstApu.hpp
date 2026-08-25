@@ -3,6 +3,7 @@
 // Nestopia - NES/Famicom emulator written in C++
 //
 // Copyright (C) 2003-2008 Martin Freij
+// Copyright (C) 2023-2026 Rupert Carmichael
 //
 // This file is part of Nestopia.
 //
@@ -69,6 +70,7 @@ namespace Nes
 			void   Mute(bool);
 			void   SetAutoTranspose(bool);
 			void   SetGenie(bool);
+			void   SetFilter(bool);
 
 			void SaveState(State::Saver&,dword) const;
 			void LoadState(State::Loader&);
@@ -241,6 +243,55 @@ namespace Nes
 					idword prev;
 					idword next;
 					idword acc;
+				};
+
+				/* Approximates the analog stage after the DAC: a first order
+				 * high pass over a first order low pass. Section design from
+				 * "Designing Audio Effect Plugins in C++", Will Pirkle, p182.
+				*/
+				class Filter
+				{
+				public:
+
+					Filter();
+
+					void Reset(dword);
+					Sample Apply(Sample);
+
+				private:
+
+					enum
+					{
+						HIGH_PASS = 0,
+						LOW_PASS  = 1,
+						SECTIONS  = 2
+					};
+
+					enum
+					{
+						HIGH_PASS_FREQ =   220,
+						LOW_PASS_FREQ  = 14000,
+
+						// Matches Settings::rate, for the pre-power-on state.
+						DEFAULT_RATE   = 44100
+					};
+
+					// The a2/b2 taps of the general form are zero at first
+					// order, so they and the history they multiply are gone.
+					struct Section
+					{
+						void Reset(bool,dword,dword);
+						Sample Apply(Sample);
+
+						float a0;
+						float a1;
+						float b1;
+
+						float x1;
+						float y1;
+					};
+
+					Section sections[SECTIONS];
 				};
 			};
 
@@ -649,6 +700,7 @@ namespace Nes
 				bool transpose;
 				bool genie;
 				bool audible;
+				bool filter;
 				byte volumes[MAX_CHANNELS];
 			};
 
@@ -663,6 +715,7 @@ namespace Nes
 			Dmc dmc;
 			Channel* extChannel;
 			Channel::DcBlocker dcBlocker;
+			Channel::Filter filter;
 			Sound::Output* stream;
 			Sound::Buffer buffer;
 			Settings settings;
@@ -687,6 +740,11 @@ namespace Nes
 			bool IsGenie() const
 			{
 				return settings.genie;
+			}
+
+			bool IsFiltered() const
+			{
+				return settings.filter;
 			}
 
 			bool IsMuted() const

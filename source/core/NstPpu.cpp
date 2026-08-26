@@ -749,8 +749,10 @@ namespace Nes
 
 		/* The address is issued over two dots. This is the first: the low eight
 		 * pins are shared with the data bus, so their value is caught in an
-		 * external latch now and the read a dot later composes its address from
-		 * that latch and whichever high byte the PPU is driving by then.
+		 * external latch now, and the read a dot later composes its address from
+		 * that latch and the high byte held in the address register. The high
+		 * byte is registered here, not recomputed from v by the read - moving v
+		 * between the two dots does not steer the fetch that is already open.
 		*/
 		NST_FORCE_INLINE void Ppu::UpdateAddressLine(uint address)
 		{
@@ -788,7 +790,7 @@ namespace Nes
 
 		NST_FORCE_INLINE void Ppu::FetchName()
 		{
-			const uint address = ((0x2000 | (scroll.address & 0x0FFF)) & 0xFF00) | io.octalLatch;
+			const uint address = (io.address & 0xFF00) | io.octalLatch;
 
 			io.busData = nmt.FetchName( address );
 			io.pattern = io.busData << 4 | scroll.address >> 12 | (regs.ctrl[0] << 8 & 0x1000);
@@ -801,7 +803,7 @@ namespace Nes
 
 		NST_FORCE_INLINE void Ppu::FetchAttribute()
 		{
-			const uint address = ((0x23C0 | (scroll.address & 0x0C00) | (scroll.address >> 4 & 0x0038) | (scroll.address >> 2 & 0x0007)) & 0xFF00) | io.octalLatch;
+			const uint address = (io.address & 0xFF00) | io.octalLatch;
 
 			io.busData = nmt.FetchAttribute( address );
 			tiles.attribute = io.busData >> ((scroll.address & 0x2) | (scroll.address >> 4 & 0x4));
@@ -1179,7 +1181,7 @@ namespace Nes
 		}
 
 #ifndef PPU_2006_V_DELAY
-#define PPU_2006_V_DELAY 4
+#define PPU_2006_V_DELAY 3
 #endif
 
 		NES_POKE_D(Ppu,2006)
@@ -1201,11 +1203,9 @@ namespace Nes
 				{
 					scroll.latch = (scroll.latch & 0x7F00) | data;
 
-					/* Moving t into v is not immediate - hardware takes four PPU cycles
-					 * over it, five on one alignment. Long enough that a write timed
-					 * into a fetch lands between the two halves: the address latch
-					 * still holds the low byte the old v put there, while the high
-					 * byte the read composes comes from the new v.
+					/* Moving t into v is not immediate. Long enough that a write
+					 * timed into a fetch lands between its two dots, which is what
+					 * Hybrid Addresses times itself against.
 					*/
 					Update( cycles.one * PPU_2006_V_DELAY );
 
@@ -2580,11 +2580,6 @@ namespace Nes
 
 						FetchAttribute();
 						EvaluateSpritesOdd();
-
-						if (cycles.hClock == 251)
-							scroll.ClockY();
-
-						scroll.ClockX();
 						RenderPixel();
 
 						if (cycles.count <= cycles.hClock)
@@ -2751,6 +2746,9 @@ namespace Nes
 
 						FetchBgPattern1();
 						EvaluateSpritesOdd();
+
+						scroll.ClockX();
+
 						RenderPixel();
 						tiles.mask = tiles.show[0];
 						oam.mask = oam.show[0];
@@ -2783,6 +2781,10 @@ namespace Nes
 
 						FetchBgPattern1();
 						EvaluateSpritesOdd();
+
+						scroll.ClockY();
+						scroll.ClockX();
+
 						RenderPixel255();
 
 						if (cycles.count <= 256)
@@ -2807,7 +2809,7 @@ namespace Nes
 						 * Nestopia opened the address and never read it; only something
 						 * sampling the bus can tell.
 						*/
-						io.busData = nmt.FetchName( ((0x2000 | (scroll.address & 0x0FFF)) & 0xFF00) | io.octalLatch );
+						io.busData = nmt.FetchName( (io.address & 0xFF00) | io.octalLatch );
 
 						if (hBlankHook)
 							hBlankHook.Execute();

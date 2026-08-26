@@ -347,36 +347,6 @@ struct retro_core_option_v2_definition option_defs_us[] = {
       "disabled"
    },
    {
-      "nestopia_dmc_pop_reducer",
-      "DMC Pop Reducer",
-      NULL,
-      "Halve large direct writes to the DMC level, which are otherwise "
-      "heard as clicks. Inaccurate, and quietens samples streamed through "
-      "$4011 as large swings.",
-      NULL,
-      "audio",
-      {
-         { "disabled", NULL },
-         { "enabled",  NULL },
-         { NULL, NULL },
-      },
-      "disabled"
-   },
-   {
-      "nestopia_genie_distortion",
-      "Game Genie Sound Distortion",
-      NULL,
-      "The Game Genie cheat device could inadvertently introduce sound distortion in games. By enabling this, you can simulate the distortion it would add to a game's sound.",
-      NULL,
-      "audio",
-      {
-         { "disabled", NULL },
-         { "enabled",  NULL },
-         { NULL, NULL },
-      },
-      "disabled"
-   },
-   {
       "nestopia_show_advanced_av_settings",
       "Show Advanced Audio Settings (Reopen menu)",
       NULL,
@@ -781,6 +751,36 @@ struct retro_core_option_v2_definition option_defs_us[] = {
       "Remove Sprite Limit",
       NULL,
       "Remove 8-sprites-per-scanline hardware limit.",
+      NULL,
+      "hacks",
+      {
+         { "disabled", NULL },
+         { "enabled",  NULL },
+         { NULL, NULL },
+      },
+      "disabled"
+   },
+   {
+      "nestopia_dmc_pop_reducer",
+      "DMC Pop Reducer",
+      NULL,
+      "Halve large direct writes to the DMC level, which are otherwise "
+      "heard as clicks. Inaccurate, and quietens samples streamed through "
+      "$4011 as large swings.",
+      NULL,
+      "hacks",
+      {
+         { "disabled", NULL },
+         { "enabled",  NULL },
+         { NULL, NULL },
+      },
+      "disabled"
+   },
+   {
+      "nestopia_genie_distortion",
+      "Game Genie Sound Distortion",
+      NULL,
+      "The Game Genie cheat device could inadvertently introduce sound distortion in games. By enabling this, you can simulate the distortion it would add to a game's sound.",
       NULL,
       "hacks",
       {

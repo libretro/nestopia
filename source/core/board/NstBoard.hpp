@@ -255,6 +255,8 @@ namespace Nes
 						BANDAI_KARAOKESTUDIO       = MakeId<  188,  256,    0,  0,  0, CRM_8,  NMT_X,  0 >::ID,
 						BANDAI_AEROBICSSTUDIO      = MakeId<    3,   32,   32,  0,  0, CRM_0,  NMT_X,  2 >::ID,
 						BANDAI_OEKAKIDS            = MakeId<   96,  128,    0,  0,  0, CRM_32, NMT_1,  0 >::ID,
+						// Batlab
+						BATLAB_SRRX                = MakeId<  413,  256,  256,  0,  0, CRM_0,  NMT_X,  0 >::ID,
 						// Bensheng
 						BENSHENG_BS5               = MakeId<  286,  128,   64,  0,  0, CRM_0,  NMT_V,  2 >::ID,
 						// Bootleg multicarts

@@ -97,6 +97,7 @@ SOURCES_CXX += $(CORE_DIR)/source/core/board/NstBoardBandaiKaraokeStudio.cpp
 SOURCES_CXX += $(CORE_DIR)/source/core/board/NstBoardBandaiLz93d50.cpp
 SOURCES_CXX += $(CORE_DIR)/source/core/board/NstBoardBandaiLz93d50ex.cpp
 SOURCES_CXX += $(CORE_DIR)/source/core/board/NstBoardBandaiOekaKids.cpp
+SOURCES_CXX += $(CORE_DIR)/source/core/board/NstBoardBatlabSrrx.cpp
 SOURCES_CXX += $(CORE_DIR)/source/core/board/NstBoardBenshengBs5.cpp
 SOURCES_CXX += $(CORE_DIR)/source/core/board/NstBoardBmc110in1.cpp
 SOURCES_CXX += $(CORE_DIR)/source/core/board/NstBoardBmc120in1.cpp

@@ -96,6 +96,7 @@
 #include "NstBoardVsSystem.hpp"
 #include "NstBoardWaixing.hpp"
 #include "NstBoardWhirlwind.hpp"
+#include "NstBoardBatlabSrrx.hpp"
 #include "NstBoardBenshengBs5.hpp"
 #include "NstBoardUnl158b.hpp"
 #include "NstBoardUnlA9746.hpp"
@@ -3588,6 +3589,12 @@ namespace Nes
 						id = Type::UNL_RETX7GBL;
 						break;
 
+					case 413:
+
+						name = "BATMAP-SRR-X";
+						id = Type::BATLAB_SRRX;
+						break;
+
 					case 521:
 
 						name = "DREAMTECH01";
@@ -3830,6 +3837,7 @@ namespace Nes
 					case Type::FUKUTAKE_SBX               : return new Fukutake::Sbx(c);
 					case Type::GOUDER_37017               : return new Gouder::G37017(c);
 					case Type::HES_STD                    : return new Hes::Standard(c);
+					case Type::BATLAB_SRRX                : return new Batlab::Srrx(c);
 					case Type::BENSHENG_BS5               : return new Bensheng::Bs5(c);
 					case Type::HENGEDIANZI_STD            : return new Hengedianzi::Standard(c);
 					case Type::HENGEDIANZI_XJZB           : return new Hengedianzi::Xjzb(c);

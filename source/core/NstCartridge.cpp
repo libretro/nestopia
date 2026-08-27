@@ -61,6 +61,7 @@ namespace Nes
 							context.patchResult,
 							prg,
 							chr,
+							misc,
 							context.favoredSystem,
 							profile,
 							profileEx,
@@ -98,6 +99,7 @@ namespace Nes
 								context.patchResult,
 								prg,
 								chr,
+								misc,
 								context.favoredSystem,
 								profile,
 								profileEx,
@@ -128,7 +130,7 @@ namespace Nes
 				else
 					context.result = RESULT_OK;
 
-				const Result result = SetupBoard( prg, chr, &board, &context, profile, profileEx, &prgCrc );
+				const Result result = SetupBoard( prg, chr, misc, &board, &context, profile, profileEx, &prgCrc );
 
 				if (NES_FAILED(result))
 					throw result;
@@ -176,28 +178,28 @@ namespace Nes
 		void Cartridge::ReadRomset(std::istream& stream,FavoredSystem favoredSystem,bool askSystem,Profile& profile)
 		{
 			Log::Suppressor logSupressor;
-			Ram prg, chr;
+			Ram prg, chr, misc;
 			ProfileEx profileEx;
 			Romset::Load( stream, NULL, false, NULL, prg, chr, favoredSystem, askSystem, profile, true );
-			SetupBoard( prg, chr, NULL, NULL, profile, profileEx, NULL, true );
+			SetupBoard( prg, chr, misc, NULL, NULL, profile, profileEx, NULL, true );
 		}
 
 		void Cartridge::ReadInes(std::istream& stream,FavoredSystem favoredSystem,Profile& profile)
 		{
 			Log::Suppressor logSupressor;
-			Ram prg, chr;
+			Ram prg, chr, misc;
 			ProfileEx profileEx;
-			Ines::Load( stream, NULL, false, NULL, prg, chr, favoredSystem, profile, profileEx, NULL );
-			SetupBoard( prg, chr, NULL, NULL, profile, profileEx, NULL );
+			Ines::Load( stream, NULL, false, NULL, prg, chr, misc, favoredSystem, profile, profileEx, NULL );
+			SetupBoard( prg, chr, misc, NULL, NULL, profile, profileEx, NULL );
 		}
 
 		void Cartridge::ReadUnif(std::istream& stream,FavoredSystem favoredSystem,Profile& profile)
 		{
 			Log::Suppressor logSupressor;
-			Ram prg, chr;
+			Ram prg, chr, misc;
 			ProfileEx profileEx;
 			Unif::Load( stream, NULL, false, NULL, prg, chr, favoredSystem, profile, profileEx, NULL );
-			SetupBoard( prg, chr, NULL, NULL, profile, profileEx, NULL );
+			SetupBoard( prg, chr, misc, NULL, NULL, profile, profileEx, NULL );
 		}
 
 		uint Cartridge::GetDesiredController(uint port) const
@@ -249,6 +251,7 @@ namespace Nes
 		(
 			Ram& prg,
 			Ram& chr,
+			Ram& misc,
 			Boards::Board** board,
 			const Context* const context,
 			Profile& profile,
@@ -297,6 +300,7 @@ namespace Nes
 				context ? &context->ppu : NULL,
 				prg,
 				chr,
+				misc,
 				profileEx.trainer,
 				nmt,
 				profileEx.battery || profile.board.HasWramBattery(),

@@ -1305,6 +1305,11 @@ namespace Nes
 				* Input Device Type.
 				*/
 				uchar inputType;
+
+				/**
+				* Number of Miscellaneous ROMs (NES 2.0 only).
+				*/
+				uchar miscRoms;
 			};
 
 			/**

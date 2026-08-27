@@ -45,6 +45,7 @@ namespace Nes
 				Result*,
 				Ram&,
 				Ram&,
+				Ram&,
 				FavoredSystem,
 				Profile&,
 				ProfileEx&,

@@ -660,7 +660,7 @@ namespace Nes
 
 				public:
 
-					Context(Cpu*,Apu*,Ppu*,Ram&,Ram&,const Ram&,Type::Nmt,bool,bool,Chips&);
+					Context(Cpu*,Apu*,Ppu*,Ram&,Ram&,Ram&,const Ram&,Type::Nmt,bool,bool,Chips&);
 
 					bool DetectBoard(wcstring,dword);
 					bool DetectBoard(word,byte,dword,dword,bool);
@@ -672,6 +672,7 @@ namespace Nes
 					Ppu* const ppu;
 					Ram& prg;
 					Ram& chr;
+					Ram& misc;
 					const Ram& trainer;
 					const Type::Nmt nmt;
 					Chips& chips;
@@ -745,6 +746,7 @@ namespace Nes
 				Nmt& nmt;
 				Wrk wrk;
 				const Vram vram;
+				const Ram misc;
 				const Type board;
 
 			private:

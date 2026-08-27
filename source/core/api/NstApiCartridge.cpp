@@ -344,6 +344,7 @@ namespace Nes
 			version = 0;
 			trainer = false;
 			inputType = 0;
+			miscRoms = 0;
 		}
 
 		Result Cartridge::NesHeader::Import(const void* const data,const ulong length) throw()

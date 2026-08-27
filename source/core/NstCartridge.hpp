@@ -88,6 +88,7 @@ namespace Nes
 			(
 				Ram&,
 				Ram&,
+				Ram&,
 				Boards::Board**,
 				const Context*,
 				Profile&,
@@ -117,6 +118,7 @@ namespace Nes
 			VsSystem* vs;
 			Ram prg;
 			Ram chr;
+			Ram misc;
 			Profile profile;
 			dword prgCrc;
 			File savefile;

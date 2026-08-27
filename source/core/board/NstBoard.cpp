@@ -329,6 +329,7 @@ namespace Nes
 			chr   (context.ppu->GetChrMem()),
 			nmt   (context.ppu->GetNmtMem()),
 			vram  (Ram::RAM,true,true,context.type.GetVram()),
+			misc  (context.misc),
 			board (context.type)
 			{
 				prg.Source(0).Set( context.prg );
@@ -796,6 +797,7 @@ namespace Nes
 				Ppu* p,
 				Ram& pr,
 				Ram& cr,
+				Ram& mi,
 				const Ram& t,
 				Type::Nmt n,
 				bool wb,
@@ -809,6 +811,7 @@ namespace Nes
 			ppu         (p),
 			prg         (pr),
 			chr         (cr),
+			misc        (mi),
 			trainer     (t),
 			nmt         (n),
 			chips       (h),

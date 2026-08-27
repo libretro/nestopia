@@ -291,6 +291,7 @@ namespace Nes
 						BMC_GKB                    = MakeId<   58,  128,   64,  0,  0, CRM_0,  NMT_V,  0 >::ID,
 						BMC_GOLDENCARD_6IN1        = MakeId<  217, 1024, 1024,  0,  0, CRM_0,  NMT_V,  0 >::ID,
 						BMC_HERO                   = MakeId<   45, 4096, 2048,  8,  0, CRM_0,  NMT_X,  0 >::ID,
+						BMC_SFC12                  = MakeId<  372, 4096, 2048,  8,  0, CRM_8,  NMT_X,  0 >::ID,
 						BMC_MARIOPARTY_7IN1        = MakeId<   52, 1024, 1024,  8,  0, CRM_0,  NMT_V,  0 >::ID,
 						BMC_NOVELDIAMOND           = MakeId<   54,  128,   64,  0,  0, CRM_0,  NMT_X,  0 >::ID,
 						BMC_CH001                  = MakeId<   63, 4096,    0,  0,  0, CRM_8,  NMT_V,  0 >::ID,

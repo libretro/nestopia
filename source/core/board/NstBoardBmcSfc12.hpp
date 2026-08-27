@@ -2,7 +2,7 @@
 //
 // Nestopia - NES/Famicom emulator written in C++
 //
-// Copyright (C) 2003-2008 Martin Freij
+// Copyright (C) 2026 Rupert Carmichael
 //
 // This file is part of Nestopia.
 //
@@ -22,8 +22,10 @@
 //
 ////////////////////////////////////////////////////////////////////////////////////////
 
-#ifndef NST_BOARD_BMC_HERO_H
-#define NST_BOARD_BMC_HERO_H
+#ifndef NST_BOARD_BMC_SFC12_H
+#define NST_BOARD_BMC_SFC12_H
+
+#include "NstBoardBmcHero.hpp"
 
 namespace Nes
 {
@@ -33,28 +35,20 @@ namespace Nes
 		{
 			namespace Bmc
 			{
-				class Hero : public Mmc3
+				/* The SFC-12 revision of the Rockman I-VI multicart. Mapper 45
+				 * with one bit of the third outer bank register turning the
+				 * pattern space into unbanked CHR-RAM.
+				*/
+				class Sfc12 : public Hero
 				{
 				public:
 
-					explicit Hero(const Context& c)
-					: Mmc3(c) {}
-
-				protected:
-
-					void NST_FASTCALL UpdateChr(uint,uint) const;
-
-					uint exRegs[5];
+					explicit Sfc12(const Context& c)
+					: Hero(c) {}
 
 				private:
 
-					void SubReset(bool);
-					void SubSave(State::Saver&) const;
-					void SubLoad(State::Loader&,dword);
-
-					void NST_FASTCALL UpdatePrg(uint,uint);
-
-					NES_DECL_POKE( 6000 );
+					void NST_FASTCALL UpdateChr(uint,uint) const;
 				};
 			}
 		}

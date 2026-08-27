@@ -157,6 +157,7 @@
 #include "NstBoardBmcGoldenCard6in1.hpp"
 #include "NstBoardBmcGoldenGame260in1.hpp"
 #include "NstBoardBmcHero.hpp"
+#include "NstBoardBmcSfc12.hpp"
 #include "NstBoardBmcMarioParty7in1.hpp"
 #include "NstBoardBmcNovelDiamond.hpp"
 #include "NstBoardBmcCh001.hpp"
@@ -3583,6 +3584,12 @@ namespace Nes
 
 						break;
 
+					case 372:
+
+						name = "SFC-12";
+						id = Type::BMC_SFC12;
+						break;
+
 					case 400:
 
 						name = "UNL-RET-X7-GBL";
@@ -3785,6 +3792,7 @@ namespace Nes
 					case Type::BMC_GKA                    : return new Bmc::GamestarA(c);
 					case Type::BMC_GKB                    : return new Bmc::GamestarB(c);
 					case Type::BMC_HERO                   : return new Bmc::Hero(c);
+					case Type::BMC_SFC12                  : return new Bmc::Sfc12(c);
 					case Type::BMC_MARIOPARTY_7IN1        : return new Bmc::MarioParty7in1(c);
 					case Type::BMC_NOVELDIAMOND           : return new Bmc::NovelDiamond(c);
 					case Type::BMC_CH001                  : return new Bmc::Ch001(c);

@@ -132,6 +132,7 @@ SOURCES_CXX += $(CORE_DIR)/source/core/board/NstBoardBmcHero.cpp
 SOURCES_CXX += $(CORE_DIR)/source/core/board/NstBoardBmcMarioParty7in1.cpp
 SOURCES_CXX += $(CORE_DIR)/source/core/board/NstBoardBmcNovelDiamond.cpp
 SOURCES_CXX += $(CORE_DIR)/source/core/board/NstBoardBmcPowerjoy84in1.cpp
+SOURCES_CXX += $(CORE_DIR)/source/core/board/NstBoardBmcSfc12.cpp
 SOURCES_CXX += $(CORE_DIR)/source/core/board/NstBoardBmcResetBased4in1.cpp
 SOURCES_CXX += $(CORE_DIR)/source/core/board/NstBoardBmcSuper22Games.cpp
 SOURCES_CXX += $(CORE_DIR)/source/core/board/NstBoardBmcSuper24in1.cpp

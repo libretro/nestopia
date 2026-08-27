@@ -2,7 +2,7 @@
 //
 // Nestopia - NES/Famicom emulator written in C++
 //
-// Copyright (C) 2003-2008 Martin Freij
+// Copyright (C) 2026 Rupert Carmichael
 //
 // This file is part of Nestopia.
 //
@@ -22,8 +22,14 @@
 //
 ////////////////////////////////////////////////////////////////////////////////////////
 
-#ifndef NST_BOARD_BMC_HERO_H
-#define NST_BOARD_BMC_HERO_H
+/* References:
+   https://www.nesdev.org/wiki/NES_2.0_Mapper_372
+*/
+
+#include "NstBoard.hpp"
+#include "NstBoardMmc3.hpp"
+#include "NstBoardBmcHero.hpp"
+#include "NstBoardBmcSfc12.hpp"
 
 namespace Nes
 {
@@ -33,32 +39,19 @@ namespace Nes
 		{
 			namespace Bmc
 			{
-				class Hero : public Mmc3
+				/* Bit 5 of the third outer bank register swaps the pattern
+				 * space over to CHR-RAM, which is not banked - the MMC3
+				 * registers stop reaching it and each 1k slot maps to its
+				 * own 1k of RAM.
+				*/
+				void NST_FASTCALL Sfc12::UpdateChr(uint address,uint bank) const
 				{
-				public:
-
-					explicit Hero(const Context& c)
-					: Mmc3(c) {}
-
-				protected:
-
-					void NST_FASTCALL UpdateChr(uint,uint) const;
-
-					uint exRegs[5];
-
-				private:
-
-					void SubReset(bool);
-					void SubSave(State::Saver&) const;
-					void SubLoad(State::Loader&,dword);
-
-					void NST_FASTCALL UpdatePrg(uint,uint);
-
-					NES_DECL_POKE( 6000 );
-				};
+					if (exRegs[2] & 0x20)
+						chr.Source(1).SwapBank<SIZE_1K>( address, address >> 10 );
+					else
+						Hero::UpdateChr( address, bank );
+				}
 			}
 		}
 	}
 }
-
-#endif

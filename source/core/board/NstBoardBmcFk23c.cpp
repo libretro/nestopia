@@ -351,6 +351,13 @@ namespace Nes
 
 						Fk23c::UpdateChr();
 					}
+					/* The chipset decodes $E003, not the MMC3's $E001, so the
+					 * odd pair of each register window answers to nothing at
+					 * all - $9FFF in particular must not reach $8001.
+					*/
+					else if (address & 0x2)
+					{
+					}
 					else switch (address & 0xE001)
 					{
 						case 0x8000: Mmc3::NES_DO_POKE(8000,address,data); break;

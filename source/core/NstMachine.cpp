@@ -590,6 +590,15 @@ namespace Nes
 
 				cpu.EndFrame();
 
+				/* The strobe timestamp is in the CPU's timebase and has to
+				 * follow the same rebase. Left alone it sits a whole frame
+				 * ahead of the rebased cycle count, and StrobeLoaded() then
+				 * reports a strobe that straddles the frame boundary as never
+				 * having loaded - the shift registers keep the previous poll's
+				 * exhausted state and every button reads as pressed.
+				*/
+				strobeRise = (strobeRise > cpu.GetFrameCycles() ? strobeRise - cpu.GetFrameCycles() : 0);
+
 				if (image)
 					image->VSync();
 

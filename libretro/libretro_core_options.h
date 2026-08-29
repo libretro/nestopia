@@ -147,7 +147,7 @@ struct retro_core_option_v2_definition option_defs_us[] = {
          { "monochrome", "Monochrome" },
          { NULL, NULL },
       },
-      "disabled"
+      "composite"
    },
    {
       "nestopia_palette",
@@ -157,9 +157,9 @@ struct retro_core_option_v2_definition option_defs_us[] = {
       NULL,
       "video",
       {
+         { "royaltea",             "Royaltea" },
          { "cxa2025as",            "CXA2025AS (US)" },
          { "cxa2025as_jp",         "CXA2025AS (JP)" },
-         { "royaltea",             "Royaltea" },
          { "consumer",             "Consumer" },
          { "canonical",            "Canonical" },
          { "alternative",          "Alternative" },
@@ -178,7 +178,7 @@ struct retro_core_option_v2_definition option_defs_us[] = {
          { "custom",               "Custom" },
          { NULL, NULL },
       },
-      "cxa2025as"
+      "royaltea"
    },
    {
       "nestopia_overscan_v_top",

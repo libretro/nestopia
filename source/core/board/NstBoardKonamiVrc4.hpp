@@ -41,6 +41,10 @@ namespace Nes
 
 				protected:
 
+					// For clones whose register lines are a property of the
+					// board rather than of the individual cartridge.
+					Vrc4(const Context&,uint,uint);
+
 					void SubReset(bool);
 
 				private:

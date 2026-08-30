@@ -57,6 +57,16 @@ namespace Nes
 				{
 				}
 
+				Vrc4::Vrc4(const Context& c,const uint lineA,const uint lineB)
+				:
+				Board    (c),
+				irq      (*c.cpu),
+				prgLineA (lineA),
+				prgLineB (lineB)
+				{
+					NST_ASSERT( lineA < 8 && lineB < 8 );
+				}
+
 				void Vrc4::BaseIrq::Reset(bool)
 				{
 					ctrl = 0;

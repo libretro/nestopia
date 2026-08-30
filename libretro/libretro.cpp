@@ -6,6 +6,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <sstream>
+#include <string>
 
 #include <streams/file_stream.h>
 #include <file/file_path.h>
@@ -102,6 +103,13 @@ static Api::Video::Output *video;
 static Api::Sound::Output *audio;
 static Api::Input::Controllers *input;
 static Api::Machine::FavoredSystem favsystem;
+
+/* The system is only read while the image is being parsed, so changing it
+ * means building the image again.  Keep the bytes for that: info->data is
+ * only guaranteed for the duration of retro_load_game(). */
+static Api::Machine::FavoredSystem loadedsys = Api::Machine::FAVORED_NES_NTSC;
+static std::string rom_buf;
+static int forcesys;
 
 static void *sram;
 static unsigned long sram_size;
@@ -1131,6 +1139,8 @@ static void poll_fds_buttons()
    }
 }
 
+static void reload_image(void);
+
 static void check_variables(void)
 {
    static bool last_ntsc_val_same;
@@ -1146,53 +1156,43 @@ static void check_variables(void)
 
    /* System */
 
-   var.key = "nestopia_favored_system"; // System Region
-   is_pal = false;
+   var.key = "nestopia_favored_system"; // Favored System
+   favsystem = Api::Machine::FAVORED_NES_NTSC;
    if (environ_cb(RETRO_ENVIRONMENT_GET_VARIABLE, &var))
    {
-      if (strcmp(var.value, "auto") == 0)
-      {
-         machine.SetMode(machine.GetDesiredMode());
-         if (machine.GetMode() == Api::Machine::PAL)
-         {
-            is_pal = true;
-            favsystem = Api::Machine::FAVORED_NES_PAL;
-            machine.SetMode(Api::Machine::PAL);
-         }
-         else
-         {
-            favsystem = Api::Machine::FAVORED_NES_NTSC;
-            machine.SetMode(Api::Machine::NTSC);
-         }
-      }
-      else if (strcmp(var.value, "ntsc") == 0)
-      {
-         favsystem = Api::Machine::FAVORED_NES_NTSC;
-         machine.SetMode(Api::Machine::NTSC);
-      }
-      else if (strcmp(var.value, "pal") == 0)
-      {
+      if (strcmp(var.value, "pal") == 0)
          favsystem = Api::Machine::FAVORED_NES_PAL;
-         machine.SetMode(Api::Machine::PAL);
-         is_pal = true;
-      }
       else if (strcmp(var.value, "famicom") == 0)
-      {
          favsystem = Api::Machine::FAVORED_FAMICOM;
-         machine.SetMode(Api::Machine::NTSC);
-      }
       else if (strcmp(var.value, "dendy") == 0)
-      {
          favsystem = Api::Machine::FAVORED_DENDY;
-         machine.SetMode(Api::Machine::PAL);
-         is_pal = true;
-      }
-      else
-      {
-         favsystem = Api::Machine::FAVORED_NES_NTSC;
-         machine.SetMode(Api::Machine::NTSC);
-      }
    }
+
+   var.key = "nestopia_force_system"; // Force System
+   forcesys = 0;
+   if (environ_cb(RETRO_ENVIRONMENT_GET_VARIABLE, &var))
+   {
+      if (strcmp(var.value, "ntsc") == 0)
+         forcesys = 1;
+      else if (strcmp(var.value, "pal") == 0)
+         forcesys = 2;
+      else if (strcmp(var.value, "famicom") == 0)
+         forcesys = 3;
+      else if (strcmp(var.value, "dendy") == 0)
+         forcesys = 4;
+   }
+
+   /* Force System overrides Favored System, which is only a preference */
+   if (forcesys)
+      favsystem = (Api::Machine::FavoredSystem)(forcesys - 1);
+
+   /* A forced system dictates the region, otherwise the image does */
+   if (forcesys)
+      machine.SetMode((favsystem & 0x1) ? Api::Machine::PAL : Api::Machine::NTSC);
+   else
+      machine.SetMode(machine.GetDesiredMode());
+
+   is_pal = (machine.GetMode() == Api::Machine::PAL);
    if (audio) delete audio;
    audio_spf = is_pal ? (SAMPLERATE / 50) : (SAMPLERATE / 60);
    audio = new Api::Sound::Output(audio_buffer, audio_spf);
@@ -1707,6 +1707,11 @@ void retro_run(void)
    if (environ_cb(RETRO_ENVIRONMENT_GET_VARIABLE_UPDATE, &updated) && updated)
    {
       check_variables();
+
+      /* The system is only read while the image is being parsed */
+      if (machine && loadedsys != favsystem)
+         reload_image();
+
       delete video;
       video = 0;
       video = new Api::Video::Output(video_buffer, video_width * sizeof(uint32_t));
@@ -1922,6 +1927,33 @@ static void set_memory_map(void)
       environ_cb(RETRO_ENVIRONMENT_SET_MEMORY_MAPS, &memory_map);
 }
 
+/* Rebuild the image with the system check_variables() just settled on.
+ * Save RAM lives inside the board, so it is carried across by hand: the
+ * frontend's copy is only written back when content is first loaded. */
+static void reload_image(void)
+{
+   std::string sav;
+   std::stringstream ss(rom_buf);
+
+   if (sram && sram_size)
+      sav.assign(reinterpret_cast<const char*>(sram), sram_size);
+
+   machine->Power(false);
+   machine->Unload();
+
+   if (machine->Load(ss, favsystem))
+      return;
+
+   loadedsys = favsystem;
+
+   if (!sav.empty() && sram && sram_size == sav.size())
+      memcpy(sram, sav.data(), sram_size);
+
+   machine->Power(true);
+   set_memory_map();
+   check_variables();
+}
+
 bool retro_load_game(const struct retro_game_info *info)
 {
    const char *dir;
@@ -2073,8 +2105,8 @@ bool retro_load_game(const struct retro_game_info *info)
       return false;
    }
 
-   std::stringstream ss(std::string(reinterpret_cast<const char*>(info->data),
-            reinterpret_cast<const char*>(info->data) + info->size));
+   rom_buf.assign(reinterpret_cast<const char*>(info->data), info->size);
+   std::stringstream ss(rom_buf);
 
    if (info->path && (strstr(info->path, ".fds") || strstr(info->path, ".FDS")))
    {
@@ -2118,6 +2150,8 @@ bool retro_load_game(const struct retro_game_info *info)
 
    if (machine->Load(ss, favsystem))
       return false;
+
+   loadedsys = favsystem;
 
    /* Has to be known before the second check_variables() below, which
     * is what pins the frame geometry for the player screen. */
@@ -2215,6 +2249,8 @@ void retro_unload_game(void)
    sram = 0;
    sram_size = 0;
    state_size = 0;
+   rom_buf.clear();
+   loadedsys = Api::Machine::FAVORED_NES_NTSC;
 
    memset(memory_descriptors, 0, sizeof(memory_descriptors));
    memory_map.descriptors     = NULL;

@@ -85,9 +85,25 @@ struct retro_core_option_v2_definition option_defs_us[] = {
 
    {
       "nestopia_favored_system",
-      "System Region",
+      "Favored System",
       NULL,
-      "'Auto' will use the NstDatabase.xml database file for region autodetection. If there is no database present, it will default to NTSC.",
+      "System to prefer for images that do not say which one they want. Images that do say, and images found in the NstDatabase.xml database file, are unaffected. Only applies while 'Force System' is set to 'Auto'. Requires a restart.",
+      NULL,
+      "system",
+      {
+         { "ntsc",    "NTSC" },
+         { "pal",     "PAL" },
+         { "famicom", "Famicom" },
+         { "dendy",   "Dendy" },
+         { NULL, NULL },
+      },
+      "ntsc"
+   },
+   {
+      "nestopia_force_system",
+      "Force System",
+      NULL,
+      "Ignore the system the image asks for and use this one instead. Changing this setting will restart the game.",
       NULL,
       "system",
       {

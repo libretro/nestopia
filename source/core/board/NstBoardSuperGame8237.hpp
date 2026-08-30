@@ -22,8 +22,8 @@
 //
 ////////////////////////////////////////////////////////////////////////////////////////
 
-#ifndef NST_BOARD_SUPERGAME_POCAHONTAS2_H
-#define NST_BOARD_SUPERGAME_POCAHONTAS2_H
+#ifndef NST_BOARD_SUPERGAME_8237_H
+#define NST_BOARD_SUPERGAME_8237_H
 
 namespace Nes
 {
@@ -33,30 +33,31 @@ namespace Nes
 		{
 			namespace SuperGame
 			{
-				class Pocahontas2 : public Mmc3
+				class Unl8237 : public Mmc3
 				{
 				public:
 
-					explicit Pocahontas2(const Context& c)
-					: Mmc3(c) {}
+					explicit Unl8237(const Context& c)
+					: Mmc3(c), variant(c.type == Type::SUPERGAME_8237A) {}
 
 				private:
 
 					void SubReset(bool);
-					void SubLoad(State::Loader&,dword);
 					void SubSave(State::Saver&) const;
+					void SubLoad(State::Loader&,dword);
 
+					void UpdatePrg();
 					void NST_FASTCALL UpdatePrg(uint,uint);
 					void NST_FASTCALL UpdateChr(uint,uint) const;
 
-					NES_DECL_POKE( 5000 );
-					NES_DECL_POKE( 5001 );
-					NES_DECL_POKE( 8000 );
-					NES_DECL_POKE( A000 );
-					NES_DECL_POKE( C000 );
-					NES_DECL_POKE( F000 );
+					uint PrgOuter() const;
+					uint ChrOuter() const;
 
-					uint exRegs[3];
+					NES_DECL_POKE( 5000 );
+					NES_DECL_POKE( 8000 );
+
+					byte exRegs[3];
+					const bool variant;
 				};
 			}
 		}

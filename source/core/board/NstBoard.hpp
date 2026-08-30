@@ -521,9 +521,8 @@ namespace Nes
 						SUNSOFT_FME7_1             = MakeId<   69,  256,  256,  8,  0, CRM_0,  NMT_V,  0 >::ID,
 						// Super Game
 						SUPERGAME_LIONKING         = MakeId<  114,  256,  512,  0,  0, CRM_0,  NMT_V,  0 >::ID,
-						SUPERGAME_BOOGERMAN        = MakeId<  215,  512,  512,  0,  0, CRM_0,  NMT_X,  0 >::ID,
-						SUPERGAME_MK3E             = MakeId<  215,  256,  512,  0,  0, CRM_0,  NMT_X,  0 >::ID,
-						SUPERGAME_POCAHONTAS2      = MakeId< NMPR,  512,  512,  0,  0, CRM_0,  NMT_X,  0 >::ID,
+						SUPERGAME_8237             = MakeId<  215, 1024, 1024,  0,  0, CRM_0,  NMT_X,  0 >::ID,
+						SUPERGAME_8237A            = MakeId<  215, 2048, 2048,  0,  0, CRM_0,  NMT_X,  0 >::ID,
 						// Taito
 						TAITO_TC0190FMC            = MakeId<   33,  256,  256,  0,  0, CRM_0,  NMT_V,  0 >::ID,
 						TAITO_TC0190FMC_PAL16R4    = MakeId<   48,  256,  256,  0,  0, CRM_0,  NMT_V,  0 >::ID,

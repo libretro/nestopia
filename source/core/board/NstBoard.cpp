@@ -1178,7 +1178,8 @@ namespace Nes
 					{ "UNL-158B",                    Type::UNL_158B                 },
 					{ "UNL-22211",                   Type::TXC_22211A               },
 					{ "UNL-603-5052",                Type::BTL_6035052              },
-					{ "UNL-8237",                    Type::SUPERGAME_POCAHONTAS2    },
+					{ "UNL-8237",                    Type::SUPERGAME_8237           },
+					{ "UNL-8237A",                   Type::SUPERGAME_8237A          },
 					{ "UNL-A9746",                   Type::UNL_A9746                },
 					{ "UNL-AX5705",                  Type::BTL_AX5705               },
 					{ "UNL-CC-21",                   Type::UNL_CC21                 },
@@ -3208,15 +3209,15 @@ namespace Nes
 
 					case 215:
 
-						if (prg == SIZE_256K && chr == SIZE_512K)
+						if (submapper == 1)
 						{
-							name = "SUPERGAME MK3E";
-							id = Type::SUPERGAME_MK3E;
+							name = "UNL-8237A";
+							id = Type::SUPERGAME_8237A;
 						}
 						else
 						{
-							name = "SUPERGAME BOOGERMAN";
-							id = Type::SUPERGAME_BOOGERMAN;
+							name = "UNL-8237";
+							id = Type::SUPERGAME_8237;
 						}
 						break;
 
@@ -3988,9 +3989,8 @@ namespace Nes
 					case Type::SUNSOFT_FME7_0             :
 					case Type::SUNSOFT_FME7_1             : return new Sunsoft::Fme7(c);
 					case Type::SUPERGAME_LIONKING         : return new SuperGame::LionKing(c);
-					case Type::SUPERGAME_BOOGERMAN        : return new SuperGame::Boogerman(c);
-					case Type::SUPERGAME_MK3E             : return new SuperGame::Mk3e(c);
-					case Type::SUPERGAME_POCAHONTAS2      : return new SuperGame::Pocahontas2(c);
+					case Type::SUPERGAME_8237             :
+					case Type::SUPERGAME_8237A            : return new SuperGame::Unl8237(c);
 					case Type::TAITO_TC0190FMC            : return new Taito::Tc0190fmc(c);
 					case Type::TAITO_TC0190FMC_PAL16R4    : return new Taito::Tc0190fmcPal16r4(c);
 					case Type::TAITO_X1005                : return new Taito::X1005(c);

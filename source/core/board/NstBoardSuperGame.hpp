@@ -25,22 +25,7 @@
 #ifndef NST_BOARD_SUPERGAME_H
 #define NST_BOARD_SUPERGAME_H
 
-#include "NstBoardSuperGameBoogerman.hpp"
+#include "NstBoardSuperGame8237.hpp"
 #include "NstBoardSuperGameLionKing.hpp"
-#include "NstBoardSuperGamePocahontas2.hpp"
-
-namespace Nes
-{
-	namespace Core
-	{
-		namespace Boards
-		{
-			namespace SuperGame
-			{
-				typedef Boogerman Mk3e;
-			}
-		}
-	}
-}
 
 #endif

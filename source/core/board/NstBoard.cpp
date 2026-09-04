@@ -1193,6 +1193,7 @@ namespace Nes
 					{ "UNL-KS7032",                  Type::KAISER_KS7032            },
 					{ "UNL-KS7037",                  Type::KAISER_KS7037            },
 					{ "UNL-KS7057",                  Type::KAISER_KS7057            },
+					{ "UNL-LH53",                    Type::WHIRLWIND_LH53           },
 					{ "UNL-N625092",                 Type::UNL_N625092              },
 					{ "UNL-SA-0036",                 Type::SACHEN_SA0036            },
 					{ "UNL-SA-0037",                 Type::SACHEN_SA0037            },
@@ -3621,6 +3622,12 @@ namespace Nes
 						id = Type::BTL_AX5705;
 						break;
 
+					case 535:
+
+						name = "UNL-LH53";
+						id = Type::WHIRLWIND_LH53;
+						break;
+
 					case 554:
 
 						name = "UNL-KS7010";
@@ -4048,6 +4055,7 @@ namespace Nes
 					case Type::WAIXING_SECURITY_0         :
 					case Type::WAIXING_SECURITY_1         : return new Waixing::Security(c);
 					case Type::WHIRLWIND_2706             : return new Whirlwind::W2706(c);
+					case Type::WHIRLWIND_LH53             : return new Whirlwind::Lh53(c);
 					case Type::UNKNOWN                    : default: break;
 				}
 

@@ -595,6 +595,7 @@ namespace Nes
 						WAIXING_SECURITY_1         = MakeId<  249,  512,  256,  8,  0, CRM_0,  NMT_V,  0 >::ID,
 						// Whirlwind
 						WHIRLWIND_2706             = MakeId<  108,  128,    0,  0,  0, CRM_8,  NMT_X,  0 >::ID,
+						WHIRLWIND_LH53             = MakeId<  535,  128,    0,  0,  8, CRM_8,  NMT_X,  0 >::ID,
 						// Unknown
 						UNKNOWN                    = 0
 					};

@@ -108,7 +108,7 @@ namespace Nes
 			{
 				MIN_PLAYERS    = 1,
 				MAX_PLAYERS    = 255,
-				MAX_MAPPER     = 255,
+				MAX_MAPPER     = 4095,
 				MIN_CHIP_SIZE  = 1,
 				MAX_CHIP_SIZE  = SIZE_16384K,
 				MIN_IC_PINS    = 1,

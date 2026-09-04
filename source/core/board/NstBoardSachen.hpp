@@ -25,6 +25,7 @@
 #ifndef NST_BOARD_SACHEN_H
 #define NST_BOARD_SACHEN_H
 
+#include "NstBoardSachenDaheng.hpp"
 #include "NstBoardSachenS8259.hpp"
 #include "NstBoardSachenTca01.hpp"
 #include "NstBoardSachenTcu.hpp"

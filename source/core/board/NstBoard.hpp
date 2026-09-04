@@ -208,6 +208,7 @@ namespace Nes
 						STD_UNROM512               = MakeId<   30,  512,    0,  0,  0, CRM_32, NMT_X,  0 >::ID,
 						// Discrete Logic
 						DISCRETE_74_377            = MakeId<   11,  128,  128,  0,  0, CRM_0,  NMT_X,  0 >::ID,
+						DISCRETE_74_377_NBC        = MakeId<   11,  128,  128,  0,  0, CRM_0,  NMT_X,  2 >::ID,
 						DISCRETE_74_139_74         = MakeId<   87,   32,   32,  0,  0, CRM_0,  NMT_X,  4 >::ID,
 						DISCRETE_74_161_138        = MakeId<   38,  128,   32,  0,  0, CRM_0,  NMT_X,  0 >::ID,
 						DISCRETE_74_161_161_32_A   = MakeId<   70,  128,  128,  0,  0, CRM_0,  NMT_X,  0 >::ID,
@@ -491,6 +492,7 @@ namespace Nes
 						SACHEN_8259B               = MakeId<  138,  256,  256,  0,  0, CRM_0,  NMT_X,  0 >::ID,
 						SACHEN_8259C               = MakeId<  139,  256,  256,  0,  0, CRM_0,  NMT_X,  0 >::ID,
 						SACHEN_8259D               = MakeId<  137,  256,  256,  0,  0, CRM_0,  NMT_X,  0 >::ID,
+						SACHEN_DAHENG              = MakeId<  512,  256,  128,  8,  0, CRM_8,  NMT_4,  0 >::ID,
 						SACHEN_TCA01               = MakeId<  143,   32,    8,  0,  0, CRM_0,  NMT_X,  0 >::ID,
 						SACHEN_TCU01               = MakeId<  147,  128,  128,  0,  0, CRM_0,  NMT_X,  0 >::ID,
 						SACHEN_TCU02               = MakeId<  136,   32,   32,  0,  0, CRM_0,  NMT_X,  0 >::ID,

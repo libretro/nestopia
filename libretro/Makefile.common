@@ -231,6 +231,7 @@ SOURCES_CXX += $(CORE_DIR)/source/core/board/NstBoardRexSoftDb5z.cpp
 SOURCES_CXX += $(CORE_DIR)/source/core/board/NstBoardRexSoftSl1632.cpp
 SOURCES_CXX += $(CORE_DIR)/source/core/board/NstBoardRumbleStation.cpp
 SOURCES_CXX += $(CORE_DIR)/source/core/board/NstBoardSachen74x374.cpp
+SOURCES_CXX += $(CORE_DIR)/source/core/board/NstBoardSachenDaheng.cpp
 SOURCES_CXX += $(CORE_DIR)/source/core/board/NstBoardSachenS8259.cpp
 SOURCES_CXX += $(CORE_DIR)/source/core/board/NstBoardSachenSa0036.cpp
 SOURCES_CXX += $(CORE_DIR)/source/core/board/NstBoardSachenSa0037.cpp

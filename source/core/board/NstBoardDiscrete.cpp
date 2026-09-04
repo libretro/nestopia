@@ -56,7 +56,12 @@ namespace Nes
 
 				void Ic74x377::SubReset(const bool hard)
 				{
-					Map( 0x8000U, 0xFFFFU, &Ic74x377::Poke_8000 );
+					// Some Color Dreams boards, among them the ones used by the
+					// Free Fall and Secret Scout prototypes, have no bus conflicts.
+					if (board == Type::DISCRETE_74_377_NBC)
+						Map( 0x8000U, 0xFFFFU, &Ic74x377::Poke_8000_NBC );
+					else
+						Map( 0x8000U, 0xFFFFU, &Ic74x377::Poke_8000 );
 
 					if (hard)
 						prg.SwapBank<SIZE_32K,0x0000>(0);
@@ -95,6 +100,13 @@ namespace Nes
 				{
 					ppu.Update();
 					data = GetBusData(address,data);
+					prg.SwapBank<SIZE_32K,0x0000>( data );
+					chr.SwapBank<SIZE_8K,0x0000>( data >> 4 );
+				}
+
+				NES_POKE_D(Ic74x377,8000_NBC)
+				{
+					ppu.Update();
 					prg.SwapBank<SIZE_32K,0x0000>( data );
 					chr.SwapBank<SIZE_8K,0x0000>( data >> 4 );
 				}

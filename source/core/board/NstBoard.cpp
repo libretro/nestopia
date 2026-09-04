@@ -901,6 +901,7 @@ namespace Nes
 					{ "CAMERICA-BF9097",             Type::CAMERICA_BF9097          },
 					{ "CAMERICA-GAMEGENIE",          Type::STD_NROM                 },
 					{ "COLORDREAMS-74*377",          Type::DISCRETE_74_377          },
+					{ "COLORDREAMS-74*377-NBC",      Type::DISCRETE_74_377_NBC      },
 					{ "DREAMTECH01",                 Type::DREAMTECH01              },
 					{ "HVC-AMROM",                   Type::STD_AMROM                },
 					{ "HVC-AN1ROM",                  Type::STD_AN1ROM               },
@@ -3604,6 +3605,12 @@ namespace Nes
 						id = Type::BATLAB_SRRX;
 						break;
 
+					case 512:
+
+						name = "SACHEN ZHONGGUO DAHENG";
+						id = Type::SACHEN_DAHENG;
+						break;
+
 					case 521:
 
 						name = "DREAMTECH01";
@@ -3727,7 +3734,8 @@ namespace Nes
 					case Type::STD_UXROM                  :
 					case Type::STD_UNROM512               :
 					case Type::UNL_UXROM                  : return new UxRom(c);
-					case Type::DISCRETE_74_377            : return new Discrete::Ic74x377(c);
+					case Type::DISCRETE_74_377            :
+					case Type::DISCRETE_74_377_NBC        : return new Discrete::Ic74x377(c);
 					case Type::DISCRETE_74_139_74         : return new Discrete::Ic74x139x74(c);
 					case Type::DISCRETE_74_161_138        : return new Discrete::Ic74x161x138(c);
 					case Type::DISCRETE_74_161_161_32_A   :
@@ -3970,6 +3978,7 @@ namespace Nes
 					case Type::SACHEN_8259B               :
 					case Type::SACHEN_8259C               :
 					case Type::SACHEN_8259D               : return new Sachen::S8259(c);
+					case Type::SACHEN_DAHENG              : return new Sachen::Daheng(c);
 					case Type::SACHEN_TCA01               : return new Sachen::Tca01(c);
 					case Type::SACHEN_TCU01               : return new Sachen::Tcu01(c);
 					case Type::SACHEN_TCU02               : return new Sachen::Tcu02(c);

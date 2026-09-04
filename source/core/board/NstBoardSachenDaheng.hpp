@@ -2,7 +2,7 @@
 //
 // Nestopia - NES/Famicom emulator written in C++
 //
-// Copyright (C) 2003-2008 Martin Freij
+// Copyright (C) 2026 Rupert Carmichael
 //
 // This file is part of Nestopia.
 //
@@ -22,8 +22,11 @@
 //
 ////////////////////////////////////////////////////////////////////////////////////////
 
-#ifndef NST_BOARD_DISCRETE_H
-#define NST_BOARD_DISCRETE_H
+
+#ifndef NST_BOARD_SACHEN_DAHENG_H
+#define NST_BOARD_SACHEN_DAHENG_H
+
+#include "NstBoardMmc3.hpp"
 
 namespace Nes
 {
@@ -31,66 +34,29 @@ namespace Nes
 	{
 		namespace Boards
 		{
-			namespace Discrete
+			namespace Sachen
 			{
-				class Ic74x161x161x32 : public Board
+				class Daheng : public Mmc3
 				{
 				public:
 
-					explicit Ic74x161x161x32(const Context& c)
-					: Board(c) {}
-
-				protected:
-
-					void SubReset(bool);
-
-				private:
-
-					NES_DECL_POKE( 8000_0 );
-					NES_DECL_POKE( 8000_1 );
-				};
-
-				class Ic74x139x74 : public Board
-				{
-				public:
-
-					explicit Ic74x139x74(const Context& c)
-					: Board(c) {}
+					explicit Daheng(const Context& c)
+					: Mmc3(c) {}
 
 				private:
 
 					void SubReset(bool);
+					void SubSave(State::Saver&) const;
+					void SubLoad(State::Loader&,dword);
 
-					NES_DECL_POKE( 6000 );
-				};
+					void NST_FASTCALL UpdateChr(uint,uint) const;
+					void UpdateNmt() const;
 
-				class Ic74x161x138 : public Board
-				{
-				public:
+					NES_DECL_POKE( 4100 );
+					NES_DECL_POKE( A000 );
 
-					explicit Ic74x161x138(const Context& c)
-					: Board(c) {}
-
-				private:
-
-					void SubReset(bool);
-
-					NES_DECL_POKE( 6000 );
-				};
-
-				class Ic74x377 : public Board
-				{
-				public:
-
-					explicit Ic74x377(const Context& c)
-					: Board(c) {}
-
-				private:
-
-					void SubReset(bool);
-
-					NES_DECL_POKE( 8000 );
-					NES_DECL_POKE( 8000_NBC );
+					uint mode;
+					uint mirroring;
 				};
 			}
 		}

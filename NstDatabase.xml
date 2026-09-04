@@ -23617,6 +23617,15 @@
         </cartridge>
     </game>
     <game>
+        <cartridge system="NES-NTSC" dump="unknown" crc="DD1D4355" sha1="B5B3666DE22D1114C6CA5C416F567B89733443DB">
+            <board type="NES-CNROM" mapper="3">
+                <prg size="32k" />
+                <chr size="32k" />
+                <pad h="0" v="1" />
+            </board>
+        </cartridge>
+    </game>
+    <game>
         <cartridge system="Famicom" dump="ok" crc="DD29FD59" sha1="F349533119E3D3FEBCD8109ABFD1A2460867D8FF">
             <board type="NAMCOT-3406" mapper="206">
                 <prg size="128k" />

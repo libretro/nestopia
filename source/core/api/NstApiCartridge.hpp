@@ -1110,7 +1110,11 @@ namespace Nes
 					/**
 					* Both PAL and NTSC.
 					*/
-					REGION_BOTH
+					REGION_BOTH,
+					/**
+					* Dendy.
+					*/
+					REGION_DENDY
 				};
 
 				/**

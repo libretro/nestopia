@@ -323,8 +323,9 @@ namespace Nes
 
 				log << title <<
 				(
-					setup.region == Header::REGION_BOTH ? "NTSC/PAL" :
-					setup.region == Header::REGION_PAL  ? "PAL":
+					setup.region == Header::REGION_BOTH  ? "NTSC/PAL" :
+					setup.region == Header::REGION_DENDY ? "Dendy" :
+					setup.region == Header::REGION_PAL   ? "PAL":
                                                           "NTSC"
 				) << " set" NST_LINEBREAK;
 
@@ -557,6 +558,13 @@ namespace Nes
 									profile.system.cpu = Profile::System::CPU_RP2A07;
 									profile.system.ppu = Profile::System::PPU_RP2C07;
 								}
+								break;
+
+							case Header::REGION_DENDY:
+
+								profile.system.type = Profile::System::DENDY;
+								profile.system.cpu = Profile::System::CPU_DENDY;
+								profile.system.ppu = Profile::System::PPU_DENDY;
 								break;
 						}
 						break;
@@ -940,11 +948,41 @@ namespace Nes
 				setup.ppu = Header::PPU_RP2C02;
 			}
 
-			if (setup.version && (header[12] & 0x2U))
+			// NES 2.0 byte 12 holds a two-bit timing mode, not a pair of flags
+			if (setup.version)
 			{
-				setup.region = Header::REGION_BOTH;
+				switch (header[12] & 0x3U)
+				{
+					case 1:
+
+						if (setup.system == Header::SYSTEM_CONSOLE)
+						{
+							setup.region = Header::REGION_PAL;
+							setup.ppu = Header::PPU_RP2C07;
+						}
+						else
+						{
+							setup.region = Header::REGION_NTSC;
+						}
+						break;
+
+					case 2:
+
+						setup.region = Header::REGION_BOTH;
+						break;
+
+					case 3:
+
+						setup.region = (setup.system == Header::SYSTEM_CONSOLE) ? Header::REGION_DENDY : Header::REGION_NTSC;
+						break;
+
+					default:
+
+						setup.region = Header::REGION_NTSC;
+						break;
+				}
 			}
-			else if (header[setup.version ? 12 : 9] & 0x1U)
+			else if (header[9] & 0x1U)
 			{
 				if (setup.system == Header::SYSTEM_CONSOLE)
 				{
@@ -1096,6 +1134,10 @@ namespace Nes
 				if (setup.region == Header::REGION_BOTH)
 				{
 					header[12] |= 0x2U;
+				}
+				else if (setup.region == Header::REGION_DENDY)
+				{
+					header[12] |= 0x3U;
 				}
 				else if (setup.region == Header::REGION_PAL)
 				{

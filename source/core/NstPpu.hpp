@@ -209,11 +209,14 @@ namespace Nes
 			NST_FORCE_INLINE uint SpriteLine() const;
 			NST_FORCE_INLINE bool SpriteInRange(const byte* NST_RESTRICT) const;
 			uint SecondaryOamAddress() const;
+			NST_FORCE_INLINE void StepOam2Address(uint);
+			NST_FORCE_INLINE void ResetOam2Address();
 			NST_FORCE_INLINE void CorruptOam();
 			NST_FORCE_INLINE uint OpenSprite() const;
 			NST_FORCE_INLINE uint OpenSprite(const byte* NST_RESTRICT) const;
-			NST_FORCE_INLINE  void LoadSprite(uint,uint,const byte* NST_RESTRICT);
-			NST_FORCE_INLINE  void ClearSprite(const byte* NST_RESTRICT);
+			NST_FORCE_INLINE  void LoadSprite(uint,uint,const byte* NST_RESTRICT,uint);
+			NST_FORCE_INLINE  void ClearSprite(uint);
+			NST_FORCE_INLINE  void FetchOam2Object(byte* NST_RESTRICT) const;
 			NST_SINGLE_CALL void PreLoadTiles();
 			NST_SINGLE_CALL void LoadTiles();
 			NST_FORCE_INLINE void RenderPixel();
@@ -365,6 +368,8 @@ namespace Nes
 				uint secondary;
 				uint corrupt;
 				uint address;
+				uint oam2Address;
+				bool oam2Full;
 				uint height;
 				uint mask;
 				byte show[2];

@@ -33,9 +33,13 @@
 
 #define NST_VERSION "2.0.0"
 
-#define NES_NTSC_PAR ((Api::Video::Output::WIDTH - (overscan_h_left + overscan_h_right)) * (8.0 / 7.0)) / (Api::Video::Output::HEIGHT - (overscan_v_top + overscan_v_bottom))
-#define NES_PAL_PAR ((Api::Video::Output::WIDTH - (overscan_h_left + overscan_h_right)) * (2950000.0 / 2128137.0)) / (Api::Video::Output::HEIGHT - (overscan_v_top + overscan_v_bottom))
-#define NES_4_3_DAR (4.0 / 3.0);
+#define ASPECT_NTSC (8.0 / 7.0)
+#define ASPECT_PAL (7375000.0 / 5320342.5)
+/* nes_ntsc is written to be shown with its output pixels square and its
+ * lines doubled, which is a horizontal stretch of 49/48 over the PPU's
+ * own pixel aspect.  blargg documents the output as roughly 3% too wide
+ * and leaves it that way, so it is part of what the filter looks like. */
+#define ASPECT_FILTER_STRETCH (49.0 / 48.0)
 #define SAMPLERATE 48000
 
 #define RETRO_DEVICE_AUTO RETRO_DEVICE_JOYPAD
@@ -626,28 +630,56 @@ void retro_get_system_info(struct retro_system_info *info)
    info->valid_extensions = "nes|fds|unf|unif|nsf";
 }
 
+/* An overscan mask is set in PPU pixels.  The NTSC filter emits 7 pixels
+ * for every 3 it is given, so a mask has to be scaled by 7/3 to cover
+ * the same picture.  The result is rounded, which is why callers scale
+ * the total mask in one go rather than each side separately. */
+static inline int mask_to_frame(int mask)
+{
+   return blargg_ntsc ? (mask * 7 + 1) / 3 : mask;
+}
+
+/* Dimensions of the frame that is actually handed to the frontend, with
+ * the overscan mask applied. */
+static inline unsigned get_frame_width(void)
+{
+   return video_width - mask_to_frame(overscan_h_left + overscan_h_right);
+}
+
+static inline unsigned get_frame_height(void)
+{
+   return Api::Video::Output::HEIGHT - (overscan_v_top + overscan_v_bottom);
+}
+
 double get_aspect_ratio(void)
 {
-  double aspect_ratio = is_pal ? NES_PAL_PAR : NES_NTSC_PAR;
+   unsigned w = get_frame_width();
+   unsigned h = get_frame_height();
+   /* Width of the frame measured in PPU pixels.  A filtered frame is
+    * 7/3 as wide as the picture it carries, and 602 of them is 258 PPU
+    * pixels: the 256 rendered ones and the two the filter pads the row
+    * with.  The stretch the filter applies on top of that is kept, so
+    * that a filtered frame is shown the way nes_ntsc intends. */
+   double aspect_w = blargg_ntsc ?
+      (w * 3.0 * ASPECT_FILTER_STRETCH) / 7.0 : w;
 
-  if (aspect_ratio_mode == 1)
-  {
-    aspect_ratio = NES_NTSC_PAR;
-  }
-  else if (aspect_ratio_mode == 2)
-  {
-    aspect_ratio = NES_PAL_PAR;
-  }
-  else if (aspect_ratio_mode == 3)
-  {
-    aspect_ratio = NES_4_3_DAR;
-  }
-  else if (aspect_ratio_mode == 4)
-  {
-    aspect_ratio = 0;
-  }
-
-  return aspect_ratio;
+   switch (aspect_ratio_mode)
+   {
+      case 1: /* NTSC */
+         return (aspect_w * ASPECT_NTSC) / (double)h;
+      case 2: /* PAL */
+         return (aspect_w * ASPECT_PAL) / (double)h;
+      case 3: /* 4:3 */
+         return 4.0 / 3.0;
+      case 4: /* Uncorrected - square pixels.  A filtered frame is meant
+               * to be shown at double vertical resolution, so its width
+               * counts half against an unscaled frame height. */
+         return (blargg_ntsc ? w / 2.0 : (double)w) / h;
+      case 5: /* 5:4 */
+         return 5.0 / 4.0;
+      default: /* Auto */
+         return (aspect_w * (is_pal ? ASPECT_PAL : ASPECT_NTSC)) / (double)h;
+   }
 }
 
 void retro_get_system_av_info(struct retro_system_av_info *info)
@@ -658,10 +690,11 @@ void retro_get_system_av_info(struct retro_system_av_info *info)
       SAMPLERATE };
    info->timing = timing;
 
-   // It's better if the size is based on NTSC_WIDTH if the filter is on
+   /* Base dimensions are those of the frame the video callback is given,
+    * so they follow the NTSC filter as well as the overscan mask. */
    const retro_game_geometry geom = {
-      Api::Video::Output::WIDTH - (overscan_h_left + overscan_h_right),
-      Api::Video::Output::HEIGHT - (overscan_v_top + overscan_v_bottom),
+      get_frame_width(),
+      get_frame_height(),
       Api::Video::Output::NTSC_WIDTH,
       Api::Video::Output::HEIGHT,
       get_aspect_ratio(),
@@ -1445,6 +1478,8 @@ static void check_variables(void)
          aspect_ratio_mode = 3;
       else if (!strcmp(var.value, "uncorrected"))
          aspect_ratio_mode = 4;
+      else if (!strcmp(var.value, "5:4"))
+         aspect_ratio_mode = 5;
       else
          aspect_ratio_mode = 0;
    }
@@ -1721,14 +1756,13 @@ void retro_run(void)
    }
 
    video->pixels = video_buffer;
-   int dif = blargg_ntsc ? 9 : 4;
 
-   size_t vboffset = ((blargg_ntsc ? Api::Video::Output::NTSC_WIDTH : Api::Video::Output::WIDTH) * overscan_v_top) +
-      ((overscan_h_left * dif) / 4);
+   size_t vboffset = (video_width * overscan_v_top) +
+      mask_to_frame(overscan_h_left);
 
    video_cb(video_buffer + vboffset,
-      video_width - (((overscan_h_left + overscan_h_right) * dif) / 4),
-      Api::Video::Output::HEIGHT - (overscan_v_top + overscan_v_bottom),
+      get_frame_width(),
+      get_frame_height(),
       pitch);
 
    for (unsigned i = 0; i < frames; i++)

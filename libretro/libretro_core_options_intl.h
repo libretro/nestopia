@@ -100,6 +100,7 @@ extern "C" {
 #define NESTOPIA_ASPECT_LABEL_AR NULL
 #define NESTOPIA_ASPECT_INFO_0_AR NULL
 #define OPTION_VAL_4_3_AR NULL
+#define OPTION_VAL_5_4_AR NULL
 #define OPTION_VAL_UNCORRECTED_AR NULL
 #define NESTOPIA_AUDIO_FILTER_LABEL_AR NULL
 #define NESTOPIA_AUDIO_FILTER_INFO_0_AR NULL
@@ -448,6 +449,7 @@ struct retro_core_option_v2_definition option_defs_ar[] = {
          { "ntsc",        OPTION_VAL_NTSC_AR },
          { "pal",         OPTION_VAL_PAL_AR },
          { "4:3",         OPTION_VAL_4_3_AR },
+         { "5:4",         OPTION_VAL_5_4_AR },
          { "uncorrected", OPTION_VAL_UNCORRECTED_AR },
          { NULL, NULL },
       },
@@ -997,6 +999,7 @@ struct retro_core_options_v2 options_ar = {
 #define NESTOPIA_ASPECT_LABEL_AST NULL
 #define NESTOPIA_ASPECT_INFO_0_AST NULL
 #define OPTION_VAL_4_3_AST NULL
+#define OPTION_VAL_5_4_AST NULL
 #define OPTION_VAL_UNCORRECTED_AST NULL
 #define NESTOPIA_AUDIO_FILTER_LABEL_AST NULL
 #define NESTOPIA_AUDIO_FILTER_INFO_0_AST NULL
@@ -1345,6 +1348,7 @@ struct retro_core_option_v2_definition option_defs_ast[] = {
          { "ntsc",        OPTION_VAL_NTSC_AST },
          { "pal",         OPTION_VAL_PAL_AST },
          { "4:3",         OPTION_VAL_4_3_AST },
+         { "5:4",         OPTION_VAL_5_4_AST },
          { "uncorrected", OPTION_VAL_UNCORRECTED_AST },
          { NULL, NULL },
       },
@@ -1892,8 +1896,9 @@ struct retro_core_options_v2 options_ast = {
 #define NESTOPIA_OVERSCAN_H_LEFT_INFO_0_BE "Маскіруе (па гарызанталі) магчымае скажэнне графікі, якое ў тэлевізарах стандартнай выразнасці ўтоена рамкай па баках экрана."
 #define NESTOPIA_OVERSCAN_H_RIGHT_LABEL_BE "Хаваць вылеты разгорткі (справа)"
 #define NESTOPIA_ASPECT_LABEL_BE "Пераважныя суадносіны бакоў"
-#define NESTOPIA_ASPECT_INFO_0_BE "Перайдзіце ў налады відэа і ўсталюеце для суадносін бакоў RetroArch значэнне 'Па выбары ядра'. У рэжыме 'Аўта' суадносіны бакоў усталёўваецца па базе дадзеных NstDatabase.xml. Калі файл з базай дадзеных адсутнічае, па змаўчанні будзе выкарыстоўвацца NTSC."
+#define NESTOPIA_ASPECT_INFO_0_BE NULL
 #define OPTION_VAL_4_3_BE NULL
+#define OPTION_VAL_5_4_BE NULL
 #define OPTION_VAL_UNCORRECTED_BE "Без карэкцыі"
 #define NESTOPIA_AUDIO_FILTER_LABEL_BE NULL
 #define NESTOPIA_AUDIO_FILTER_INFO_0_BE NULL
@@ -2242,6 +2247,7 @@ struct retro_core_option_v2_definition option_defs_be[] = {
          { "ntsc",        OPTION_VAL_NTSC_BE },
          { "pal",         OPTION_VAL_PAL_BE },
          { "4:3",         OPTION_VAL_4_3_BE },
+         { "5:4",         OPTION_VAL_5_4_BE },
          { "uncorrected", OPTION_VAL_UNCORRECTED_BE },
          { NULL, NULL },
       },
@@ -2791,6 +2797,7 @@ struct retro_core_options_v2 options_be = {
 #define NESTOPIA_ASPECT_LABEL_BG NULL
 #define NESTOPIA_ASPECT_INFO_0_BG NULL
 #define OPTION_VAL_4_3_BG NULL
+#define OPTION_VAL_5_4_BG NULL
 #define OPTION_VAL_UNCORRECTED_BG NULL
 #define NESTOPIA_AUDIO_FILTER_LABEL_BG NULL
 #define NESTOPIA_AUDIO_FILTER_INFO_0_BG NULL
@@ -3139,6 +3146,7 @@ struct retro_core_option_v2_definition option_defs_bg[] = {
          { "ntsc",        OPTION_VAL_NTSC_BG },
          { "pal",         OPTION_VAL_PAL_BG },
          { "4:3",         OPTION_VAL_4_3_BG },
+         { "5:4",         OPTION_VAL_5_4_BG },
          { "uncorrected", OPTION_VAL_UNCORRECTED_BG },
          { NULL, NULL },
       },
@@ -3686,8 +3694,9 @@ struct retro_core_options_v2 options_bg = {
 #define NESTOPIA_OVERSCAN_H_LEFT_INFO_0_CA "Camufla (horitzontalment) els possibles defectes visuals aleatoris de vídeo que normalment amaga el marc d'una televisió de definició estàndard."
 #define NESTOPIA_OVERSCAN_H_RIGHT_LABEL_CA "Camufla el sobremostreig (horitzontal dret)"
 #define NESTOPIA_ASPECT_LABEL_CA "Relació d'aspecte preferida"
-#define NESTOPIA_ASPECT_INFO_0_CA "La relació d'aspecte de RetroArch cal seleccionar-la a 'Proveïda pel nucli' en la configuració de vídeo. 'Automàtic' farà servir la base de dades NstDatabase.xml per detectar automàticament la relació d'aspecte. Si no hi ha base de dades, per defecte es seleccionarà NTSC."
+#define NESTOPIA_ASPECT_INFO_0_CA NULL
 #define OPTION_VAL_4_3_CA NULL
+#define OPTION_VAL_5_4_CA NULL
 #define OPTION_VAL_UNCORRECTED_CA "Sense corregir"
 #define NESTOPIA_AUDIO_FILTER_LABEL_CA "Filtre de sortida d'àudio"
 #define NESTOPIA_AUDIO_FILTER_INFO_0_CA "Simula el comportament analògic del DAC en maquinari real, aplicant primer un filtre passaalt de 220 Hz i després un filtre passabaix de 14 Hz a la mescla de sortida. Això elimina la compensació DC de la mescla de so i esmorteeix els aguts més extrems."
@@ -4036,6 +4045,7 @@ struct retro_core_option_v2_definition option_defs_ca[] = {
          { "ntsc",        OPTION_VAL_NTSC_CA },
          { "pal",         OPTION_VAL_PAL_CA },
          { "4:3",         OPTION_VAL_4_3_CA },
+         { "5:4",         OPTION_VAL_5_4_CA },
          { "uncorrected", OPTION_VAL_UNCORRECTED_CA },
          { NULL, NULL },
       },
@@ -4583,8 +4593,9 @@ struct retro_core_options_v2 options_ca = {
 #define NESTOPIA_OVERSCAN_H_LEFT_INFO_0_CHS "遮蔽掉（水平方向）可能存在的随机闪烁视频输出，这些输出原本会被标准定义电视屏幕边缘的边框所遮挡。"
 #define NESTOPIA_OVERSCAN_H_RIGHT_LABEL_CHS "遮罩过扫描（右侧水平）"
 #define NESTOPIA_ASPECT_LABEL_CHS "首选宽高比"
-#define NESTOPIA_ASPECT_INFO_0_CHS "RetroArch 的宽高比必须在视频设置中设为“核心提供”。“自动”将使用 NstDatabase.xml 数据库文件进行宽高比自动检测。如果不存在数据库，将默认为 NTSC。"
+#define NESTOPIA_ASPECT_INFO_0_CHS NULL
 #define OPTION_VAL_4_3_CHS NULL
+#define OPTION_VAL_5_4_CHS NULL
 #define OPTION_VAL_UNCORRECTED_CHS "未校正"
 #define NESTOPIA_AUDIO_FILTER_LABEL_CHS NULL
 #define NESTOPIA_AUDIO_FILTER_INFO_0_CHS NULL
@@ -4933,6 +4944,7 @@ struct retro_core_option_v2_definition option_defs_chs[] = {
          { "ntsc",        OPTION_VAL_NTSC_CHS },
          { "pal",         OPTION_VAL_PAL_CHS },
          { "4:3",         OPTION_VAL_4_3_CHS },
+         { "5:4",         OPTION_VAL_5_4_CHS },
          { "uncorrected", OPTION_VAL_UNCORRECTED_CHS },
          { NULL, NULL },
       },
@@ -5482,6 +5494,7 @@ struct retro_core_options_v2 options_chs = {
 #define NESTOPIA_ASPECT_LABEL_CHT NULL
 #define NESTOPIA_ASPECT_INFO_0_CHT NULL
 #define OPTION_VAL_4_3_CHT NULL
+#define OPTION_VAL_5_4_CHT NULL
 #define OPTION_VAL_UNCORRECTED_CHT "未調整"
 #define NESTOPIA_AUDIO_FILTER_LABEL_CHT NULL
 #define NESTOPIA_AUDIO_FILTER_INFO_0_CHT NULL
@@ -5830,6 +5843,7 @@ struct retro_core_option_v2_definition option_defs_cht[] = {
          { "ntsc",        OPTION_VAL_NTSC_CHT },
          { "pal",         OPTION_VAL_PAL_CHT },
          { "4:3",         OPTION_VAL_4_3_CHT },
+         { "5:4",         OPTION_VAL_5_4_CHT },
          { "uncorrected", OPTION_VAL_UNCORRECTED_CHT },
          { NULL, NULL },
       },
@@ -6377,8 +6391,9 @@ struct retro_core_options_v2 options_cht = {
 #define NESTOPIA_OVERSCAN_H_LEFT_INFO_0_CS "Maskovat (horizontálně) potenciálně náhodný poruchový obrazový výstup, který by byl skrytý za rámečkem kolem okraje obrazovky televizoru se standardním rozlišením."
 #define NESTOPIA_OVERSCAN_H_RIGHT_LABEL_CS "Přesah masky (Vpravo vodorovně)"
 #define NESTOPIA_ASPECT_LABEL_CS "Preferovaný Poměr Stran"
-#define NESTOPIA_ASPECT_INFO_0_CS "Poměr stran aplikace RetroArch musí být v nastavení videa nastaven na hodnotu 'Poskytované jádro'. 'Auto' použije k automatickému rozpoznání poměru stran databázový soubor NstDatabase.xml. Pokud není k dispozici žádná databáze, bude výchozí nastavení NTSC."
+#define NESTOPIA_ASPECT_INFO_0_CS NULL
 #define OPTION_VAL_4_3_CS NULL
+#define OPTION_VAL_5_4_CS NULL
 #define OPTION_VAL_UNCORRECTED_CS "Neopraveno"
 #define NESTOPIA_AUDIO_FILTER_LABEL_CS NULL
 #define NESTOPIA_AUDIO_FILTER_INFO_0_CS NULL
@@ -6727,6 +6742,7 @@ struct retro_core_option_v2_definition option_defs_cs[] = {
          { "ntsc",        OPTION_VAL_NTSC_CS },
          { "pal",         OPTION_VAL_PAL_CS },
          { "4:3",         OPTION_VAL_4_3_CS },
+         { "5:4",         OPTION_VAL_5_4_CS },
          { "uncorrected", OPTION_VAL_UNCORRECTED_CS },
          { NULL, NULL },
       },
@@ -7276,6 +7292,7 @@ struct retro_core_options_v2 options_cs = {
 #define NESTOPIA_ASPECT_LABEL_CY NULL
 #define NESTOPIA_ASPECT_INFO_0_CY NULL
 #define OPTION_VAL_4_3_CY NULL
+#define OPTION_VAL_5_4_CY NULL
 #define OPTION_VAL_UNCORRECTED_CY NULL
 #define NESTOPIA_AUDIO_FILTER_LABEL_CY NULL
 #define NESTOPIA_AUDIO_FILTER_INFO_0_CY NULL
@@ -7624,6 +7641,7 @@ struct retro_core_option_v2_definition option_defs_cy[] = {
          { "ntsc",        OPTION_VAL_NTSC_CY },
          { "pal",         OPTION_VAL_PAL_CY },
          { "4:3",         OPTION_VAL_4_3_CY },
+         { "5:4",         OPTION_VAL_5_4_CY },
          { "uncorrected", OPTION_VAL_UNCORRECTED_CY },
          { NULL, NULL },
       },
@@ -8173,6 +8191,7 @@ struct retro_core_options_v2 options_cy = {
 #define NESTOPIA_ASPECT_LABEL_DA NULL
 #define NESTOPIA_ASPECT_INFO_0_DA NULL
 #define OPTION_VAL_4_3_DA NULL
+#define OPTION_VAL_5_4_DA NULL
 #define OPTION_VAL_UNCORRECTED_DA NULL
 #define NESTOPIA_AUDIO_FILTER_LABEL_DA NULL
 #define NESTOPIA_AUDIO_FILTER_INFO_0_DA NULL
@@ -8521,6 +8540,7 @@ struct retro_core_option_v2_definition option_defs_da[] = {
          { "ntsc",        OPTION_VAL_NTSC_DA },
          { "pal",         OPTION_VAL_PAL_DA },
          { "4:3",         OPTION_VAL_4_3_DA },
+         { "5:4",         OPTION_VAL_5_4_DA },
          { "uncorrected", OPTION_VAL_UNCORRECTED_DA },
          { NULL, NULL },
       },
@@ -9068,8 +9088,9 @@ struct retro_core_options_v2 options_da = {
 #define NESTOPIA_OVERSCAN_H_LEFT_INFO_0_DE "Blendet (horizontal) die potenziell zufällige, fehlerhafte Videoausgabe aus, die durch den Rand eines Fernsehbildschirms mit Standardauflösung versteckt wäre."
 #define NESTOPIA_OVERSCAN_H_RIGHT_LABEL_DE "Overscan ausblenden (rechts horizontal)"
 #define NESTOPIA_ASPECT_LABEL_DE "Bevorzugtes Seitenverhältnis"
-#define NESTOPIA_ASPECT_INFO_0_DE "Das Seitenverhältnis von RetroArch muss in den Videoeinstellungen auf „Wie von Core vorgesehen“ gesetzt werden. „Automatisch“ verwendet die Datenbankdatei NstDatabase.xml für die automatische Erkennung des Seitenverhältnisses. Wenn keine Datenbank vorhanden ist, wird standardmäßig NTSC verwendet."
+#define NESTOPIA_ASPECT_INFO_0_DE NULL
 #define OPTION_VAL_4_3_DE NULL
+#define OPTION_VAL_5_4_DE NULL
 #define OPTION_VAL_UNCORRECTED_DE "Unkorrigiert"
 #define NESTOPIA_AUDIO_FILTER_LABEL_DE "Audio-Ausgabefilter"
 #define NESTOPIA_AUDIO_FILTER_INFO_0_DE "Die analoge Stufe, die der realen Hardware dem DAC folgt, annähernd nachbilden, indem man auf das gemischte Ausgangssignal einen Hochpassfilter erster Stufe mit 220 Hz und einen Tiefpassfilter erster Stufe mit 14 kHz anwendet. Dadurch wird der Gleichstrom-Offset, auf dem der Mixer liegt, entfernt und die extrem hohen Frequenzen werden abgesenkt."
@@ -9418,6 +9439,7 @@ struct retro_core_option_v2_definition option_defs_de[] = {
          { "ntsc",        OPTION_VAL_NTSC_DE },
          { "pal",         OPTION_VAL_PAL_DE },
          { "4:3",         OPTION_VAL_4_3_DE },
+         { "5:4",         OPTION_VAL_5_4_DE },
          { "uncorrected", OPTION_VAL_UNCORRECTED_DE },
          { NULL, NULL },
       },
@@ -9967,6 +9989,7 @@ struct retro_core_options_v2 options_de = {
 #define NESTOPIA_ASPECT_LABEL_EL NULL
 #define NESTOPIA_ASPECT_INFO_0_EL NULL
 #define OPTION_VAL_4_3_EL NULL
+#define OPTION_VAL_5_4_EL NULL
 #define OPTION_VAL_UNCORRECTED_EL NULL
 #define NESTOPIA_AUDIO_FILTER_LABEL_EL NULL
 #define NESTOPIA_AUDIO_FILTER_INFO_0_EL NULL
@@ -10315,6 +10338,7 @@ struct retro_core_option_v2_definition option_defs_el[] = {
          { "ntsc",        OPTION_VAL_NTSC_EL },
          { "pal",         OPTION_VAL_PAL_EL },
          { "4:3",         OPTION_VAL_4_3_EL },
+         { "5:4",         OPTION_VAL_5_4_EL },
          { "uncorrected", OPTION_VAL_UNCORRECTED_EL },
          { NULL, NULL },
       },
@@ -10864,6 +10888,7 @@ struct retro_core_options_v2 options_el = {
 #define NESTOPIA_ASPECT_LABEL_EN NULL
 #define NESTOPIA_ASPECT_INFO_0_EN NULL
 #define OPTION_VAL_4_3_EN NULL
+#define OPTION_VAL_5_4_EN NULL
 #define OPTION_VAL_UNCORRECTED_EN NULL
 #define NESTOPIA_AUDIO_FILTER_LABEL_EN NULL
 #define NESTOPIA_AUDIO_FILTER_INFO_0_EN NULL
@@ -11212,6 +11237,7 @@ struct retro_core_option_v2_definition option_defs_en[] = {
          { "ntsc",        OPTION_VAL_NTSC_EN },
          { "pal",         OPTION_VAL_PAL_EN },
          { "4:3",         OPTION_VAL_4_3_EN },
+         { "5:4",         OPTION_VAL_5_4_EN },
          { "uncorrected", OPTION_VAL_UNCORRECTED_EN },
          { NULL, NULL },
       },
@@ -11759,8 +11785,9 @@ struct retro_core_options_v2 options_en = {
 #define NESTOPIA_OVERSCAN_H_LEFT_INFO_0_EO "Kaŝi (horizontale) la eblan hazardan missignalozan videan eligon, kiu estus kaŝita de la nigra rando ĉirkaŭ la eĝo de norme distingiva televidila ekrano."
 #define NESTOPIA_OVERSCAN_H_RIGHT_LABEL_EO "Kaŝi superskanon (dekstre horizontale)"
 #define NESTOPIA_ASPECT_LABEL_EO "Preferata bilda proporcio"
-#define NESTOPIA_ASPECT_INFO_0_EO "La bilda proporcio de RetroArch devas esti agordita al \"Provizita de kerno\" en la agordoj Video. \"Aŭtomata\" uzos la datumbazdosieron NstDatabase.xml por aŭtomata detekto de bilda proporcio. Se ne ĉeestas datumbazo, ĝi defaŭlte uzos NTSC."
+#define NESTOPIA_ASPECT_INFO_0_EO NULL
 #define OPTION_VAL_4_3_EO NULL
+#define OPTION_VAL_5_4_EO NULL
 #define OPTION_VAL_UNCORRECTED_EO "Nekorektita"
 #define NESTOPIA_AUDIO_FILTER_LABEL_EO NULL
 #define NESTOPIA_AUDIO_FILTER_INFO_0_EO NULL
@@ -12109,6 +12136,7 @@ struct retro_core_option_v2_definition option_defs_eo[] = {
          { "ntsc",        OPTION_VAL_NTSC_EO },
          { "pal",         OPTION_VAL_PAL_EO },
          { "4:3",         OPTION_VAL_4_3_EO },
+         { "5:4",         OPTION_VAL_5_4_EO },
          { "uncorrected", OPTION_VAL_UNCORRECTED_EO },
          { NULL, NULL },
       },
@@ -12656,8 +12684,9 @@ struct retro_core_options_v2 options_eo = {
 #define NESTOPIA_OVERSCAN_H_LEFT_INFO_0_ES "Camufla (la parte horizontal de) los posibles defectos visuales aleatorios de vídeo que normalmente ocultaría el marco de un televisor de definición estándar."
 #define NESTOPIA_OVERSCAN_H_RIGHT_LABEL_ES "Camuflar sobrebarrido (horizontal derecho)"
 #define NESTOPIA_ASPECT_LABEL_ES "Relación de aspecto preferida"
-#define NESTOPIA_ASPECT_INFO_0_ES "Es necesario configurar la relación de aspecto de RetroArch como «Asignada por el núcleo» en los ajustes de vídeo. «Selección automática» utilizará la base de datos NstDatabase.xml para elegir automáticamente la relación de aspecto. En caso de no existir esta base de datos, se utilizará la relación NTSC por defecto."
+#define NESTOPIA_ASPECT_INFO_0_ES NULL
 #define OPTION_VAL_4_3_ES NULL
+#define OPTION_VAL_5_4_ES NULL
 #define OPTION_VAL_UNCORRECTED_ES "Sin corregir"
 #define NESTOPIA_AUDIO_FILTER_LABEL_ES "Filtro de salida de audio"
 #define NESTOPIA_AUDIO_FILTER_INFO_0_ES "Aproxima la fase analógica que se aplicaría al DAC en hardware real aplicando un filtro de paso alto de primer orden a 220 Hz y otro filtro de paso bajo de primer orden a 14 kHz a la salida mezclada. Elimina la compensación DC en la que se basa el mezclador y reduce el tiple extremo."
@@ -13006,6 +13035,7 @@ struct retro_core_option_v2_definition option_defs_es[] = {
          { "ntsc",        OPTION_VAL_NTSC_ES },
          { "pal",         OPTION_VAL_PAL_ES },
          { "4:3",         OPTION_VAL_4_3_ES },
+         { "5:4",         OPTION_VAL_5_4_ES },
          { "uncorrected", OPTION_VAL_UNCORRECTED_ES },
          { NULL, NULL },
       },
@@ -13555,6 +13585,7 @@ struct retro_core_options_v2 options_es = {
 #define NESTOPIA_ASPECT_LABEL_FA NULL
 #define NESTOPIA_ASPECT_INFO_0_FA NULL
 #define OPTION_VAL_4_3_FA NULL
+#define OPTION_VAL_5_4_FA NULL
 #define OPTION_VAL_UNCORRECTED_FA NULL
 #define NESTOPIA_AUDIO_FILTER_LABEL_FA NULL
 #define NESTOPIA_AUDIO_FILTER_INFO_0_FA NULL
@@ -13903,6 +13934,7 @@ struct retro_core_option_v2_definition option_defs_fa[] = {
          { "ntsc",        OPTION_VAL_NTSC_FA },
          { "pal",         OPTION_VAL_PAL_FA },
          { "4:3",         OPTION_VAL_4_3_FA },
+         { "5:4",         OPTION_VAL_5_4_FA },
          { "uncorrected", OPTION_VAL_UNCORRECTED_FA },
          { NULL, NULL },
       },
@@ -14450,8 +14482,9 @@ struct retro_core_options_v2 options_fa = {
 #define NESTOPIA_OVERSCAN_H_LEFT_INFO_0_FI "Naamioi mahdollisesti satunnainen (vaakasuora) vääristynyt videon ulostulo, joka olisi jäänyt piiloon kehysten reunan taakse perinteisen tarkkuuden näytöllä."
 #define NESTOPIA_OVERSCAN_H_RIGHT_LABEL_FI "Naamio yliskannaus (oikea vaakasuora)"
 #define NESTOPIA_ASPECT_LABEL_FI "Ensisijainen kuvasuhde"
-#define NESTOPIA_ASPECT_INFO_0_FI "RetroArchin kuvasuhteeksi on asetettava \"Ytimen mukanatuleva\", joka löytyy video asetuksista. '\"Automaattinen\" käyttää NstDatabase.xml tietokannan tiedoston kuvasuhteen automaattista tunnistetta. Jos tietokantaa ei ole läsnä, oletuksena on NTSC."
+#define NESTOPIA_ASPECT_INFO_0_FI NULL
 #define OPTION_VAL_4_3_FI NULL
+#define OPTION_VAL_5_4_FI NULL
 #define OPTION_VAL_UNCORRECTED_FI "Ei korjattu"
 #define NESTOPIA_AUDIO_FILTER_LABEL_FI NULL
 #define NESTOPIA_AUDIO_FILTER_INFO_0_FI NULL
@@ -14800,6 +14833,7 @@ struct retro_core_option_v2_definition option_defs_fi[] = {
          { "ntsc",        OPTION_VAL_NTSC_FI },
          { "pal",         OPTION_VAL_PAL_FI },
          { "4:3",         OPTION_VAL_4_3_FI },
+         { "5:4",         OPTION_VAL_5_4_FI },
          { "uncorrected", OPTION_VAL_UNCORRECTED_FI },
          { NULL, NULL },
       },
@@ -15347,8 +15381,9 @@ struct retro_core_options_v2 options_fi = {
 #define NESTOPIA_OVERSCAN_H_LEFT_INFO_0_FR "Masquer (horizontalement) la sortie vidéo potentiellement buggée et aléatoire qui aurait été cachée par le biseau autour du bord d'un écran de télévision définition standard."
 #define NESTOPIA_OVERSCAN_H_RIGHT_LABEL_FR "Masquer le surbalayage (horizontal droite)"
 #define NESTOPIA_ASPECT_LABEL_FR "Rapport d'aspect préféré"
-#define NESTOPIA_ASPECT_INFO_0_FR "Le rapport d'aspect de RetroArch doit être défini sur 'Fourni par le cœur' (Core provided), à régler dans les paramètres Vidéo. 'Auto' utilisera le fichier de base de données NstDatabase.xml pour l'autodétection du rapport d'aspect. S'il n'y a pas de base de données présente, il sera par défaut sur NTSC."
+#define NESTOPIA_ASPECT_INFO_0_FR NULL
 #define OPTION_VAL_4_3_FR NULL
+#define OPTION_VAL_5_4_FR NULL
 #define OPTION_VAL_UNCORRECTED_FR "Non corrigé"
 #define NESTOPIA_AUDIO_FILTER_LABEL_FR "Filtre de sortie audio"
 #define NESTOPIA_AUDIO_FILTER_INFO_0_FR "Simuler l'étape analogique suivant le convertisseur numérique-analogique sur le matériel original, en appliquant un filtre passe-haut du premier ordre à 220 Hz et un filtre passe-bas du premier ordre à 14 kHz à la sortie mixée. Cela supprime la composante continue du mélangeur et atténue les aigus extrêmes."
@@ -15697,6 +15732,7 @@ struct retro_core_option_v2_definition option_defs_fr[] = {
          { "ntsc",        OPTION_VAL_NTSC_FR },
          { "pal",         OPTION_VAL_PAL_FR },
          { "4:3",         OPTION_VAL_4_3_FR },
+         { "5:4",         OPTION_VAL_5_4_FR },
          { "uncorrected", OPTION_VAL_UNCORRECTED_FR },
          { NULL, NULL },
       },
@@ -16244,8 +16280,9 @@ struct retro_core_options_v2 options_fr = {
 #define NESTOPIA_OVERSCAN_H_LEFT_INFO_0_GA "Cuir as (go cothrománach) an t-aschur físe a d'fhéadfadh a bheith glitchy randamach a bheadh ​​​​i bhfolach ag an bezel timpeall imeall scáileáin teilifíse caighdeánaigh sainmhínithe."
 #define NESTOPIA_OVERSCAN_H_RIGHT_LABEL_GA "Ró-scanadh Masc (Cothrománach ar Dheis)"
 #define NESTOPIA_ASPECT_LABEL_GA "Cóimheas Gné is Fearr"
-#define NESTOPIA_ASPECT_INFO_0_GA "Ní mór cóimheas gné RetroArch a shocrú go 'Core Provided' sna socruithe Físeáin. Úsáidfidh 'Auto' an comhad bunachar sonraí NstDatabase.xml chun cóimheas gné a bhrath go huathoibríoch. Mura bhfuil aon bhunachar sonraí i láthair, socrófar é go NTSC mar réamhshocrú."
+#define NESTOPIA_ASPECT_INFO_0_GA NULL
 #define OPTION_VAL_4_3_GA NULL
+#define OPTION_VAL_5_4_GA NULL
 #define OPTION_VAL_UNCORRECTED_GA "Gan cheartú"
 #define NESTOPIA_AUDIO_FILTER_LABEL_GA "Scagaire Aschuir Fuaime"
 #define NESTOPIA_AUDIO_FILTER_INFO_0_GA "Déan meastachán ar an gcéim analógach a leanann an DAC ar fhíor-chrua-earraí, trí ardphas den chéad ord 220Hz agus ísealphas den chéad ord 14kHz a chur i bhfeidhm ar an aschur measctha. Baintear an fhritháireamh DC a bhfuil an meascthóir suite air leis seo agus rolltar an treble foircneach as."
@@ -16594,6 +16631,7 @@ struct retro_core_option_v2_definition option_defs_ga[] = {
          { "ntsc",        OPTION_VAL_NTSC_GA },
          { "pal",         OPTION_VAL_PAL_GA },
          { "4:3",         OPTION_VAL_4_3_GA },
+         { "5:4",         OPTION_VAL_5_4_GA },
          { "uncorrected", OPTION_VAL_UNCORRECTED_GA },
          { NULL, NULL },
       },
@@ -17141,8 +17179,9 @@ struct retro_core_options_v2 options_ga = {
 #define NESTOPIA_OVERSCAN_H_LEFT_INFO_0_GL "Enmascarar (horizontalmente) a saída de vídeo con falla potencialmente aleatoria que estaría oculta polo bisel ao redor do bordo dunha pantalla de televisión de definición estándar."
 #define NESTOPIA_OVERSCAN_H_RIGHT_LABEL_GL "Sobreescaneo de máscara (horizontal dereita)"
 #define NESTOPIA_ASPECT_LABEL_GL "Relación de aspecto preferida"
-#define NESTOPIA_ASPECT_INFO_0_GL "A relación de aspecto de RetroArch debe establecerse en \"Núcleo proporcionado\" na configuración de vídeo. 'Auto' usará o ficheiro de base de datos NstDatabase.xml para a detección automática da relación de aspecto. Se non hai ningunha base de datos presente, por defecto será NTSC."
+#define NESTOPIA_ASPECT_INFO_0_GL NULL
 #define OPTION_VAL_4_3_GL NULL
+#define OPTION_VAL_5_4_GL NULL
 #define OPTION_VAL_UNCORRECTED_GL "Sen corrixir"
 #define NESTOPIA_AUDIO_FILTER_LABEL_GL NULL
 #define NESTOPIA_AUDIO_FILTER_INFO_0_GL NULL
@@ -17491,6 +17530,7 @@ struct retro_core_option_v2_definition option_defs_gl[] = {
          { "ntsc",        OPTION_VAL_NTSC_GL },
          { "pal",         OPTION_VAL_PAL_GL },
          { "4:3",         OPTION_VAL_4_3_GL },
+         { "5:4",         OPTION_VAL_5_4_GL },
          { "uncorrected", OPTION_VAL_UNCORRECTED_GL },
          { NULL, NULL },
       },
@@ -18040,6 +18080,7 @@ struct retro_core_options_v2 options_gl = {
 #define NESTOPIA_ASPECT_LABEL_HE NULL
 #define NESTOPIA_ASPECT_INFO_0_HE NULL
 #define OPTION_VAL_4_3_HE NULL
+#define OPTION_VAL_5_4_HE NULL
 #define OPTION_VAL_UNCORRECTED_HE NULL
 #define NESTOPIA_AUDIO_FILTER_LABEL_HE NULL
 #define NESTOPIA_AUDIO_FILTER_INFO_0_HE NULL
@@ -18388,6 +18429,7 @@ struct retro_core_option_v2_definition option_defs_he[] = {
          { "ntsc",        OPTION_VAL_NTSC_HE },
          { "pal",         OPTION_VAL_PAL_HE },
          { "4:3",         OPTION_VAL_4_3_HE },
+         { "5:4",         OPTION_VAL_5_4_HE },
          { "uncorrected", OPTION_VAL_UNCORRECTED_HE },
          { NULL, NULL },
       },
@@ -18935,8 +18977,9 @@ struct retro_core_options_v2 options_he = {
 #define NESTOPIA_OVERSCAN_H_LEFT_INFO_0_HR "Vodoravno maskirajte potencijalno neispravan videoizlaz koji bi inače bio sakriven okvirom ekrana na televizorima standardne rezolucije."
 #define NESTOPIA_OVERSCAN_H_RIGHT_LABEL_HR "Maskiraj overscan (desni rub)"
 #define NESTOPIA_ASPECT_LABEL_HR "Željeni omjer slike"
-#define NESTOPIA_ASPECT_INFO_0_HR "Omjer slike u RetroArchu mora biti postavljen na 'Core Provided' unutar video postavki. Opcija 'Auto' koristit će NstDatabase.xml bazu podataka za automatsko prepoznavanje omjera. Ako baza podataka nije prisutna, zadana postavka bit će NTSC."
+#define NESTOPIA_ASPECT_INFO_0_HR NULL
 #define OPTION_VAL_4_3_HR NULL
+#define OPTION_VAL_5_4_HR NULL
 #define OPTION_VAL_UNCORRECTED_HR "Neispravljeno"
 #define NESTOPIA_AUDIO_FILTER_LABEL_HR NULL
 #define NESTOPIA_AUDIO_FILTER_INFO_0_HR NULL
@@ -19285,6 +19328,7 @@ struct retro_core_option_v2_definition option_defs_hr[] = {
          { "ntsc",        OPTION_VAL_NTSC_HR },
          { "pal",         OPTION_VAL_PAL_HR },
          { "4:3",         OPTION_VAL_4_3_HR },
+         { "5:4",         OPTION_VAL_5_4_HR },
          { "uncorrected", OPTION_VAL_UNCORRECTED_HR },
          { NULL, NULL },
       },
@@ -19832,8 +19876,9 @@ struct retro_core_options_v2 options_hr = {
 #define NESTOPIA_OVERSCAN_H_LEFT_INFO_0_HU "A kép vízszintes széleinek kitakarása, amelyeket egy normál felbontású tévékészülék kávája elrejtett, és esetleg hibás képkimenetet tartalmaznak."
 #define NESTOPIA_OVERSCAN_H_RIGHT_LABEL_HU "Overscan kitakarása (jobb oldalt)"
 #define NESTOPIA_ASPECT_LABEL_HU "Kívánt képarány"
-#define NESTOPIA_ASPECT_INFO_0_HU "A RetroArch képarány beállítása \"Mag által megadott\" kell legyen a képbeállítások közt. Az automatikus mód az NstDatabase.xml adatbázis fájlt használja a képarány érzékeléséhez. Ha nincs adatbázis, az NTSC az alapértelmezett."
+#define NESTOPIA_ASPECT_INFO_0_HU NULL
 #define OPTION_VAL_4_3_HU NULL
+#define OPTION_VAL_5_4_HU NULL
 #define OPTION_VAL_UNCORRECTED_HU "Korrigálatlan"
 #define NESTOPIA_AUDIO_FILTER_LABEL_HU NULL
 #define NESTOPIA_AUDIO_FILTER_INFO_0_HU NULL
@@ -20182,6 +20227,7 @@ struct retro_core_option_v2_definition option_defs_hu[] = {
          { "ntsc",        OPTION_VAL_NTSC_HU },
          { "pal",         OPTION_VAL_PAL_HU },
          { "4:3",         OPTION_VAL_4_3_HU },
+         { "5:4",         OPTION_VAL_5_4_HU },
          { "uncorrected", OPTION_VAL_UNCORRECTED_HU },
          { NULL, NULL },
       },
@@ -20731,6 +20777,7 @@ struct retro_core_options_v2 options_hu = {
 #define NESTOPIA_ASPECT_LABEL_ID NULL
 #define NESTOPIA_ASPECT_INFO_0_ID NULL
 #define OPTION_VAL_4_3_ID NULL
+#define OPTION_VAL_5_4_ID NULL
 #define OPTION_VAL_UNCORRECTED_ID NULL
 #define NESTOPIA_AUDIO_FILTER_LABEL_ID NULL
 #define NESTOPIA_AUDIO_FILTER_INFO_0_ID NULL
@@ -21079,6 +21126,7 @@ struct retro_core_option_v2_definition option_defs_id[] = {
          { "ntsc",        OPTION_VAL_NTSC_ID },
          { "pal",         OPTION_VAL_PAL_ID },
          { "4:3",         OPTION_VAL_4_3_ID },
+         { "5:4",         OPTION_VAL_5_4_ID },
          { "uncorrected", OPTION_VAL_UNCORRECTED_ID },
          { NULL, NULL },
       },
@@ -21626,8 +21674,9 @@ struct retro_core_options_v2 options_id = {
 #define NESTOPIA_OVERSCAN_H_LEFT_INFO_0_IT "Maschera (orizzontalmente) l'uscita video potenzialmente casuale glitchy che sarebbe stato nascosto dalla lunetta intorno al bordo di uno schermo televisivo standard-definizione."
 #define NESTOPIA_OVERSCAN_H_RIGHT_LABEL_IT "Maschera Overscan (Destra Orizzontale)"
 #define NESTOPIA_ASPECT_LABEL_IT "Rapporto Dimensioni Preferite"
-#define NESTOPIA_ASPECT_INFO_0_IT "Rapporto dimensioni di RetroArch deve essere impostato nel Nucleo, fornito nelle impostazioni video. 'Auto' utilizzerà il NstDatabase. file di database ml per rilevamento automatico delle proporzioni. Se non è presente alcun database, sarà predefinito NTSC."
+#define NESTOPIA_ASPECT_INFO_0_IT NULL
 #define OPTION_VAL_4_3_IT NULL
+#define OPTION_VAL_5_4_IT NULL
 #define OPTION_VAL_UNCORRECTED_IT "Non Corretto"
 #define NESTOPIA_AUDIO_FILTER_LABEL_IT NULL
 #define NESTOPIA_AUDIO_FILTER_INFO_0_IT NULL
@@ -21976,6 +22025,7 @@ struct retro_core_option_v2_definition option_defs_it[] = {
          { "ntsc",        OPTION_VAL_NTSC_IT },
          { "pal",         OPTION_VAL_PAL_IT },
          { "4:3",         OPTION_VAL_4_3_IT },
+         { "5:4",         OPTION_VAL_5_4_IT },
          { "uncorrected", OPTION_VAL_UNCORRECTED_IT },
          { NULL, NULL },
       },
@@ -22523,8 +22573,9 @@ struct retro_core_options_v2 options_it = {
 #define NESTOPIA_OVERSCAN_H_LEFT_INFO_0_JA "標準画質テレビの画面端にあるベゼルによって隠されていた、意図しない可能性がある水平方向の描画出力をマスクします。"
 #define NESTOPIA_OVERSCAN_H_RIGHT_LABEL_JA "オーバースキャンをマスク (右端)"
 #define NESTOPIA_ASPECT_LABEL_JA "優先アスペクト比"
-#define NESTOPIA_ASPECT_INFO_0_JA "RetroArch のアスペクト比がビデオ設定で [コア提供] に設定されている必要があります。[自動] に設定すると、アスペクト比の自動検出用データベースファイル NstDatabase.xml を使用します。データベースが存在しない場合、 NTSC がデフォルトとして使用されます。"
+#define NESTOPIA_ASPECT_INFO_0_JA NULL
 #define OPTION_VAL_4_3_JA NULL
+#define OPTION_VAL_5_4_JA NULL
 #define OPTION_VAL_UNCORRECTED_JA "補正なし"
 #define NESTOPIA_AUDIO_FILTER_LABEL_JA NULL
 #define NESTOPIA_AUDIO_FILTER_INFO_0_JA NULL
@@ -22873,6 +22924,7 @@ struct retro_core_option_v2_definition option_defs_ja[] = {
          { "ntsc",        OPTION_VAL_NTSC_JA },
          { "pal",         OPTION_VAL_PAL_JA },
          { "4:3",         OPTION_VAL_4_3_JA },
+         { "5:4",         OPTION_VAL_5_4_JA },
          { "uncorrected", OPTION_VAL_UNCORRECTED_JA },
          { NULL, NULL },
       },
@@ -23420,8 +23472,9 @@ struct retro_core_options_v2 options_ja = {
 #define NESTOPIA_OVERSCAN_H_LEFT_INFO_0_KO "일반적으로 오래된 TV 화면의 테두리 베젤에 의해 가려지는 비디오 출력의 이상한 부분(가로)을 숨깁니다."
 #define NESTOPIA_OVERSCAN_H_RIGHT_LABEL_KO "오버스캔 숨기기 (가로 오른쪽)"
 #define NESTOPIA_ASPECT_LABEL_KO "선호하는 화면비"
-#define NESTOPIA_ASPECT_INFO_0_KO "RetroArch의 비디오 설정에서 화면비가 '코어에 따름'으로 설정되어 있어야 합니다. '자동'은 NstDatabase.xml 데이터베이스에 기록된 내용에 따라 화면비를 자동 감지합니다. 데이터베이스에 자료가 없을 경우, NTSC가 사용됩니다."
+#define NESTOPIA_ASPECT_INFO_0_KO NULL
 #define OPTION_VAL_4_3_KO NULL
+#define OPTION_VAL_5_4_KO NULL
 #define OPTION_VAL_UNCORRECTED_KO "교정 안 됨"
 #define NESTOPIA_AUDIO_FILTER_LABEL_KO "오디오 출력 필터"
 #define NESTOPIA_AUDIO_FILTER_INFO_0_KO "실제 하드웨어의 DAC에서 발생하는 아날로그 변환 단계를 모방하여, 오디오 출력에 220Hz 하이패스 필터와 14kHz 1차 로우패스 필터를 적용합니다. 이 설정은 믹서에서 발생하는 DC 오프셋을 제거하고 고음역대 소리를 부드럽게 만들어줍니다."
@@ -23770,6 +23823,7 @@ struct retro_core_option_v2_definition option_defs_ko[] = {
          { "ntsc",        OPTION_VAL_NTSC_KO },
          { "pal",         OPTION_VAL_PAL_KO },
          { "4:3",         OPTION_VAL_4_3_KO },
+         { "5:4",         OPTION_VAL_5_4_KO },
          { "uncorrected", OPTION_VAL_UNCORRECTED_KO },
          { NULL, NULL },
       },
@@ -24319,6 +24373,7 @@ struct retro_core_options_v2 options_ko = {
 #define NESTOPIA_ASPECT_LABEL_NL NULL
 #define NESTOPIA_ASPECT_INFO_0_NL NULL
 #define OPTION_VAL_4_3_NL NULL
+#define OPTION_VAL_5_4_NL NULL
 #define OPTION_VAL_UNCORRECTED_NL NULL
 #define NESTOPIA_AUDIO_FILTER_LABEL_NL NULL
 #define NESTOPIA_AUDIO_FILTER_INFO_0_NL NULL
@@ -24667,6 +24722,7 @@ struct retro_core_option_v2_definition option_defs_nl[] = {
          { "ntsc",        OPTION_VAL_NTSC_NL },
          { "pal",         OPTION_VAL_PAL_NL },
          { "4:3",         OPTION_VAL_4_3_NL },
+         { "5:4",         OPTION_VAL_5_4_NL },
          { "uncorrected", OPTION_VAL_UNCORRECTED_NL },
          { NULL, NULL },
       },
@@ -25216,6 +25272,7 @@ struct retro_core_options_v2 options_nl = {
 #define NESTOPIA_ASPECT_LABEL_NO NULL
 #define NESTOPIA_ASPECT_INFO_0_NO NULL
 #define OPTION_VAL_4_3_NO NULL
+#define OPTION_VAL_5_4_NO NULL
 #define OPTION_VAL_UNCORRECTED_NO NULL
 #define NESTOPIA_AUDIO_FILTER_LABEL_NO NULL
 #define NESTOPIA_AUDIO_FILTER_INFO_0_NO NULL
@@ -25564,6 +25621,7 @@ struct retro_core_option_v2_definition option_defs_no[] = {
          { "ntsc",        OPTION_VAL_NTSC_NO },
          { "pal",         OPTION_VAL_PAL_NO },
          { "4:3",         OPTION_VAL_4_3_NO },
+         { "5:4",         OPTION_VAL_5_4_NO },
          { "uncorrected", OPTION_VAL_UNCORRECTED_NO },
          { NULL, NULL },
       },
@@ -26113,6 +26171,7 @@ struct retro_core_options_v2 options_no = {
 #define NESTOPIA_ASPECT_LABEL_OR NULL
 #define NESTOPIA_ASPECT_INFO_0_OR NULL
 #define OPTION_VAL_4_3_OR NULL
+#define OPTION_VAL_5_4_OR NULL
 #define OPTION_VAL_UNCORRECTED_OR NULL
 #define NESTOPIA_AUDIO_FILTER_LABEL_OR NULL
 #define NESTOPIA_AUDIO_FILTER_INFO_0_OR NULL
@@ -26461,6 +26520,7 @@ struct retro_core_option_v2_definition option_defs_or[] = {
          { "ntsc",        OPTION_VAL_NTSC_OR },
          { "pal",         OPTION_VAL_PAL_OR },
          { "4:3",         OPTION_VAL_4_3_OR },
+         { "5:4",         OPTION_VAL_5_4_OR },
          { "uncorrected", OPTION_VAL_UNCORRECTED_OR },
          { NULL, NULL },
       },
@@ -27008,8 +27068,9 @@ struct retro_core_options_v2 options_or = {
 #define NESTOPIA_OVERSCAN_H_LEFT_INFO_0_PL "Maskuj (poziomo) potencjalnie losowe wyjście wideo, które zostałoby ukryte przez krawędź ekranu standardowego telewizora."
 #define NESTOPIA_OVERSCAN_H_RIGHT_LABEL_PL "Maskuj overscan (Prawo w poziomie)"
 #define NESTOPIA_ASPECT_LABEL_PL "Preferowany współczynnik proporcji"
-#define NESTOPIA_ASPECT_INFO_0_PL "Współczynnik proporcji RetroArch'a musi być ustawiony na 'Dostarczany przez rdzeń' w ustawieniach wideo. 'Auto' użyje pliku bazy danych NstDatabase.xml dla autodetekcji proporcji. Jeśli nie ma obecnej bazy danych, będzie to domyślne NTSC."
+#define NESTOPIA_ASPECT_INFO_0_PL NULL
 #define OPTION_VAL_4_3_PL NULL
+#define OPTION_VAL_5_4_PL NULL
 #define OPTION_VAL_UNCORRECTED_PL "Niepoprawione"
 #define NESTOPIA_AUDIO_FILTER_LABEL_PL NULL
 #define NESTOPIA_AUDIO_FILTER_INFO_0_PL NULL
@@ -27358,6 +27419,7 @@ struct retro_core_option_v2_definition option_defs_pl[] = {
          { "ntsc",        OPTION_VAL_NTSC_PL },
          { "pal",         OPTION_VAL_PAL_PL },
          { "4:3",         OPTION_VAL_4_3_PL },
+         { "5:4",         OPTION_VAL_5_4_PL },
          { "uncorrected", OPTION_VAL_UNCORRECTED_PL },
          { NULL, NULL },
       },
@@ -27905,8 +27967,9 @@ struct retro_core_options_v2 options_pl = {
 #define NESTOPIA_OVERSCAN_H_LEFT_INFO_0_PT_BR "Oculta (horizontalmente) a saída de vídeo com defeito aleatório que seria escondida pela moldura ao redor de uma tela de televisão padrão."
 #define NESTOPIA_OVERSCAN_H_RIGHT_LABEL_PT_BR "Ocultar overscan (horizontal direito)"
 #define NESTOPIA_ASPECT_LABEL_PT_BR "Proporção de tela prioritária"
-#define NESTOPIA_ASPECT_INFO_0_PT_BR "É necessário que a proporção de tela do RetroArch esteja definida como \"Fornecido pelo núcleo\" nas configurações de Vídeo. \"Automática\" usará o banco de dados do arquivo NstDatabase.xml para fazer a detecção da proporção de tela. Caso não haja um banco de dados presente, o padrão será NTSC."
+#define NESTOPIA_ASPECT_INFO_0_PT_BR NULL
 #define OPTION_VAL_4_3_PT_BR NULL
+#define OPTION_VAL_5_4_PT_BR NULL
 #define OPTION_VAL_UNCORRECTED_PT_BR "Não corrigida"
 #define NESTOPIA_AUDIO_FILTER_LABEL_PT_BR "Filtro da saída de áudio"
 #define NESTOPIA_AUDIO_FILTER_INFO_0_PT_BR "Assemelha a fase analógica do DAC no hardware original, aplicando uma primeira ordem de passa-alta de 220 Hz e uma primeira ordem de passa-baixo de 14 kHz à saída mesclada. Remove o deslocamento DC que o mixer integra e reduz o agudo máximo."
@@ -28255,6 +28318,7 @@ struct retro_core_option_v2_definition option_defs_pt_br[] = {
          { "ntsc",        OPTION_VAL_NTSC_PT_BR },
          { "pal",         OPTION_VAL_PAL_PT_BR },
          { "4:3",         OPTION_VAL_4_3_PT_BR },
+         { "5:4",         OPTION_VAL_5_4_PT_BR },
          { "uncorrected", OPTION_VAL_UNCORRECTED_PT_BR },
          { NULL, NULL },
       },
@@ -28804,6 +28868,7 @@ struct retro_core_options_v2 options_pt_br = {
 #define NESTOPIA_ASPECT_LABEL_PT_PT NULL
 #define NESTOPIA_ASPECT_INFO_0_PT_PT NULL
 #define OPTION_VAL_4_3_PT_PT NULL
+#define OPTION_VAL_5_4_PT_PT NULL
 #define OPTION_VAL_UNCORRECTED_PT_PT NULL
 #define NESTOPIA_AUDIO_FILTER_LABEL_PT_PT NULL
 #define NESTOPIA_AUDIO_FILTER_INFO_0_PT_PT NULL
@@ -29152,6 +29217,7 @@ struct retro_core_option_v2_definition option_defs_pt_pt[] = {
          { "ntsc",        OPTION_VAL_NTSC_PT_PT },
          { "pal",         OPTION_VAL_PAL_PT_PT },
          { "4:3",         OPTION_VAL_4_3_PT_PT },
+         { "5:4",         OPTION_VAL_5_4_PT_PT },
          { "uncorrected", OPTION_VAL_UNCORRECTED_PT_PT },
          { NULL, NULL },
       },
@@ -29699,8 +29765,9 @@ struct retro_core_options_v2 options_pt_pt = {
 #define NESTOPIA_OVERSCAN_H_LEFT_INFO_0_RU "Маскирует (по горизонтали) возможное искажение графики, которое в телевизорах стандартной чёткости скрыто рамкой по краям экрана."
 #define NESTOPIA_OVERSCAN_H_RIGHT_LABEL_RU "Скрывать вылеты развёртки (справа)"
 #define NESTOPIA_ASPECT_LABEL_RU "Предпочтительное соотношение сторон"
-#define NESTOPIA_ASPECT_INFO_0_RU "Перейдите в настройки видео и установите для соотношения сторон RetroArch значение 'По выбору ядра'. В режиме 'Авто' соотношение сторон устанавливается по базе данных NstDatabase.xml. Если файл с базой данных отсутствует, по умолчанию будет использоваться NTSC."
+#define NESTOPIA_ASPECT_INFO_0_RU NULL
 #define OPTION_VAL_4_3_RU NULL
+#define OPTION_VAL_5_4_RU NULL
 #define OPTION_VAL_UNCORRECTED_RU "Без коррекции"
 #define NESTOPIA_AUDIO_FILTER_LABEL_RU NULL
 #define NESTOPIA_AUDIO_FILTER_INFO_0_RU NULL
@@ -30049,6 +30116,7 @@ struct retro_core_option_v2_definition option_defs_ru[] = {
          { "ntsc",        OPTION_VAL_NTSC_RU },
          { "pal",         OPTION_VAL_PAL_RU },
          { "4:3",         OPTION_VAL_4_3_RU },
+         { "5:4",         OPTION_VAL_5_4_RU },
          { "uncorrected", OPTION_VAL_UNCORRECTED_RU },
          { NULL, NULL },
       },
@@ -30596,8 +30664,9 @@ struct retro_core_options_v2 options_ru = {
 #define NESTOPIA_OVERSCAN_H_LEFT_INFO_0_SK "Maskovať (horizontálne) potenciálne náhodný chybný video výstup, ktorý by bol skrytý rámčekom okolo okraja obrazovky štandardného televízora."
 #define NESTOPIA_OVERSCAN_H_RIGHT_LABEL_SK "Maskovať overscan (pravý horizontálny)"
 #define NESTOPIA_ASPECT_LABEL_SK "Preferovaný pomer strán"
-#define NESTOPIA_ASPECT_INFO_0_SK "Pomer strán RetroArchu musí byť v nastaveniach videa nastavený na 'Core Provided'. 'Auto' použije databázový súbor NstDatabase.xml na automatické zistenie pomeru strán. Ak databáza neexistuje, predvolí sa na NTSC."
+#define NESTOPIA_ASPECT_INFO_0_SK NULL
 #define OPTION_VAL_4_3_SK NULL
+#define OPTION_VAL_5_4_SK NULL
 #define OPTION_VAL_UNCORRECTED_SK "Neopravené"
 #define NESTOPIA_AUDIO_FILTER_LABEL_SK NULL
 #define NESTOPIA_AUDIO_FILTER_INFO_0_SK NULL
@@ -30946,6 +31015,7 @@ struct retro_core_option_v2_definition option_defs_sk[] = {
          { "ntsc",        OPTION_VAL_NTSC_SK },
          { "pal",         OPTION_VAL_PAL_SK },
          { "4:3",         OPTION_VAL_4_3_SK },
+         { "5:4",         OPTION_VAL_5_4_SK },
          { "uncorrected", OPTION_VAL_UNCORRECTED_SK },
          { NULL, NULL },
       },
@@ -31495,6 +31565,7 @@ struct retro_core_options_v2 options_sk = {
 #define NESTOPIA_ASPECT_LABEL_SR NULL
 #define NESTOPIA_ASPECT_INFO_0_SR NULL
 #define OPTION_VAL_4_3_SR NULL
+#define OPTION_VAL_5_4_SR NULL
 #define OPTION_VAL_UNCORRECTED_SR NULL
 #define NESTOPIA_AUDIO_FILTER_LABEL_SR NULL
 #define NESTOPIA_AUDIO_FILTER_INFO_0_SR NULL
@@ -31843,6 +31914,7 @@ struct retro_core_option_v2_definition option_defs_sr[] = {
          { "ntsc",        OPTION_VAL_NTSC_SR },
          { "pal",         OPTION_VAL_PAL_SR },
          { "4:3",         OPTION_VAL_4_3_SR },
+         { "5:4",         OPTION_VAL_5_4_SR },
          { "uncorrected", OPTION_VAL_UNCORRECTED_SR },
          { NULL, NULL },
       },
@@ -32341,14 +32413,14 @@ struct retro_core_options_v2 options_sr = {
 #define CATEGORY_INPUT_INFO_0_SV "Ändra inmatningsenheter och andra ingångsrelaterade inställningar."
 #define CATEGORY_HACKS_LABEL_SV "Emulatorhack"
 #define CATEGORY_HACKS_INFO_0_SV "Ändra inställningar för processor-överklockning och emuleringsnoggrannhet som påverkar lågnivåprestanda och kompatibilitet."
-#define NESTOPIA_FAVORED_SYSTEM_LABEL_SV NULL
-#define NESTOPIA_FAVORED_SYSTEM_INFO_0_SV NULL
+#define NESTOPIA_FAVORED_SYSTEM_LABEL_SV "Föredraget system"
+#define NESTOPIA_FAVORED_SYSTEM_INFO_0_SV "System att föredra för skivavbilder som inte anger vilket de vill ha. Skivavbilder som gör det och skivavbilder som finns i databasfilen NstDatabase.xml påverkas inte. Gäller endast när ”Tvinga system” är inställt på ”Automatiskt”. Kräver omstart."
 #define OPTION_VAL_NTSC_SV NULL
 #define OPTION_VAL_PAL_SV NULL
 #define OPTION_VAL_FAMICOM_SV NULL
 #define OPTION_VAL_DENDY_SV NULL
 #define NESTOPIA_FORCE_SYSTEM_LABEL_SV "Tvinga system"
-#define NESTOPIA_FORCE_SYSTEM_INFO_0_SV NULL
+#define NESTOPIA_FORCE_SYSTEM_INFO_0_SV "Ignorera systemet som avbildningen begär och använd detta i stället. Om inställningen ändras startas spelet om."
 #define OPTION_VAL_AUTO_SV NULL
 #define NESTOPIA_FDS_AUTO_INSERT_LABEL_SV "FDS Automatisk Infogning"
 #define NESTOPIA_FDS_AUTO_INSERT_INFO_0_SV "Infoga automatiskt den första FDS-disketten vid återställning."
@@ -32390,11 +32462,12 @@ struct retro_core_options_v2 options_sr = {
 #define NESTOPIA_OVERSCAN_H_LEFT_INFO_0_SV "Dölj (horisontellt) potentiellt slumpmässig och glitchig videoutmatning som skulle ha varit dold av ramen runt kanten av en standardupplöst Tv-skärm."
 #define NESTOPIA_OVERSCAN_H_RIGHT_LABEL_SV "Dölj överskanning (Höger Horisontell)"
 #define NESTOPIA_ASPECT_LABEL_SV "Föredraget bildformat"
-#define NESTOPIA_ASPECT_INFO_0_SV "RetroArchs bildformat måste vara inställt på \"Kärnspecifikt\" i Video-inställningarna. 'Auto' kommer att använda NstDatabase.xml-databasfilen för automatisk bildformatsidentifiering. Om ingen databas finns kommer det att vara som standard NTSC."
+#define NESTOPIA_ASPECT_INFO_0_SV NULL
 #define OPTION_VAL_4_3_SV NULL
+#define OPTION_VAL_5_4_SV NULL
 #define OPTION_VAL_UNCORRECTED_SV "Okorrigerad"
-#define NESTOPIA_AUDIO_FILTER_LABEL_SV NULL
-#define NESTOPIA_AUDIO_FILTER_INFO_0_SV NULL
+#define NESTOPIA_AUDIO_FILTER_LABEL_SV "Ljudutdatafilter"
+#define NESTOPIA_AUDIO_FILTER_INFO_0_SV "Efterlikna det analoga steg som följer efter DAC:en i verklig maskinvara genom att tillämpa ett första ordningens högpassfilter på 220 Hz och ett första ordningens lågpassfilter på 14 kHz på mixen. Detta tar bort likspänningsförskjutningen som mixern ligger på och dämpar den allra högsta diskanten."
 #define NESTOPIA_SHOW_ADVANCED_AV_SETTINGS_LABEL_SV "Visa avancerade ljudinställningar (Öppna menyn på nytt)"
 #define NESTOPIA_SHOW_ADVANCED_AV_SETTINGS_INFO_0_SV "Aktivera konfiguration av lågnivå ljudkanalparametrar."
 #define NESTOPIA_AUDIO_VOL_SQ1_LABEL_SV "Kanalvolym för fyrkant 1 %"
@@ -32441,8 +32514,8 @@ struct retro_core_options_v2 options_sr = {
 #define NESTOPIA_TURBO_PULSE_INFO_0_SV "Ställ in turbo-pulshastigheten för Turbo B och Turbo A-knapparna."
 #define NESTOPIA_NOSPRITELIMIT_LABEL_SV "Ta bort blockfigursgräns"
 #define NESTOPIA_NOSPRITELIMIT_INFO_0_SV "Ta bort hårdvarubegränsningen på 8 spritar per skanningslinje."
-#define NESTOPIA_DMC_POP_REDUCER_LABEL_SV NULL
-#define NESTOPIA_DMC_POP_REDUCER_INFO_0_SV NULL
+#define NESTOPIA_DMC_POP_REDUCER_LABEL_SV "DMC-klickreducering"
+#define NESTOPIA_DMC_POP_REDUCER_INFO_0_SV "Halverar stora direkta skrivningar till DMC-nivån, som annars \hörs som klick. Ger sämre precision och dämpar samplingar som strömmas genom \$4011 med stora svängningar."
 #define NESTOPIA_GENIE_DISTORTION_LABEL_SV "Game Genie ljudförvrängning"
 #define NESTOPIA_GENIE_DISTORTION_INFO_0_SV "Game Genie-fuskutrustningen kunde oavsiktligt införa ljudförvrängning i spel. Genom att aktivera detta kan du simulera den ljud-förvrängningen som skulle kunna läggas till i spelet."
 #define NESTOPIA_RAM_POWER_STATE_LABEL_SV "RAM-uppstartsstatus"
@@ -32740,6 +32813,7 @@ struct retro_core_option_v2_definition option_defs_sv[] = {
          { "ntsc",        OPTION_VAL_NTSC_SV },
          { "pal",         OPTION_VAL_PAL_SV },
          { "4:3",         OPTION_VAL_4_3_SV },
+         { "5:4",         OPTION_VAL_5_4_SV },
          { "uncorrected", OPTION_VAL_UNCORRECTED_SV },
          { NULL, NULL },
       },
@@ -33287,8 +33361,9 @@ struct retro_core_options_v2 options_sv = {
 #define NESTOPIA_OVERSCAN_H_LEFT_INFO_0_TH "ซ่อนส่วนขอบภาพ (ตามแนวนอน) เพื่อปิดรอยหยักหรือสัญญาณรบกวนที่ปรกติจะถูกขอบจอทีวีรุ่นเก่าบดบังไว้"
 #define NESTOPIA_OVERSCAN_H_RIGHT_LABEL_TH "ซ่อนส่วนขอบภาพ (ด้านขวา)"
 #define NESTOPIA_ASPECT_LABEL_TH "อัตราส่วนภาพที่ต้องการ"
-#define NESTOPIA_ASPECT_INFO_0_TH "ต้องตั้งค่าอัตราส่วนภาพในส่วนวิดีโอของ RetroArch ให้เป็น 'Core Provided' เท่านั้น หากเลือก 'อัตโนมัติ' ระบบจะใช้ไฟล์ NstDatabase.xml ในการตรวจหาอัตราส่วนภาพโดยอัตโนมัติ แต่หากไม่พบไฟล์ฐานข้อมูลดังกล่าว ระบบจะเลือกใช้ค่ามาตรฐาน NTSC แทน"
+#define NESTOPIA_ASPECT_INFO_0_TH NULL
 #define OPTION_VAL_4_3_TH NULL
+#define OPTION_VAL_5_4_TH NULL
 #define OPTION_VAL_UNCORRECTED_TH "ไม่ได้ปรับแก้"
 #define NESTOPIA_AUDIO_FILTER_LABEL_TH NULL
 #define NESTOPIA_AUDIO_FILTER_INFO_0_TH NULL
@@ -33637,6 +33712,7 @@ struct retro_core_option_v2_definition option_defs_th[] = {
          { "ntsc",        OPTION_VAL_NTSC_TH },
          { "pal",         OPTION_VAL_PAL_TH },
          { "4:3",         OPTION_VAL_4_3_TH },
+         { "5:4",         OPTION_VAL_5_4_TH },
          { "uncorrected", OPTION_VAL_UNCORRECTED_TH },
          { NULL, NULL },
       },
@@ -34184,8 +34260,9 @@ struct retro_core_options_v2 options_th = {
 #define NESTOPIA_OVERSCAN_H_LEFT_INFO_0_TR "Standart tanımlı bir televizyon ekranının kenarındaki çerçeve tarafından gizlenmiş olabilecek potansiyel olarak rastgele hatalı video çıkışını (yatay olarak) maskeleyin."
 #define NESTOPIA_OVERSCAN_H_RIGHT_LABEL_TR "Aşırı Taramayı Maskele (Sağ Yatay)"
 #define NESTOPIA_ASPECT_LABEL_TR "Tercih Edilen En Boy Oranı"
-#define NESTOPIA_ASPECT_INFO_0_TR "RetroArch en boy oranı, Video ayarlarında 'Çekirdeğe Özgü' olarak ayarlanmalıdır. 'Otomatik', en boy oranı otomatik algılaması için NstDatabase.xml veritabanı dosyasını kullanır. Mevcut bir veritabanı yoksa, varsayılan olarak NTSC olacaktır."
+#define NESTOPIA_ASPECT_INFO_0_TR NULL
 #define OPTION_VAL_4_3_TR NULL
+#define OPTION_VAL_5_4_TR NULL
 #define OPTION_VAL_UNCORRECTED_TR "Düzeltilmemiş"
 #define NESTOPIA_AUDIO_FILTER_LABEL_TR NULL
 #define NESTOPIA_AUDIO_FILTER_INFO_0_TR NULL
@@ -34534,6 +34611,7 @@ struct retro_core_option_v2_definition option_defs_tr[] = {
          { "ntsc",        OPTION_VAL_NTSC_TR },
          { "pal",         OPTION_VAL_PAL_TR },
          { "4:3",         OPTION_VAL_4_3_TR },
+         { "5:4",         OPTION_VAL_5_4_TR },
          { "uncorrected", OPTION_VAL_UNCORRECTED_TR },
          { NULL, NULL },
       },
@@ -35083,6 +35161,7 @@ struct retro_core_options_v2 options_tr = {
 #define NESTOPIA_ASPECT_LABEL_TT NULL
 #define NESTOPIA_ASPECT_INFO_0_TT NULL
 #define OPTION_VAL_4_3_TT NULL
+#define OPTION_VAL_5_4_TT NULL
 #define OPTION_VAL_UNCORRECTED_TT NULL
 #define NESTOPIA_AUDIO_FILTER_LABEL_TT NULL
 #define NESTOPIA_AUDIO_FILTER_INFO_0_TT NULL
@@ -35431,6 +35510,7 @@ struct retro_core_option_v2_definition option_defs_tt[] = {
          { "ntsc",        OPTION_VAL_NTSC_TT },
          { "pal",         OPTION_VAL_PAL_TT },
          { "4:3",         OPTION_VAL_4_3_TT },
+         { "5:4",         OPTION_VAL_5_4_TT },
          { "uncorrected", OPTION_VAL_UNCORRECTED_TT },
          { NULL, NULL },
       },
@@ -35978,8 +36058,9 @@ struct retro_core_options_v2 options_tt = {
 #define NESTOPIA_OVERSCAN_H_LEFT_INFO_0_UK "Маскування (по горизонталі) потенційно випадкових збоїв вихідного відеосигналу, які були б приховані рамкою по краю телевізійного екрана стандартної чіткості."
 #define NESTOPIA_OVERSCAN_H_RIGHT_LABEL_UK "Маска Пересканування (Праворуч по Горизонталі)"
 #define NESTOPIA_ASPECT_LABEL_UK "Бажане співвідношення сторін"
-#define NESTOPIA_ASPECT_INFO_0_UK "Співвідношення сторін RetroArch має бути встановлено як ЯДРО, указане в налаштуваннях відео. 'Авто' використовуватиме файл бази даних NstDatabase.xml для автоматичного визначення співвідношення сторін. Якщо база даних відсутня, за замовчуванням буде встановлено NTSC."
+#define NESTOPIA_ASPECT_INFO_0_UK NULL
 #define OPTION_VAL_4_3_UK NULL
+#define OPTION_VAL_5_4_UK NULL
 #define OPTION_VAL_UNCORRECTED_UK "Не коректне"
 #define NESTOPIA_AUDIO_FILTER_LABEL_UK "Фільтр аудіовиходу"
 #define NESTOPIA_AUDIO_FILTER_INFO_0_UK "Імітуйте аналоговий каскад, що йде за ЦАП на реальному апаратному забезпеченні, застосувавши до змішаного вихідного сигналу фільтр високих частот першого порядку з частотою 220 Гц та фільтр низьких частот першого порядку з частотою 14 кГц. Це усуває постійне зміщення, на якому працює змішувач, та згладжує крайні високі частоти."
@@ -36328,6 +36409,7 @@ struct retro_core_option_v2_definition option_defs_uk[] = {
          { "ntsc",        OPTION_VAL_NTSC_UK },
          { "pal",         OPTION_VAL_PAL_UK },
          { "4:3",         OPTION_VAL_4_3_UK },
+         { "5:4",         OPTION_VAL_5_4_UK },
          { "uncorrected", OPTION_VAL_UNCORRECTED_UK },
          { NULL, NULL },
       },
@@ -36877,6 +36959,7 @@ struct retro_core_options_v2 options_uk = {
 #define NESTOPIA_ASPECT_LABEL_VAL NULL
 #define NESTOPIA_ASPECT_INFO_0_VAL NULL
 #define OPTION_VAL_4_3_VAL NULL
+#define OPTION_VAL_5_4_VAL NULL
 #define OPTION_VAL_UNCORRECTED_VAL NULL
 #define NESTOPIA_AUDIO_FILTER_LABEL_VAL NULL
 #define NESTOPIA_AUDIO_FILTER_INFO_0_VAL NULL
@@ -37225,6 +37308,7 @@ struct retro_core_option_v2_definition option_defs_val[] = {
          { "ntsc",        OPTION_VAL_NTSC_VAL },
          { "pal",         OPTION_VAL_PAL_VAL },
          { "4:3",         OPTION_VAL_4_3_VAL },
+         { "5:4",         OPTION_VAL_5_4_VAL },
          { "uncorrected", OPTION_VAL_UNCORRECTED_VAL },
          { NULL, NULL },
       },
@@ -37772,8 +37856,9 @@ struct retro_core_options_v2 options_val = {
 #define NESTOPIA_OVERSCAN_H_LEFT_INFO_0_VN "Che (theo chiều ngang) phần hình ảnh lỗi hoặc nhiễu ngẫu nhiên mà trên Tv độ phân giải tiêu chuẩn vốn đã bị viền khung máy che khuất."
 #define NESTOPIA_OVERSCAN_H_RIGHT_LABEL_VN "Rìa ngoài bị che (Phải – Ngang)"
 #define NESTOPIA_ASPECT_LABEL_VN "Tỷ lệ khung hình ưu tiên"
-#define NESTOPIA_ASPECT_INFO_0_VN "Tỷ lệ khung hình của RetroArch phải được đặt là 'Trình giả lập Provided' trong cài đặt Video.'Auto' sẽ dùng tệp cơ sở dữ liệu NstDatabase.xml để tự động nhận diện tỷ lệ khung hình.Nếu không có cơ sở dữ liệu, tỷ lệ sẽ mặc định là NTSC."
+#define NESTOPIA_ASPECT_INFO_0_VN NULL
 #define OPTION_VAL_4_3_VN NULL
+#define OPTION_VAL_5_4_VN NULL
 #define OPTION_VAL_UNCORRECTED_VN "Chưa hiệu chỉnh"
 #define NESTOPIA_AUDIO_FILTER_LABEL_VN "Bộ lọc ngõ ra âm thanh"
 #define NESTOPIA_AUDIO_FILTER_INFO_0_VN "Mô phỏng tầng mạch analog nằm sau bộ chuyển đổi DAC trên phần cứng thực tế, bằng cách áp dụng bộ lọc thông cao bậc một 220Hz và bộ lọc thông thấp bậc một 14kHz cho tín hiệu âm thanh sau khi trộn. Điều này loại bỏ độ lệch DC mà bộ trộn tạo ra và giảm bớt các dải âm cao nhất."
@@ -38122,6 +38207,7 @@ struct retro_core_option_v2_definition option_defs_vn[] = {
          { "ntsc",        OPTION_VAL_NTSC_VN },
          { "pal",         OPTION_VAL_PAL_VN },
          { "4:3",         OPTION_VAL_4_3_VN },
+         { "5:4",         OPTION_VAL_5_4_VN },
          { "uncorrected", OPTION_VAL_UNCORRECTED_VN },
          { NULL, NULL },
       },

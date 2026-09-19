@@ -35,11 +35,6 @@
 
 #define ASPECT_NTSC (8.0 / 7.0)
 #define ASPECT_PAL (7375000.0 / 5320342.5)
-/* nes_ntsc is written to be shown with its output pixels square and its
- * lines doubled, which is a horizontal stretch of 49/48 over the PPU's
- * own pixel aspect.  blargg documents the output as roughly 3% too wide
- * and leaves it that way, so it is part of what the filter looks like. */
-#define ASPECT_FILTER_STRETCH (49.0 / 48.0)
 #define SAMPLERATE 48000
 
 #define RETRO_DEVICE_AUTO RETRO_DEVICE_JOYPAD
@@ -658,10 +653,11 @@ double get_aspect_ratio(void)
    /* Width of the frame measured in PPU pixels.  A filtered frame is
     * 7/3 as wide as the picture it carries, and 602 of them is 258 PPU
     * pixels: the 256 rendered ones and the two the filter pads the row
-    * with.  The stretch the filter applies on top of that is kept, so
-    * that a filtered frame is shown the way nes_ntsc intends. */
-   double aspect_w = blargg_ntsc ?
-      (w * 3.0 * ASPECT_FILTER_STRETCH) / 7.0 : w;
+    * with.  Measured against a real frame, the centre of PPU pixel x
+    * lands at column 2.3334x + 3.8, so taking the width back to PPU
+    * pixels this way gives a filtered frame the same pixel aspect as an
+    * unfiltered one. */
+   double aspect_w = blargg_ntsc ? (w * 3.0) / 7.0 : w;
 
    switch (aspect_ratio_mode)
    {

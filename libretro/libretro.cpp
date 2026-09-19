@@ -771,16 +771,26 @@ void retro_set_video_refresh(retro_video_refresh_t cb)
    video_cb = cb;
 }
 
+/* An FDS game needs its disk put back in after the machine is reset or
+ * power cycled.  The core keeps the same disk current across that, so
+ * InsertDisk() on its own is a no-op and the BIOS comes up waiting at the
+ * insert screen; ejecting first is what makes it a fresh insertion. */
+static void fds_reinsert_disk(void)
+{
+   if (!fds || !machine || !machine->Is(Nes::Api::Machine::DISK))
+      return;
+
+   fds->EjectDisk();
+
+   if (fds_auto_insert)
+      fds->InsertDisk(0, 0);
+}
+
 void retro_reset(void)
 {
    machine->Reset(false);
 
-   if (machine->Is(Nes::Api::Machine::DISK))
-   {
-      fds->EjectDisk();
-      if (fds_auto_insert)
-         fds->InsertDisk(0, 0);
-   }
+   fds_reinsert_disk();
 
    if (is_nsf)
    {
@@ -1219,10 +1229,18 @@ static void check_variables(void)
    machine.SetSystemForced(forcesys != 0);
 
    /* A forced system dictates the region, otherwise the image does */
-   if (forcesys)
-      machine.SetMode((favsystem & 0x1) ? Api::Machine::PAL : Api::Machine::NTSC);
-   else
-      machine.SetMode(machine.GetDesiredMode());
+   Api::Machine::Mode mode = forcesys ?
+      ((favsystem & 0x1) ? Api::Machine::PAL : Api::Machine::NTSC) :
+      machine.GetDesiredMode();
+
+   /* Switching region on a running machine power cycles it, which drops an
+    * FDS game back to the BIOS screen unless its disk goes in again.  The
+    * machine is still off the first time through, where the disk has not
+    * been inserted yet and retro_load_game() does it instead. */
+   bool region_switched = (mode != machine.GetMode()) &&
+      machine.Is(Api::Machine::ON);
+
+   machine.SetMode(mode);
 
    is_pal = (machine.GetMode() == Api::Machine::PAL);
    if (audio) delete audio;
@@ -1702,6 +1720,9 @@ static void check_variables(void)
          machine.SetRamPowerState(2);
    }
 
+   /* Last, so that it acts on the FDS Auto Insert setting read above */
+   if (region_switched)
+      fds_reinsert_disk();
 }
 
 void retro_run(void)
@@ -1986,6 +2007,9 @@ static void reload_image(void)
    machine->Power(true);
    set_memory_map();
    check_variables();
+
+   /* A freshly loaded image comes up with an empty drive */
+   fds_reinsert_disk();
 }
 
 bool retro_load_game(const struct retro_game_info *info)

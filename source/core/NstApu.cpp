@@ -2607,17 +2607,15 @@ namespace Nes
 					++haltDelay;
 			}
 
-			/* Reloads take halt + dummy + alignment + get (4) from their normal
-			 * put-phase halt, one less when a write delay flips the parity.
+			/* After the halt comes the dummy cycle and then the get, with an
+			 * alignment cycle in between whenever the get would otherwise
+			 * land on a put. The cost is therefore fixed by which half of
+			 * the APU cycle the halt itself lands on: 3 from a get, 4 from
+			 * a put. Loads schedule their halt on a get and reloads on a
+			 * put, and every write cycle the halt sits out moves it to the
+			 * other half.
 			*/
 			uint cyclesToSteal = ((haltParity + haltDelay) & 1) ? 3 : 4;
-
-			/* Loads always take halt + dummy + fetch (3): the transfer start
-			 * delay already aligned the sequence, write delays don't add the
-			 * alignment cycle back.
-			*/
-			if (haltParity)
-				cyclesToSteal = 3;
 
 			if (cpu.GetOamDMA())
 			{
@@ -2851,6 +2849,31 @@ namespace Nes
 			if (dmc.HasPendingLoad() && dmc.GetLoadClock() + cpu.GetClock(2) <= target)
 			{
 				const Cycle halt = dmc.GetLoadClock() + cpu.GetClock(2);
+
+				/* RDY is sampled only on read cycles, so a halt attempt
+				 * landing on a CPU write is retried on the next cycle while
+				 * the write itself completes on schedule. Arriving here from
+				 * that write's own bus access means it has not been committed
+				 * yet, and stealing now would drag it along with the transfer.
+				 * Walk the run of write cycles the halt has to sit out: if it
+				 * reaches past the current cycle then the CPU has not been
+				 * halted yet, so leave the transfer pending for the retry
+				 * cycle to claim. During an OAM DMA the CPU runs no write
+				 * cycles of its own.
+				*/
+				if (!cpu.GetOamDMA())
+				{
+					Cycle start = halt;
+
+					for (uint delay=0; delay < 3 && start <= cpu.GetCycles() && cpu.IsWriteCycle( start ); ++delay)
+						start += cpu.GetClock();
+
+					if (start > cpu.GetCycles())
+					{
+						cpu.WakeAt( start );
+						return;
+					}
+				}
 
 				/* A DMC output clock due at or before the load's sample fetch
 				 * happens first: an empty buffer at that clock stays empty

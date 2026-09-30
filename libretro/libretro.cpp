@@ -2380,23 +2380,35 @@ bool retro_serialize(void *data, size_t size)
    *tracked_input_state_ptr++ = 0;
    *tracked_input_state_ptr++ = 0;
 
+   /* The state can be shorter than retro_serialize_size(): the PPU's POW
+    * chunk only exists until the power-on window closes.  Clear the rest
+    * rather than hand back whatever the buffer held. */
+   memset(tracked_input_state_ptr, 0,
+      reinterpret_cast<unsigned char*>(data) + size - tracked_input_state_ptr);
+
    return true;
 }
 
 bool retro_unserialize(const void *data, size_t size)
 {
-   // Footer size detection: current states carry the full footer,
-   // states from the 8-byte-footer era carry 4 bytes less, and legacy
-   // states carry no footer at all.
-   size_t expected = retro_serialize_size();
-   size_t footer   = 0;
+   // The footer follows the "NST\x1A" chunk, not the end of the buffer:
+   // a state saved after the power-on window is shorter than the size the
+   // frontend asked for at load, and the rest is padding (or, from older
+   // builds, whatever the buffer held).  Current states carry the full
+   // footer, states from the 8-byte-footer era carry 4 bytes less, and
+   // legacy states carry no footer at all.
+   const unsigned char *bytes = reinterpret_cast<const unsigned char*>(data);
 
-   if (size >= expected)
-      footer = tracked_input_state_size_bytes;
-   else if (size + 4 >= expected)
-      footer = tracked_input_state_size_bytes - 4;
+   if (size < 8 || memcmp(bytes, "NST\x1A", 4) != 0)
+      return false;
 
-   size_t nestopia_savestate_size = size - footer;
+   size_t nestopia_savestate_size = 8 +
+      (bytes[4] | bytes[5] << 8 | bytes[6] << 16 | (size_t)bytes[7] << 24);
+
+   if (nestopia_savestate_size > size)
+      return false;
+
+   size_t footer = size - nestopia_savestate_size;
 
    std::stringstream ss(std::string(reinterpret_cast<const char*>(data),
       reinterpret_cast<const char*>(data) + nestopia_savestate_size));

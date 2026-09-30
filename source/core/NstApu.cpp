@@ -1765,8 +1765,12 @@ namespace Nes
 			}
 		}
 
+		/* $4008 powers up as 0. Reset() leaves linearCtrl alone, as a soft
+		 * reset does, so without this the register holds whatever the heap
+		 * did until the game first writes it.
+		*/
 		Apu::Triangle::Triangle()
-		: outputVolume(0) {}
+		: outputVolume(0), linearCtrl(0) {}
 
 		void Apu::Triangle::Reset()
 		{

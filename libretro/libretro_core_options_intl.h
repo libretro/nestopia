@@ -27019,14 +27019,14 @@ struct retro_core_options_v2 options_or = {
 #define CATEGORY_INPUT_INFO_0_PL "Zmień urządzenia wejściowe i inne ustawienia związane z wprowadzaniem."
 #define CATEGORY_HACKS_LABEL_PL "Hacki emulacyjne"
 #define CATEGORY_HACKS_INFO_0_PL "Zmiana ustawień przetaktowania procesora i dokładności emulacji wpływająca na niską wydajność i kompatybilność."
-#define NESTOPIA_FAVORED_SYSTEM_LABEL_PL NULL
-#define NESTOPIA_FAVORED_SYSTEM_INFO_0_PL NULL
+#define NESTOPIA_FAVORED_SYSTEM_LABEL_PL "Preferowany system"
+#define NESTOPIA_FAVORED_SYSTEM_INFO_0_PL "System dla Obrazów, które nie opisują, jaki chcą. Obrazy, które mówią i obrazy znalezione w pliku bazy danych NstDatabase.xml nie ulegną zmianie. Ma zastosowanie gdy 'Wymuś system' jest ustawione na 'Auto'. Wymaga restartu."
 #define OPTION_VAL_NTSC_PL NULL
 #define OPTION_VAL_PAL_PL NULL
 #define OPTION_VAL_FAMICOM_PL NULL
 #define OPTION_VAL_DENDY_PL NULL
-#define NESTOPIA_FORCE_SYSTEM_LABEL_PL NULL
-#define NESTOPIA_FORCE_SYSTEM_INFO_0_PL NULL
+#define NESTOPIA_FORCE_SYSTEM_LABEL_PL "Wymuś system"
+#define NESTOPIA_FORCE_SYSTEM_INFO_0_PL "Ignoruj system, o który prosi obraz i użyj tego systemu. Zmiana tego ustawienia zrestartuje grę."
 #define OPTION_VAL_AUTO_PL NULL
 #define NESTOPIA_FDS_AUTO_INSERT_LABEL_PL "Automatyczne wkładanie FDS"
 #define NESTOPIA_FDS_AUTO_INSERT_INFO_0_PL "Automatycznie wkładaj pierwszy dysk FDS po zresetowaniu."
@@ -30615,14 +30615,14 @@ struct retro_core_options_v2 options_ru = {
 #define CATEGORY_INPUT_INFO_0_SK "Zmeňte vstupné zariadenia a ďalšie nastavenia týkajúce sa vstupu."
 #define CATEGORY_HACKS_LABEL_SK "Emulačné hacky"
 #define CATEGORY_HACKS_INFO_0_SK "Zmeňte nastavenia pretaktovania procesora a presnosti emulácie ovplyvňujúce nízkoúrovňový výkon a kompatibilitu."
-#define NESTOPIA_FAVORED_SYSTEM_LABEL_SK NULL
-#define NESTOPIA_FAVORED_SYSTEM_INFO_0_SK NULL
+#define NESTOPIA_FAVORED_SYSTEM_LABEL_SK "Preferovaný systém"
+#define NESTOPIA_FAVORED_SYSTEM_INFO_0_SK "Systém, ktorý sa použije pre obrazy, ktoré neurčujú, aký systém chcú. Obrazy, ktoré ho určujú, a obrazy nájdené v databázovom súbore NstDatabase.xml nie sú ovplyvnené. Platí len vtedy, keď je 'Vynútiť systém' nastavené na 'Auto'. Vyžaduje reštart."
 #define OPTION_VAL_NTSC_SK NULL
 #define OPTION_VAL_PAL_SK NULL
 #define OPTION_VAL_FAMICOM_SK NULL
 #define OPTION_VAL_DENDY_SK NULL
-#define NESTOPIA_FORCE_SYSTEM_LABEL_SK NULL
-#define NESTOPIA_FORCE_SYSTEM_INFO_0_SK NULL
+#define NESTOPIA_FORCE_SYSTEM_LABEL_SK "Vynútiť systém"
+#define NESTOPIA_FORCE_SYSTEM_INFO_0_SK "Ignoruje systém, ktorý obraz požaduje, a použije namiesto neho tento. Zmena tohto nastavenia reštartuje hru."
 #define OPTION_VAL_AUTO_SK NULL
 #define NESTOPIA_FDS_AUTO_INSERT_LABEL_SK "Automatické vloženie FDS"
 #define NESTOPIA_FDS_AUTO_INSERT_INFO_0_SK "Automaticky vložiť prvý FDS disk pri resete."
@@ -30664,12 +30664,12 @@ struct retro_core_options_v2 options_ru = {
 #define NESTOPIA_OVERSCAN_H_LEFT_INFO_0_SK "Maskovať (horizontálne) potenciálne náhodný chybný video výstup, ktorý by bol skrytý rámčekom okolo okraja obrazovky štandardného televízora."
 #define NESTOPIA_OVERSCAN_H_RIGHT_LABEL_SK "Maskovať overscan (pravý horizontálny)"
 #define NESTOPIA_ASPECT_LABEL_SK "Preferovaný pomer strán"
-#define NESTOPIA_ASPECT_INFO_0_SK NULL
+#define NESTOPIA_ASPECT_INFO_0_SK "Pomer strán v RetroArchu musí byť v nastaveniach videa nastavený na 'Poskytnuté jadrom'. 'Auto' použije databázový súbor NstDatabase.xml na automatické zistenie regiónu; ak databáza chýba, použije NTSC. 'Auto', 'NTSC' a 'PAL' dávajú obrazu správny pomer strán pixelov, takže sa obraz zužuje, keď sa zväčšuje maska overscanu. '4:3' a '5:4' sú pomery strán displeja a vyplnia tento tvar bez ohľadu na maskovanie. 'Neopravené' dáva štvorcové pixely."
 #define OPTION_VAL_4_3_SK NULL
 #define OPTION_VAL_5_4_SK NULL
 #define OPTION_VAL_UNCORRECTED_SK "Neopravené"
-#define NESTOPIA_AUDIO_FILTER_LABEL_SK NULL
-#define NESTOPIA_AUDIO_FILTER_INFO_0_SK NULL
+#define NESTOPIA_AUDIO_FILTER_LABEL_SK "Výstupný zvukový filter"
+#define NESTOPIA_AUDIO_FILTER_INFO_0_SK "Napodobňuje analógový stupeň, ktorý na skutočnom hardvéri nasleduje za DAC: na zmiešaný výstup použije hornopriepustný filter prvého rádu 220 Hz a dolnopriepustný filter prvého rádu 14 kHz. Odstráni tým jednosmernú zložku, na ktorej mixér sedí, a utlmí najvyššie výšky."
 #define NESTOPIA_SHOW_ADVANCED_AV_SETTINGS_LABEL_SK "Zobraziť pokročilé nastavenia zvuku (znovu otvorte menu)"
 #define NESTOPIA_SHOW_ADVANCED_AV_SETTINGS_INFO_0_SK "Zapne konfiguráciu nízkoúrovňových parametrov zvukových kanálov."
 #define NESTOPIA_AUDIO_VOL_SQ1_LABEL_SK "Hlasitosť kanálu Square 1 %"
@@ -30716,8 +30716,8 @@ struct retro_core_options_v2 options_ru = {
 #define NESTOPIA_TURBO_PULSE_INFO_0_SK "Nastaví rýchlosť turbo impulzu pre tlačidlá Turbo B a Turbo A."
 #define NESTOPIA_NOSPRITELIMIT_LABEL_SK "Odstrániť limit spritov"
 #define NESTOPIA_NOSPRITELIMIT_INFO_0_SK "Odstrániť hardvérový limit 8 spritov na riadok."
-#define NESTOPIA_DMC_POP_REDUCER_LABEL_SK NULL
-#define NESTOPIA_DMC_POP_REDUCER_INFO_0_SK NULL
+#define NESTOPIA_DMC_POP_REDUCER_LABEL_SK "Tlmenie praskania DMC"
+#define NESTOPIA_DMC_POP_REDUCER_INFO_0_SK "Zmenší na polovicu veľké priame zápisy do úrovne DMC, ktoré by inak \boli počuť ako cvaknutia. Nepresné: stíši vzorky prehrávané cez \$4011 ako veľké výkyvy."
 #define NESTOPIA_GENIE_DISTORTION_LABEL_SK "Skreslenie zvuku Game Genie"
 #define NESTOPIA_GENIE_DISTORTION_INFO_0_SK "Cheat zariadenie Game Genie mohlo nechcene spôsobiť skreslenie zvuku v hrách. Zapnutím môžete simulovať skreslenie, ktoré by pridalo k zvuku hry."
 #define NESTOPIA_RAM_POWER_STATE_LABEL_SK "Stav RAM po zapnutí"
@@ -37901,7 +37901,7 @@ struct retro_core_options_v2 options_val = {
 #define OPTION_VAL_ARKANOIDII_VN "Phạm vi bộ điều khiển Arkanoid II (32-153)"
 #define NESTOPIA_ZAPPER_DEVICE_LABEL_VN "Thiết bị Zapper"
 #define NESTOPIA_ZAPPER_DEVICE_INFO_0_VN "Chọn thiết bị bạn muốn sử dụng cho súng Zapper."
-#define OPTION_VAL_LIGHTGUN_VN "Súng ánh sáng"
+#define OPTION_VAL_LIGHTGUN_VN "Súng quang"
 #define NESTOPIA_SHOW_CROSSHAIR_LABEL_VN "Hiển thị Tâm Ngắm"
 #define NESTOPIA_SHOW_CROSSHAIR_INFO_0_VN "Chọn có hiển thị tâm ngắm khi sử dụng Zapper hay không."
 #define NESTOPIA_TURBO_PULSE_LABEL_VN "Tốc độ xung Tự động nhấn"

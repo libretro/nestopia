@@ -518,7 +518,12 @@ namespace Nes
 
 					case AsciiId<'P','O','W'>::V:
 
+						/* Reset() clears the screen and the boot frame draws
+						 * nothing, so the first frame after this load shows a
+						 * cleared screen too, not the last one before it.
+						*/
 						cycles.hClock = HCLOCK_BOOT;
+						screen.Clear();
 						break;
 				}
 

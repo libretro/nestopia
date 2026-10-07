@@ -145,6 +145,12 @@ namespace Nes
 		apu   ( *this ),
 		map   ( this, &Cpu::Peek_Overflow, &Cpu::Poke_Overflow )
 		{
+			/* All zeros until SetRamPowerState() says otherwise: the reset
+			 * below fills the RAM from it, and a frontend that does not set
+			 * the option never calls it.
+			*/
+			ram.powerstate = 0;
+
 			cycles.UpdateTable( GetModel() );
 			Reset( false, false );
 		}

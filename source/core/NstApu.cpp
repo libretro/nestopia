@@ -729,12 +729,16 @@ namespace Nes
 				state.End();
 			}
 
-			if (ctrl != STATUS_FRAME_IRQ_ENABLE)
+			/* An inhibited 4-step sequence keeps its IRQ clock running - the
+			 * flag still reads set for two cycles - so an IRQ chunk saved with
+			 * $4017.6 set is kept as it is. Only the 5-step sequence has none.
+			*/
+			if (ctrl & STATUS_SEQUENCE_5_STEP)
 			{
 				cycles.frameIrqClock = Cpu::CYCLE_MAX;
 				cycles.frameIrqRepeat = 0;
 			}
-			else if (cycles.frameIrqClock == Cpu::CYCLE_MAX)
+			else if (ctrl == STATUS_FRAME_IRQ_ENABLE && cycles.frameIrqClock == Cpu::CYCLE_MAX)
 			{
 				cycles.frameIrqClock = (cycles.frameCounter / cycles.fixed) + (3 - cycles.frameDivider) * (Cycles::frameClocks[cpu.GetModel()][0] / 4);
 				cycles.frameIrqRepeat = 0;

@@ -611,6 +611,18 @@ namespace Nes
 				state.Begin( AsciiId<'S','0','0'>::V ).Write( data ).End();
 			}
 
+			/* The sample in progress outlives the frame, so a state saved
+			 * between frames usually lands part way through one. The period
+			 * goes with it: the sums are only meaningful at the rate that
+			 * built them.
+			*/
+			state.Begin( AsciiId<'S','0','1'>::V )
+				.Write32( cycles.rate )
+				.Write32( cycles.sampleSpan )
+				.Write64( cycles.sampleSum )
+				.Write64( cycles.sampleNext )
+			.End();
+
 			state.End();
 		}
 
@@ -722,6 +734,23 @@ namespace Nes
 						cycles.sampleSum = 0;
 						cycles.sampleNext = 0;
 						cycles.sampleSpan = 0;
+						break;
+					}
+
+					case AsciiId<'S','0','1'>::V:
+					{
+						// Written after S00, so this overrides its reset.
+						const dword rate = state.Read32();
+						const dword span = state.Read32();
+						const qaword sum = state.Read64();
+						const qaword next = state.Read64();
+
+						if (rate == cycles.rate && span < rate)
+						{
+							cycles.sampleSpan = span;
+							cycles.sampleSum = sum;
+							cycles.sampleNext = next;
+						}
 						break;
 					}
 				}

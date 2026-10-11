@@ -945,10 +945,12 @@ static void NST_CALLBACK nst_cb_event(void *userdata, Api::User::Event event, co
    // Handle special events
    switch (event) {
       case Api::User::EVENT_CPU_JAM:
-         log_cb(RETRO_LOG_WARN, "Cpu: Jammed.");
+         if (log_cb)
+            log_cb(RETRO_LOG_WARN, "Cpu: Jammed.");
          break;
       case Api::User::EVENT_CPU_UNOFFICIAL_OPCODE:
-         log_cb(RETRO_LOG_DEBUG, "Cpu: Unofficial Opcode %s\n", (const char*)data);
+         if (log_cb)
+            log_cb(RETRO_LOG_DEBUG, "Cpu: Unofficial Opcode %s\n", (const char*)data);
          break;
       case Api::User::EVENT_DISPLAY_TIMER:
          display_msg(RETRO_LOG_INFO, 1000, (const char*)data);

@@ -2274,16 +2274,24 @@ namespace Nes
 
 		void Apu::Dmc::SaveState(State::Saver& state,const dword chunk,const Cpu& cpu,const Cycle dmcMcClock) const
 		{
-			NST_VERIFY( dmcMcClock >= cpu.GetCycles() );
-
+			/* The clock can trail the CPU at the end of a frame, as its halt
+			   is dispatched two cycles after it. REG only holds a lead, so a
+			   lag is carried in LAG.
+			*/
 			dword dmcClock = dmcMcClock;
+			dword lag = 0;
 
 			if (dmcClock > cpu.GetCycles())
+			{
 				dmcClock = (dmcClock - cpu.GetCycles()) / cpu.GetClock();
+			}
 			else
+			{
+				lag = (cpu.GetCycles() - dmcClock) / cpu.GetClock();
 				dmcClock = 0;
+			}
 
-			NST_VERIFY( dmcClock <= 0x1FFF && dmcMcClock == cpu.GetCycles() + dmcClock * cpu.GetClock() );
+			NST_VERIFY( dmcClock <= 0x1FFF && lag <= 0xFF );
 
 			state.Begin( chunk );
 
@@ -2311,6 +2319,8 @@ namespace Nes
 
 				state.Begin( AsciiId<'R','E','G'>::V ).Write( data ).End();
 			}
+
+			state.Begin( AsciiId<'L','A','G'>::V ).Write8( lag ).End();
 
 			{
 				/* Pending DMA scheduling state, as small biased cycle deltas
@@ -2383,6 +2393,8 @@ namespace Nes
 			abortClock = 0;
 			enableClock = 0;
 
+			Cycle lag = 0;
+
 			while (const dword chunk = state.Begin())
 			{
 				switch (chunk)
@@ -2405,6 +2417,11 @@ namespace Nes
 
 						break;
 					}
+
+					case AsciiId<'L','A','G'>::V:
+
+						lag = state.Read8() * cpu.GetClock();
+						break;
 
 					case AsciiId<'D','M','E'>::V:
 					{
@@ -2458,6 +2475,8 @@ namespace Nes
 
 				state.End();
 			}
+
+			dmcClock -= NST_MIN( lag, dmcClock );
 		}
 
 		void Apu::Dmc::RebaseFrame(const Cycle frame)

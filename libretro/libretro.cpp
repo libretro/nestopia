@@ -2362,66 +2362,54 @@ bool retro_serialize(void *data, size_t size)
 
    std::copy(state.begin(), state.end(), reinterpret_cast<char*>(data));
 
-   unsigned char *tracked_input_state_ptr = reinterpret_cast<unsigned char*>(data) + state.size();
-
-   *tracked_input_state_ptr++ = tstate[0];
-   *tracked_input_state_ptr++ = tstate[1];
-   *tracked_input_state_ptr++ = tstate[2];
-   *tracked_input_state_ptr++ = tstate[3];
-   *tracked_input_state_ptr++ = (unsigned char) cur_x;
-   *tracked_input_state_ptr++ = (unsigned char) cur_y;
-   *tracked_input_state_ptr++ = prevL;
-   *tracked_input_state_ptr++ = prevR;
-
-   /* Four bytes that used to carry the audio pacing accumulator.  The
-    * core reports its own per-frame sample count now, so there is
-    * nothing left to carry, but the footer keeps its size so states
-    * stay interchangeable with builds that still write the field. */
-   *tracked_input_state_ptr++ = 0;
-   *tracked_input_state_ptr++ = 0;
-   *tracked_input_state_ptr++ = 0;
-   *tracked_input_state_ptr++ = 0;
+   /* The footer follows the stream. Its last four bytes are reserved, and
+      the stream shrinks once the power-on window closes, so everything
+      after the tracked input is zeroed rather than left as it was.
+   */
+   unsigned char *footer = reinterpret_cast<unsigned char*>(data) + state.size();
+   memcpy(footer, tstate, 4);
+   footer[4] = (unsigned char)cur_x;
+   footer[5] = (unsigned char)cur_y;
+   footer[6] = prevL;
+   footer[7] = prevR;
+   memset(footer + 8, 0, size - state.size() - 8);
 
    return true;
 }
 
 bool retro_unserialize(const void *data, size_t size)
 {
-   // Footer size detection: current states carry the full footer,
-   // states from the 8-byte-footer era carry 4 bytes less, and legacy
-   // states carry no footer at all.
-   size_t expected = retro_serialize_size();
-   size_t footer   = 0;
+   const unsigned char *bytes = reinterpret_cast<const unsigned char*>(data);
 
-   if (size >= expected)
-      footer = tracked_input_state_size_bytes;
-   else if (size + 4 >= expected)
-      footer = tracked_input_state_size_bytes - 4;
+   if (size < 8 || memcmp(bytes, "NST\x1A", 4))
+      return false;
 
-   size_t nestopia_savestate_size = size - footer;
+   /* The footer is found from the stream's own length, not the end of the
+      buffer, which may be padded. States from before 2024 have none.
+   */
+   size_t len = bytes[4] | bytes[5] << 8 | bytes[6] << 16 | (size_t)bytes[7] << 24;
 
-   std::stringstream ss(std::string(reinterpret_cast<const char*>(data),
-      reinterpret_cast<const char*>(data) + nestopia_savestate_size));
+   if (len > size - 8)
+      return false;
 
-   if (footer >= 8) {
-      unsigned char const *tracked_input_state_ptr =
-         reinterpret_cast<unsigned char const*>(data) + nestopia_savestate_size;
-      tstate[0] = *tracked_input_state_ptr++;
-      tstate[1] = *tracked_input_state_ptr++;
-      tstate[2] = *tracked_input_state_ptr++;
-      tstate[3] = *tracked_input_state_ptr++;
-      cur_x  = (int) *tracked_input_state_ptr++;
-      cur_y  = (int) *tracked_input_state_ptr++;
-      prevL  = *tracked_input_state_ptr++;
-      prevR  = *tracked_input_state_ptr++;
+   len += 8;
 
-      /* Bytes 8..11 held the audio pacing accumulator.  Nothing reads
-       * them any more - the core carries the fractional sample itself -
-       * so they are skipped whether they are zeros from this build or a
-       * live value from an older one. */
+   std::stringstream ss(std::string(reinterpret_cast<const char*>(data), len));
+
+   if (machine->LoadState(ss))
+      return false;
+
+   if (size - len >= 8)
+   {
+      const unsigned char *footer = bytes + len;
+      memcpy(tstate, footer, 4);
+      cur_x = footer[4];
+      cur_y = footer[5];
+      prevL = footer[6];
+      prevR = footer[7];
    }
 
-   return !machine->LoadState(ss);
+   return true;
 }
 
 void *retro_get_memory_data(unsigned id)

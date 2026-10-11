@@ -23,7 +23,7 @@
 ////////////////////////////////////////////////////////////////////////////////////////
 
 #include <cstring>
-#include <cstdlib>
+#include <ctime>
 #include "NstCpu.hpp"
 #include "NstHook.hpp"
 #include "NstState.hpp"
@@ -787,7 +787,22 @@ namespace Nes
 		{
 			switch (powerstate) {
 				case 1: std::memset( mem, 0xFF, sizeof(mem) ); break;
-				case 2: std::memset( mem, byte(std::rand()), sizeof(mem) ); break;
+				case 2:
+				{
+					/* A value per byte, from a generator seeded once from the
+					   clock, so each power-on differs. The global rand() was
+					   never seeded, so it filled every byte with the same value
+					   on every run.
+					*/
+					static dword seed = dword(std::time(NULL));
+
+					for (uint i=0; i < sizeof(mem); ++i)
+					{
+						seed = (seed * 1103515245UL + 12345UL) & 0xFFFFFFFFUL;
+						mem[i] = byte(seed >> 16);
+					}
+					break;
+				}
 				default: std::memset( mem, 0x00, sizeof(mem) ); break;
 			}
 		}

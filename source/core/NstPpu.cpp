@@ -518,7 +518,9 @@ namespace Nes
 
 					case AsciiId<'P','O','W'>::V:
 
+						// The boot frame draws nothing, so clear it as Reset() does
 						cycles.hClock = HCLOCK_BOOT;
+						screen.Clear();
 						break;
 				}
 

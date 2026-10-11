@@ -235,7 +235,7 @@ namespace Nes
 			for (uint i=0; i < 2; ++i)
 				square[i].Reset();
 
-			triangle.Reset();
+			triangle.Reset( hard );
 			noise.Reset( cpu.GetModel() );
 			dmc.Reset( cpu.GetModel() );
 
@@ -611,6 +611,18 @@ namespace Nes
 				state.Begin( AsciiId<'S','0','0'>::V ).Write( data ).End();
 			}
 
+			/* The sample in progress outlives the frame, so a state saved
+			   between frames nearly always lands part way through one. The
+			   rate goes with it, as the sums only mean anything at the rate
+			   that built them.
+			*/
+			state.Begin( AsciiId<'S','0','1'>::V )
+				.Write32( cycles.rate )
+				.Write32( cycles.sampleSpan )
+				.Write64( cycles.sampleSum )
+				.Write64( cycles.sampleNext )
+			.End();
+
 			state.End();
 		}
 
@@ -724,12 +736,33 @@ namespace Nes
 						cycles.sampleSpan = 0;
 						break;
 					}
+
+					case AsciiId<'S','0','1'>::V:
+					{
+						// Written after S00, so this overrides the clear above
+						const dword rate = state.Read32();
+						const dword span = state.Read32();
+						const qaword sum = state.Read64();
+						const qaword next = state.Read64();
+
+						if (rate == cycles.rate && span < rate)
+						{
+							cycles.sampleSpan = span;
+							cycles.sampleSum = sum;
+							cycles.sampleNext = next;
+						}
+						break;
+					}
 				}
 
 				state.End();
 			}
 
-			if (ctrl != STATUS_FRAME_IRQ_ENABLE)
+			/* An inhibited 4-step sequence still runs its IRQ clock, as its
+			   flag reads set for two cycles, so only the 5-step sequence has
+			   none. A state without the IRQ chunk has its clock rebuilt.
+			*/
+			if (ctrl & STATUS_SEQUENCE_5_STEP)
 			{
 				cycles.frameIrqClock = Cpu::CYCLE_MAX;
 				cycles.frameIrqRepeat = 0;
@@ -1768,7 +1801,7 @@ namespace Nes
 		Apu::Triangle::Triangle()
 		: outputVolume(0) {}
 
-		void Apu::Triangle::Reset()
+		void Apu::Triangle::Reset(const bool hard)
 		{
 			Oscillator::Reset();
 
@@ -1782,8 +1815,11 @@ namespace Nes
 
 			status = STATUS_COUNTING;
 			waveLength = 0;
-			//linearCtrl = 0;
 			linearCounter = 0;
+
+			// $4008 is zero at power-on and left alone by a soft reset
+			if (hard)
+				linearCtrl = 0;
 
 			lengthCounter.Reset();
 

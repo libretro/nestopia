@@ -399,7 +399,8 @@ namespace Nes
 				/* The output sample in progress, plus the rising half of the
 				 * window that carries into the next one. The walk stops on
 				 * events rather than on sample boundaries, so one sample is
-				 * built over several calls. Transients - reset with the buffer.
+				 * built over several calls. Reset with the buffer, but carried
+				 * in the state, as the sample in progress spans frames.
 				*/
 				qaword sampleSum;
 				qaword sampleNext;
@@ -513,7 +514,7 @@ namespace Nes
 
 				Triangle();
 
-				void Reset();
+				void Reset(bool);
 				void UpdateSettings(uint,dword,uint);
 				void LoadState(State::Loader&);
 				void SaveState(State::Saver&,dword) const;

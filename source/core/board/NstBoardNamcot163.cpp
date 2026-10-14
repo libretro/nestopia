@@ -45,8 +45,10 @@ namespace Nes
 				}
 
 				N163::Sound::Sound(Apu& a,bool connect)
-				: Channel(a)
+				: Channel(a), disabled(false)
 				{
+					std::memset( exRam, 0, sizeof(exRam) );
+
 					Reset();
 					bool audible = UpdateSettings();
 
@@ -57,6 +59,19 @@ namespace Nes
 				void N163::SubReset(const bool hard)
 				{
 					irq.Reset( hard, hard || irq.Connected() );
+
+					/* The sound RAM has no reset, and a battery keeps it through a
+					   power cycle too, so it only powers on like CPU RAM without one.
+					   The sound was reset before this, so its cache is reloaded.
+					*/
+					if (hard && !HasBatteryRam())
+					{
+						cpu.FillRam( sound.GetExRam(), Sound::EXRAM_SIZE );
+						sound.ReloadRam();
+					}
+
+					if (hard)
+						sound.Disable( false );
 
 					Map( 0x4800U, 0x4FFFU, &N163::Peek_4800, &N163::Poke_4800 );
 					Map( 0x5000U, 0x57FFU, &N163::Peek_5000, &N163::Poke_5000 );
@@ -73,7 +88,7 @@ namespace Nes
 					Map( 0xC800U, 0xCFFFU, &N163::Poke_C800 );
 					Map( 0xD000U, 0xD7FFU, &N163::Poke_D000 );
 					Map( 0xD800U, 0xDFFFU, &N163::Poke_D800 );
-					Map( 0xE000U, 0xE7FFU, PRG_SWAP_8K_0 );
+					Map( 0xE000U, 0xE7FFU, &N163::Poke_E000 );
 					Map( 0xE800U, 0xEFFFU, PRG_SWAP_8K_1 );
 					Map( 0xF000U, 0xF7FFU, PRG_SWAP_8K_2 );
 					Map( 0xF800U, 0xFFFFU, &N163::Poke_F800 );
@@ -89,16 +104,36 @@ namespace Nes
 				{
 					exAddress = 0x00;
 					exIncrease = 0x01;
-					startChannel = NUM_CHANNELS;
-					frequency = 0;
 
-					std::memset( wave, 0, sizeof(wave) );
-					std::memset( exRam, 0, sizeof(exRam) );
-
-					for (uint i=0; i < NUM_CHANNELS; ++i)
-						channels[i].Reset();
+					ReloadRam();
 
 					dcBlocker.Reset();
+				}
+
+				void N163::Sound::ReloadRam()
+				{
+					// The wave table and the channel registers are cached from RAM
+					for (uint i=0; i < sizeof(exRam); ++i)
+					{
+						wave[i*2+0] = (exRam[i] & 0xFU) << 2;
+						wave[i*2+1] = (exRam[i] >>   4) << 2;
+					}
+
+					for (uint i=64; i < sizeof(exRam); i += 8)
+					{
+						BaseChannel& channel = channels[(i - 64) >> 3];
+
+						channel.Reset();
+
+						channel.SetFrequency  ( FetchFrequency(i) );
+						channel.SetWaveLength ( exRam[i+4] );
+						channel.SetWaveOffset ( exRam[i+6] );
+						channel.SetVolume     ( exRam[i+7] );
+
+						channel.Validate();
+					}
+
+					SetChannelState( exRam[0x7F] );
 				}
 
 				void N163::Sound::BaseChannel::Reset()
@@ -113,9 +148,14 @@ namespace Nes
 					volume = 0;
 				}
 
+				bool N163::HasBatteryRam() const
+				{
+					return board.HasBattery() && (board == Type::NAMCOT_163_S_0 || board == Type::NAMCOT_163_S_1);
+				}
+
 				void N163::Load(File& file)
 				{
-					if (board.HasBattery() && (board == Type::NAMCOT_163_S_0 || board == Type::NAMCOT_163_S_1))
+					if (HasBatteryRam())
 					{
 						const File::LoadBlock block[] =
 						{
@@ -133,7 +173,7 @@ namespace Nes
 
 				void N163::Save(File& file) const
 				{
-					if (board.HasBattery() && (board == Type::NAMCOT_163_S_0 || board == Type::NAMCOT_163_S_1))
+					if (HasBatteryRam())
 					{
 						const File::SaveBlock block[] =
 						{
@@ -164,11 +204,14 @@ namespace Nes
 					state.Begin( baseChunk );
 					state.Begin( AsciiId<'R','E','G'>::V ).Write8( exAddress | (exIncrease << 7) ).End();
 					state.Begin( AsciiId<'R','A','M'>::V ).Compress( exRam ).End();
+					state.Begin( AsciiId<'D','I','S'>::V ).Write8( disabled ? 1 : 0 ).End();
 					state.End();
 				}
 
 				void N163::Sound::LoadState(State::Loader& state)
 				{
+					disabled = false;
+
 					while (const dword chunk = state.Begin())
 					{
 						switch (chunk)
@@ -184,28 +227,12 @@ namespace Nes
 							case AsciiId<'R','A','M'>::V:
 
 								state.Uncompress( exRam );
+								ReloadRam();
+								break;
 
-								for (uint i=0; i < sizeof(exRam); ++i)
-								{
-									wave[i*2+0] = (exRam[i] & 0xFU) << 2;
-									wave[i*2+1] = (exRam[i] >>   4) << 2;
-								}
+							case AsciiId<'D','I','S'>::V:
 
-								for (uint i=64; i < sizeof(exRam); i += 8)
-								{
-									BaseChannel& channel = channels[(i - 64) >> 3];
-
-									channel.Reset();
-
-									channel.SetFrequency  ( FetchFrequency(i) );
-									channel.SetWaveLength ( exRam[i+4] );
-									channel.SetWaveOffset ( exRam[i+6] );
-									channel.SetVolume     ( exRam[i+7] );
-
-									channel.Validate();
-								}
-
-								SetChannelState( exRam[0x7F] );
+								disabled = state.Read8() & 0x1;
 								break;
 						}
 
@@ -325,7 +352,10 @@ namespace Nes
 
 				N163::Sound::Sample N163::Sound::GetSample()
 				{
-					if (output)
+					/* $E000.6 stops the channels being clocked. Skipping the walk
+					   freezes them, and the output falls to silence.
+					*/
+					if (output && !disabled)
 					{
 						dword sample = 0;
 
@@ -336,8 +366,14 @@ namespace Nes
 					}
 					else
 					{
-						return 0;
+						return output ? dcBlocker.Apply( 0 ) : 0;
 					}
+				}
+
+				void N163::Sound::Disable(const bool state)
+				{
+					Update();
+					disabled = state;
 				}
 
 				bool N163::Sound::UpdateSettings()
@@ -506,6 +542,12 @@ namespace Nes
 				NES_POKE_D(N163,D800)
 				{
 					SwapNmt( 0x0C00, data );
+				}
+
+				NES_POKE_D(N163,E000)
+				{
+					prg.SwapBank<SIZE_8K,0x0000>( data );
+					sound.Disable( data & 0x40 );
 				}
 
 				NES_POKE_D(N163,F800)

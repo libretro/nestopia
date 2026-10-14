@@ -75,7 +75,7 @@ namespace Nes
 				explicit N163(Apu& a)
 				: Sound(a,false) {}
 
-				using Sound::Reset;
+				void Reset();
 				using Sound::UpdateSettings;
 				using Sound::GetSample;
 			};
@@ -163,6 +163,13 @@ namespace Nes
 		void Nsf::Chips::Fds::Reset()
 		{
 			std::memset( ram, 0, sizeof(ram) );
+
+			Sound::Reset();
+		}
+
+		void Nsf::Chips::N163::Reset()
+		{
+			std::memset( GetExRam(), 0, EXRAM_SIZE );
 
 			Sound::Reset();
 		}

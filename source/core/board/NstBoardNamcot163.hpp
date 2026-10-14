@@ -56,6 +56,8 @@ namespace Nes
 
 						byte* GetExRam();
 						const byte* GetExRam() const;
+						void ReloadRam();
+						void Disable(bool);
 
 						void SaveState(State::Saver&,dword) const;
 						void LoadState(State::Loader&);
@@ -127,6 +129,7 @@ namespace Nes
 						uint exAddress;
 						uint exIncrease;
 						uint startChannel;
+						ibool disabled;
 
 						byte wave[0x100];
 						byte exRam[0x80];
@@ -138,6 +141,7 @@ namespace Nes
 
 				private:
 
+					bool HasBatteryRam() const;
 					void SubReset(bool);
 					void SubSave(State::Saver&) const;
 					void SubLoad(State::Loader&,dword);
@@ -165,6 +169,7 @@ namespace Nes
 					NES_DECL_POKE( C800 );
 					NES_DECL_POKE( D000 );
 					NES_DECL_POKE( D800 );
+					NES_DECL_POKE( E000 );
 					NES_DECL_POKE( F800 );
 
 					Timer::M2<Irq> irq;

@@ -171,7 +171,7 @@ namespace Nes
 		{
 			if (!on || hard)
 			{
-				ram.Reset( GetModel() );
+				FillRam( ram.mem, sizeof(ram.mem) );
 
 				a = 0x00;
 				x = 0x00;
@@ -783,10 +783,11 @@ namespace Nes
 			ports[address].Poke( address, data );
 		}
 
-		void Cpu::Ram::Reset(const CpuModel model)
+		// Any RAM that powers on the way the option says, cartridge RAM too
+		void Cpu::FillRam(byte* const mem,const dword size) const
 		{
-			switch (powerstate) {
-				case 1: std::memset( mem, 0xFF, sizeof(mem) ); break;
+			switch (ram.powerstate) {
+				case 1: std::memset( mem, 0xFF, size ); break;
 				case 2:
 				{
 					/* A value per byte, from a generator seeded once from the
@@ -796,14 +797,14 @@ namespace Nes
 					*/
 					static dword seed = dword(std::time(NULL));
 
-					for (uint i=0; i < sizeof(mem); ++i)
+					for (dword i=0; i < size; ++i)
 					{
 						seed = (seed * 1103515245UL + 12345UL) & 0xFFFFFFFFUL;
 						mem[i] = byte(seed >> 16);
 					}
 					break;
 				}
-				default: std::memset( mem, 0x00, sizeof(mem) ); break;
+				default: std::memset( mem, 0x00, size ); break;
 			}
 		}
 

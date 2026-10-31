@@ -2945,10 +2945,14 @@ namespace Nes
 		{
 			// DMAs are processed (and the CPU woken) at their halt time, 2
 			// CPU cycles after the DMC clock, rather than at the clock itself.
-			// A halt landing exactly on the upcoming cycle is left for that
-			// cycle's own memory access to claim, so a halted read observes
-			// the DMA's sample fetch on the bus.
-			ClockPendingLoad( cpu.GetCycles(), 0 );
+
+			/* Clock() runs between instructions, so a load halting on the
+			   upcoming cycle has halted the opcode fetch at pc. Claim it as a
+			   collision with that read: the fetch then sees the sample byte on
+			   the bus, which matters when pc is in open bus. A reload halting
+			   there is left for that cycle's own memory access to claim.
+			*/
+			ClockPendingLoad( cpu.GetCycles(), cpu.GetPC() );
 
 			if (cycles.dmcClock + cpu.GetClock(2) < cpu.GetCycles())
 				ClockDmc( cpu.GetCycles() );
@@ -3227,6 +3231,13 @@ namespace Nes
 
 		NES_POKE_D(Apu,4010)
 		{
+			/* The timer reloads one cycle after the DMC clock, so a clock two
+			   or more cycles before this write has already reloaded with the
+			   old rate. Settle it first; a write on the reload cycle itself
+			   still sets the rate it reloads with.
+			*/
+			cpu.Update();
+
 			if (!dmc.WriteReg0( data, cpu.GetModel() ))
 				cpu.ClearIRQ( Cpu::IRQ_DMC );
 		}

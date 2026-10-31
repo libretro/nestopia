@@ -532,6 +532,11 @@ namespace Nes
 				return ticks + cycles.count;
 			}
 
+			uint GetPC() const
+			{
+				return pc;
+			}
+
 			uint GetBusData() const
 			{
 				return busData;

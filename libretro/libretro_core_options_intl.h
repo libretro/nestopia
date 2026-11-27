@@ -37819,7 +37819,7 @@ struct retro_core_options_v2 options_val = {
 #define NESTOPIA_FDS_AUTO_INSERT_LABEL_VN "Tự động chèn đĩa FDS"
 #define NESTOPIA_FDS_AUTO_INSERT_INFO_0_VN "Tự động chèn đĩa FDS đầu tiên khi reset."
 #define NESTOPIA_FDS_SAVEFILE_FORMAT_LABEL_VN "Định dạng tệp lưu FDS"
-#define NESTOPIA_FDS_SAVEFILE_FORMAT_INFO_0_VN "Xác định định dạng sẽ được sử dụng cho tệp lưu của các trò chơi FDS. Tùy theo định dạng được chọn, tệp lưu có thể dùng chung với các lõi khác hoặc trình giả lập độc lập.Khuyến cáo sử dụng cẩn thận, vì thao tác sai có thể ghi đè hoặc xóa nhầm dữ liệu lưu hiện có."
+#define NESTOPIA_FDS_SAVEFILE_FORMAT_INFO_0_VN "Xác định định dạng sẽ được sử dụng cho tệp lưu của các trò chơi FDS. Tùy theo định dạng được chọn, tệp lưu có thể dùng chung với các trình giả lập khác hoặc trình giả lập độc lập.Khuyến cáo sử dụng cẩn thận, vì thao tác sai có thể ghi đè hoặc xóa nhầm dữ liệu lưu hiện có."
 #define OPTION_VAL_SAV_UPS_VN "SAV + UPS (Mặc định)"
 #define OPTION_VAL_UPS_VN "UPS (trình giả lập Nestopia độc lập)"
 #define OPTION_VAL_IPS_VN "IPS (trình giả lập Mesen)"
